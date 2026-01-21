@@ -1063,6 +1063,7 @@ function PostManagement() {
     content?: string
     category: PostCategory
     isPublished: boolean
+    isPinned?: boolean
     publishedAt: string
   }) => {
     setEditingPostId(post.id)
