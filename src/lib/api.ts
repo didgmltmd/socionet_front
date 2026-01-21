@@ -10,10 +10,12 @@ let meCache:
 let mePromise: Promise<{
   user: { role: string; status: string; name?: string; email?: string; id?: string }
 }> | null = null
+let meFailureUntil = 0
 
 export const clearMeCache = () => {
   meCache = null
   mePromise = null
+  meFailureUntil = 0
 }
 
 interface ApiError extends Error {
@@ -95,6 +97,9 @@ export async function fetchMe(token?: string) {
   if (mePromise) {
     return mePromise
   }
+  if (Date.now() < meFailureUntil) {
+    return Promise.reject(new Error('Unauthenticated'))
+  }
   mePromise = apiRequest<{
     user: { role: string; status: string; name?: string; email?: string; id?: string }
   }>('/auth/me', {
@@ -105,6 +110,16 @@ export async function fetchMe(token?: string) {
     .then((result) => {
       meCache = result
       return result
+    })
+    .catch((error) => {
+      if (error && typeof error === 'object' && 'status' in error) {
+        if (error.status === 401) {
+          meFailureUntil = Date.now() + 10000
+        }
+      } else {
+        meFailureUntil = Date.now() + 5000
+      }
+      throw error
     })
     .finally(() => {
       mePromise = null
