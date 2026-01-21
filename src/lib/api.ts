@@ -1,4 +1,5 @@
-const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:4000'
+const API_BASE =
+  import.meta.env.VITE_API_URL || 'https://socionetback-production.up.railway.app'
 
 const authHeaders = (token?: string): Record<string, string> =>
   token ? { Authorization: `Bearer ${token}` } : {}
