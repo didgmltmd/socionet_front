@@ -1,7 +1,14 @@
 import { useEffect, useState, type FormEvent } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { ChevronDown, ChevronRight } from 'lucide-react'
-import { clearMeCache, fetchMe, loginUser, logoutUser, registerUser } from '../lib/api'
+import {
+  clearMeCache,
+  fetchMe,
+  loginUser,
+  logoutUser,
+  registerUser,
+  setAuthToken,
+} from '../lib/api'
 
 interface MenuItem {
   title: string
@@ -170,8 +177,11 @@ export default function Navigation({ isMobileMenuOpen, onClose }: NavigationProp
     setIsLoggingIn(true)
     setLoginError(null)
     try {
-      const { user } = await loginUser(loginEmail.trim(), loginPassword)
+      const { user, token } = await loginUser(loginEmail.trim(), loginPassword)
       clearMeCache()
+      if (token) {
+        setAuthToken(token)
+      }
       setIsLoggedIn(true)
       setIsLoginModalOpen(false)
       setLoginEmail('')
@@ -215,6 +225,7 @@ export default function Navigation({ isMobileMenuOpen, onClose }: NavigationProp
   const handleLogout = async () => {
     try {
       clearMeCache()
+      setAuthToken(null)
       await logoutUser()
     } catch {
       // ignore logout errors

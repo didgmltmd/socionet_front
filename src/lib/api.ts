@@ -1,8 +1,28 @@
 const API_BASE =
   import.meta.env.VITE_API_URL || 'https://socionetback-production.up.railway.app'
 
-const authHeaders = (token?: string): Record<string, string> =>
-  token ? { Authorization: `Bearer ${token}` } : {}
+const getStoredToken = () => {
+  if (typeof window === 'undefined') {
+    return null
+  }
+  return window.localStorage.getItem('socionet_token')
+}
+
+export const setAuthToken = (token: string | null) => {
+  if (typeof window === 'undefined') {
+    return
+  }
+  if (!token) {
+    window.localStorage.removeItem('socionet_token')
+    return
+  }
+  window.localStorage.setItem('socionet_token', token)
+}
+
+const authHeaders = (token?: string): Record<string, string> => {
+  const resolved = token || getStoredToken()
+  return resolved ? { Authorization: `Bearer ${resolved}` } : {}
+}
 
 let meCache:
   | { user: { role: string; status: string; name?: string; email?: string; id?: string } }
@@ -59,7 +79,10 @@ async function apiRequest<T>(path: string, options: RequestInit = {}): Promise<T
 }
 
 export async function loginUser(email: string, password: string) {
-  return apiRequest<{ user: { role: string; status: string; name?: string; email?: string; id?: string } }>(
+  return apiRequest<{
+    user: { role: string; status: string; name?: string; email?: string; id?: string }
+    token?: string
+  }>(
     '/auth/login',
     {
       method: 'POST',
