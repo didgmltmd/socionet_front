@@ -118,6 +118,56 @@ function SignupRoute() {
   return <SignupPage onBack={() => navigate('/')} />
 }
 
+function AdminRoute() {
+  const navigate = useNavigate()
+  const [status, setStatus] = useState<'checking' | 'allowed' | 'blocked'>('checking')
+
+  useEffect(() => {
+    let isMounted = true
+    fetchMe()
+      .then(({ user }) => {
+        if (!isMounted) {
+          return
+        }
+        if (user.role === 'ADMIN') {
+          setStatus('allowed')
+        } else {
+          setStatus('blocked')
+        }
+      })
+      .catch(() => {
+        if (isMounted) {
+          setStatus('blocked')
+        }
+      })
+    return () => {
+      isMounted = false
+    }
+  }, [])
+
+  useEffect(() => {
+    if (status !== 'blocked') {
+      return
+    }
+    alert('\uad8c\ud55c\uc774 \uc5c6\uc2b5\ub2c8\ub2e4.')
+    navigate('/')
+  }, [navigate, status])
+
+  if (status === 'checking') {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-white">
+        <p className="text-sm text-gray-500">{'\ud655\uc778 \uc911...'}</p>
+      </div>
+    )
+  }
+
+  if (status === 'blocked') {
+    return null
+  }
+
+  return <AdminPage />
+}
+
 export default function App() {
   return (
     <BrowserRouter>
@@ -167,7 +217,7 @@ export default function App() {
           <Route path="resources/papers" element={<ResourcesPage subPage="논문" />} />
           <Route path="resources/publications" element={<ResourcesPage subPage="출판물" />} />
           <Route path="resources/books" element={<ResourcesPage subPage="추천도서" />} />
-          <Route path="admin" element={<AdminPage />} />
+          <Route path="admin" element={<AdminRoute />} />
         </Route>
         <Route path="online-education" element={<OnlineEducationRoute />} />
         <Route path="signup" element={<SignupRoute />} />

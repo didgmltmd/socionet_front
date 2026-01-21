@@ -4,6 +4,18 @@ const API_BASE =
 const authHeaders = (token?: string): Record<string, string> =>
   token ? { Authorization: `Bearer ${token}` } : {}
 
+let meCache:
+  | { user: { role: string; status: string; name?: string; email?: string; id?: string } }
+  | null = null
+let mePromise: Promise<{
+  user: { role: string; status: string; name?: string; email?: string; id?: string }
+}> | null = null
+
+export const clearMeCache = () => {
+  meCache = null
+  mePromise = null
+}
+
 interface ApiError extends Error {
   status?: number
 }
@@ -77,11 +89,27 @@ export async function logoutUser() {
 }
 
 export async function fetchMe(token?: string) {
-  return apiRequest<{ user: { role: string; status: string; name?: string; email?: string; id?: string } }>('/auth/me', {
+  if (meCache) {
+    return meCache
+  }
+  if (mePromise) {
+    return mePromise
+  }
+  mePromise = apiRequest<{
+    user: { role: string; status: string; name?: string; email?: string; id?: string }
+  }>('/auth/me', {
     headers: {
       ...authHeaders(token),
     },
   })
+    .then((result) => {
+      meCache = result
+      return result
+    })
+    .finally(() => {
+      mePromise = null
+    })
+  return mePromise
 }
 
 export async function fetchUsers(token?: string) {

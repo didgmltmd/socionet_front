@@ -1,7 +1,7 @@
 ﻿import { useEffect, useState, type FormEvent } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { User, UserPlus, Mail, Menu, X, Lock, LogOut, Phone } from 'lucide-react'
-import { fetchMe, loginUser, logoutUser, registerUser } from '../lib/api'
+import { clearMeCache, fetchMe, loginUser, logoutUser, registerUser } from '../lib/api'
 
 interface HeaderProps {
   isMobileMenuOpen: boolean
@@ -78,6 +78,7 @@ export default function Header({
     try {
       const { user } = await loginUser(email, password)
       const isAdminUser = user.role === 'ADMIN'
+      clearMeCache()
       setIsLoggedIn(true)
       setIsAdmin(isAdminUser)
       setUserName(isAdminUser ? '\uc548\uc774\ud658' : user.name || '')
@@ -100,6 +101,7 @@ export default function Header({
     setUserName('')
     setEmail('')
     setPassword('')
+    clearMeCache()
     logoutUser().catch(() => {})
     navigate('/')
   }
