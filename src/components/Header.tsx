@@ -136,7 +136,7 @@ export default function Header({
     }
 
   return (
-    <header className="bg-white">
+    <header className="sticky top-0 z-50 bg-white lg:static">
       <div className="px-3 py-2 sm:px-4">
         <div className="relative flex items-center justify-between">
           <button
