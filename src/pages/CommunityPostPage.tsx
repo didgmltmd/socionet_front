@@ -33,6 +33,7 @@ export default function CommunityPostPage() {
     content?: string
     category: PostCategory
     publishedAt: string
+    views?: number
   } | null>(null)
   const [isLoading, setIsLoading] = useState(false)
 

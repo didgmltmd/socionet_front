@@ -63,7 +63,6 @@ export default function AdminPage() {
   const [confirmModal, setConfirmModal] =
     useState<ConfirmModalState>(emptyConfirmModal)
   const [users, setUsers] = useState<User[]>(initialUsers)
-  const [isLoadingUsers, setIsLoadingUsers] = useState(false)
   const [editingUserId, setEditingUserId] = useState<string | null>(null)
   const [editingRole, setEditingRole] = useState<CourseLevel | null>(null)
   const [isAdminUser, setIsAdminUser] = useState(false)
@@ -84,7 +83,6 @@ export default function AdminPage() {
     if (!isAdminUser) {
       return
     }
-    setIsLoadingUsers(true)
     fetchUsers()
       .then(({ users }) => {
         setUsers(
@@ -99,11 +97,11 @@ export default function AdminPage() {
           })),
         )
       })
-      .finally(() => setIsLoadingUsers(false))
+      .finally(() => {})
   }, [isAdminUser])
   const handleApprove = async (userId: string) => {
     try {
-      const { user } = await updateUser(undefined, userId, { status: 'APPROVED' })
+      const { user } = await updateUser(userId, { status: 'APPROVED' })
       setUsers((prev) =>
         prev.map((item) =>
           item.id === userId ? { ...item, status: user.status as UserStatus } : item,
@@ -116,7 +114,7 @@ export default function AdminPage() {
 
   const handleReject = async (userId: string) => {
     try {
-      const { user } = await updateUser(undefined, userId, { status: 'REJECTED' })
+      const { user } = await updateUser(userId, { status: 'REJECTED' })
       setUsers((prev) =>
         prev.map((item) =>
           item.id === userId ? { ...item, status: user.status as UserStatus } : item,
@@ -137,7 +135,7 @@ export default function AdminPage() {
       return
     }
     try {
-      const { user } = await updateUser(undefined, userId, { role: editingRole })
+      const { user } = await updateUser(userId, { role: editingRole })
       setUsers((prev) =>
         prev.map((item) =>
           item.id === userId ? { ...item, role: user.role as CourseLevel } : item,
@@ -152,7 +150,7 @@ export default function AdminPage() {
 
   const handleDeleteUser = async (userId: string) => {
     try {
-      await deleteUserApi(undefined, userId)
+      await deleteUserApi(userId)
       setUsers((prev) => prev.filter((item) => item.id !== userId))
     } catch (error) {
       alert(error instanceof Error ? error.message : '삭제에 실패했습니다.')
@@ -529,305 +527,6 @@ export default function AdminPage() {
   )
 }
 
-function ContentManagement() {
-  const [selectedPage, setSelectedPage] = useState('연구소-소개-인사말')
-  const [expandedMenus, setExpandedMenus] = useState<string[]>(['연구소-소개'])
-  const [contentData, setContentData] = useState<Record<string, string>>({
-    '연구소-소개-인사말': '한국 SOCIONET 연구소 소장 인사말...',
-    '연구소-소개-연구소-소개': '한국 SOCIONET 연구소는 사회관계망 분석...',
-    '연구소-소개-오시는-길': '연구소 위치 및 찾아오시는 방법...',
-    'socionet-이해-socionet이란': 'SOCIONET은 집단 내 개인의 사회적 관계...',
-    'socionet-이해-검사의-필요성': 'SOCIONET 검사가 필요한 이유...',
-    'socionet-이해-학문적-배경': 'SOCIONET의 이론적 배경과 학문적 기반...',
-    'socionet-검사-검사-안내': 'SOCIONET 검사 절차 및 방법 안내...',
-    'socionet-검사-검사-신청': '온라인 검사 신청 방법...',
-    'socionet-검사-결과-해석': '검사 결과 해석 및 활용 방법...',
-    '커뮤니티-공지사항': '연구소의 최신 소식과 공지사항...',
-    '커뮤니티-faq': '자주 묻는 질문과 답변...',
-    '커뮤니티-자료실': '커뮤니티 자료 및 문서...',
-    '일반-검사-및-상담':
-      '전문 상담사와 함께하는 심리검사 및 상담 서비스...',
-    '자료실-연구자료': '연구 논문 및 학술 자료...',
-    '자료실-논문': '학술 논문 및 출판물...',
-    '자료실-검사도구': 'SOCIONET 검사 도구 및 양식...',
-  })
-  const [editingContent, setEditingContent] = useState('')
-  const [isEditing, setIsEditing] = useState(false)
-  const [showSaveConfirm, setShowSaveConfirm] = useState(false)
-
-  const menuStructure = [
-    {
-      id: '연구소-소개',
-      name: '연구소 소개',
-      subPages: [
-        { id: '연구소-소개-인사말', name: '인사말' },
-        { id: '연구소-소개-연구소-소개', name: '연구소 소개' },
-        { id: '연구소-소개-오시는-길', name: '오시는 길' },
-      ],
-    },
-    {
-      id: 'socionet-이해',
-      name: 'SOCIONET 이해',
-      subPages: [
-        { id: 'socionet-이해-socionet이란', name: 'SOCIONET이란' },
-        { id: 'socionet-이해-검사의-필요성', name: '검사의 필요성' },
-        { id: 'socionet-이해-학문적-배경', name: '학문적 배경' },
-      ],
-    },
-    {
-      id: 'socionet-검사',
-      name: 'SOCIONET 검사',
-      subPages: [
-        { id: 'socionet-검사-검사-안내', name: '검사 안내' },
-        { id: 'socionet-검사-검사-신청', name: '검사 신청' },
-        { id: 'socionet-검사-결과-해석', name: '결과 해석' },
-      ],
-    },
-    {
-      id: '커뮤니티',
-      name: '커뮤니티',
-      subPages: [
-        { id: '커뮤니티-공지사항', name: '공지사항' },
-        { id: '커뮤니티-faq', name: 'FAQ' },
-        { id: '커뮤니티-자료실', name: '자료실' },
-      ],
-    },
-    {
-      id: '일반-검사-및-상담',
-      name: '일반 검사 및 상담',
-      subPages: [],
-    },
-    {
-      id: '자료실',
-      name: '자료실',
-      subPages: [
-        { id: '자료실-연구자료', name: '연구자료' },
-        { id: '자료실-논문', name: '논문' },
-        { id: '자료실-검사도구', name: '검사도구' },
-      ],
-    },
-  ]
-
-  const toggleMenu = (menuId: string) => {
-    if (expandedMenus.includes(menuId)) {
-      setExpandedMenus((prev) => prev.filter((id) => id !== menuId))
-      return
-    }
-    setExpandedMenus((prev) => [...prev, menuId])
-  }
-
-  const getPageName = (pageId: string) => {
-    for (const menu of menuStructure) {
-      if (menu.id === pageId && menu.subPages.length === 0) {
-        return menu.name
-      }
-      for (const subPage of menu.subPages) {
-        if (subPage.id === pageId) {
-          return `${menu.name} > ${subPage.name}`
-        }
-      }
-    }
-    return pageId
-  }
-
-  const handleEditStart = () => {
-    setEditingContent(contentData[selectedPage] || '')
-    setIsEditing(true)
-  }
-
-  const handleSave = () => {
-    setContentData((prev) => ({
-      ...prev,
-      [selectedPage]: editingContent,
-    }))
-    setIsEditing(false)
-    alert('저장되었습니다!')
-  }
-
-  const handleCancel = () => {
-    setIsEditing(false)
-    setEditingContent('')
-  }
-  return (
-    <div className="grid grid-cols-1 gap-6 lg:grid-cols-4">
-      <div className="lg:col-span-1">
-        <div className="rounded-xl bg-white p-4 shadow-md">
-          <h3 className="mb-4 text-lg font-bold text-gray-800">페이지 선택</h3>
-          <div className="space-y-1">
-            {menuStructure.map((menu) => (
-              <div key={menu.id}>
-                {menu.subPages.length > 0 ? (
-                  <>
-                    <button
-                      onClick={() => toggleMenu(menu.id)}
-                      className="flex w-full items-center justify-between rounded-lg bg-gray-50 px-4 py-3 font-bold text-gray-700 transition-colors hover:bg-gray-100"
-                      type="button"
-                    >
-                      <span>{menu.name}</span>
-                      <svg
-                        className={`h-5 w-5 transition-transform ${
-                          expandedMenus.includes(menu.id) ? 'rotate-180' : ''
-                        }`}
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="2"
-                          d="M19 9l-7 7-7-7"
-                        />
-                      </svg>
-                    </button>
-
-                    {expandedMenus.includes(menu.id) && (
-                      <div className="ml-4 mt-1 space-y-1 border-l-2 border-gray-200 pl-2">
-                        {menu.subPages.map((subPage) => (
-                          <button
-                            key={subPage.id}
-                            onClick={() => setSelectedPage(subPage.id)}
-                            className={`w-full rounded-lg px-3 py-2 text-left text-sm transition-colors ${
-                              selectedPage === subPage.id
-                                ? 'bg-teal-600 font-bold text-white'
-                                : 'bg-white text-gray-600 hover:bg-gray-50'
-                            }`}
-                            type="button"
-                          >
-                            {subPage.name}
-                          </button>
-                        ))}
-                      </div>
-                    )}
-                  </>
-                ) : (
-                  <button
-                    onClick={() => setSelectedPage(menu.id)}
-                    className={`w-full rounded-lg px-4 py-3 text-left transition-colors ${
-                      selectedPage === menu.id
-                        ? 'bg-teal-600 font-bold text-white'
-                        : 'bg-gray-50 text-gray-700 hover:bg-gray-100'
-                    }`}
-                    type="button"
-                  >
-                    {menu.name}
-                  </button>
-                )}
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      <div className="lg:col-span-3">
-        <div className="rounded-xl bg-white p-6 shadow-md">
-          <div className="mb-6 flex items-center justify-between">
-            <h3 className="text-xl font-bold text-gray-800">
-              {getPageName(selectedPage)} 편집
-            </h3>
-            {!isEditing ? (
-              <button
-                onClick={handleEditStart}
-                className="flex items-center gap-2 rounded-lg bg-orange-500 px-4 py-2 font-bold text-white transition-colors hover:bg-orange-600"
-                type="button"
-              >
-                <Edit2 size={18} />
-                편집하기
-              </button>
-            ) : (
-              <div className="flex gap-2">
-                <button
-                  onClick={() => setShowSaveConfirm(true)}
-                  className="flex items-center gap-2 rounded-lg bg-teal-600 px-4 py-2 font-bold text-white transition-colors hover:bg-teal-700"
-                  type="button"
-                >
-                  <Save size={18} />
-                  저장
-                </button>
-                <button
-                  onClick={handleCancel}
-                  className="flex items-center gap-2 rounded-lg bg-gray-400 px-4 py-2 font-bold text-white transition-colors hover:bg-gray-500"
-                  type="button"
-                >
-                  취소
-                </button>
-              </div>
-            )}
-          </div>
-
-          {isEditing ? (
-            <textarea
-              value={editingContent}
-              onChange={(event) => setEditingContent(event.target.value)}
-              className="h-96 w-full resize-none rounded-lg border-2 border-gray-200 p-4 font-mono text-sm transition-colors focus:border-teal-500 focus:outline-none"
-              placeholder="이름 또는 이메일로 검색..."
-            />
-          ) : (
-            <div className="min-h-[384px] w-full rounded-lg border-2 border-gray-200 bg-gray-50 p-4">
-              <p className="whitespace-pre-wrap text-gray-700">
-                {contentData[selectedPage] || '내용이 없습니다.'}
-              </p>
-            </div>
-          )}
-        </div>
-      </div>
-
-      <AnimatePresence>
-        {showSaveConfirm && (
-          <motion.div
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
-            onClick={() => setShowSaveConfirm(false)}
-          >
-            <motion.div
-              className="w-96 rounded-lg bg-white p-6 shadow-lg"
-              initial={{ scale: 0.9, opacity: 0, y: 20 }}
-              animate={{ scale: 1, opacity: 1, y: 0 }}
-              exit={{ scale: 0.9, opacity: 0, y: 20 }}
-              transition={{ duration: 0.2 }}
-              onClick={(event) => event.stopPropagation()}
-            >
-              <h3 className="mb-4 text-xl font-bold text-gray-800">저장 확인</h3>
-              <p className="mb-6 text-gray-600">
-                변경 사항을 저장하시겠습니까?
-                <br />
-                <span className="font-bold">{getPageName(selectedPage)}</span>{' '}
-                페이지의 내용이 업데이트됩니다.
-              </p>
-              <div className="flex justify-end gap-2">
-                <motion.button
-                  onClick={() => setShowSaveConfirm(false)}
-                  className="rounded-lg bg-gray-400 px-4 py-2 text-white transition-colors hover:bg-gray-500"
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  type="button"
-                >
-                  취소
-                </motion.button>
-                <motion.button
-                  onClick={() => {
-                    handleSave()
-                    setShowSaveConfirm(false)
-                  }}
-                  className="rounded-lg bg-teal-600 px-4 py-2 text-white transition-colors hover:bg-teal-700"
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  type="button"
-                >
-                  확인
-                </motion.button>
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </div>
-  )
-}
-
 function EducationManagement() {
   const [videos, setVideos] = useState<
     Array<{
@@ -938,7 +637,7 @@ function EducationManagement() {
   }
 
   const handleDeleteVideo = async (id: string) => {
-    await deleteVideoApi(undefined, id)
+    await deleteVideoApi(id)
     setVideos((prev) => prev.filter((video) => video.id !== id))
   }
 
@@ -967,7 +666,7 @@ function EducationManagement() {
 
     setIsSavingEdit(true)
     try {
-      await updateVideo(undefined, editingVideoId, {
+      await updateVideo(editingVideoId, {
         title: editingTitle,
         description: editingDescription,
         requiredRole: editingRole,
@@ -1301,7 +1000,6 @@ function PostManagement() {
   >([])
   const [isLoading, setIsLoading] = useState(false)
   const [title, setTitle] = useState('')
-  const [content, setContent] = useState('')
   const [category, setCategory] = useState<PostCategory>('NOTICE')
   const [isPinned, setIsPinned] = useState(false)
   const contentEditorRef = useRef<HTMLDivElement | null>(null)
@@ -1343,14 +1041,13 @@ function PostManagement() {
     }
 
     const html = contentEditorRef.current?.innerHTML?.trim() || contentHtmlRef.current.trim()
-    await createPost(undefined, {
+    await createPost({
       title: title.trim(),
       content: html || undefined,
       category,
       isPinned,
     })
     setTitle('')
-    setContent('')
     setCategory('NOTICE')
     setIsPinned(false)
     contentHtmlRef.current = ''
@@ -1382,7 +1079,7 @@ function PostManagement() {
     }
 
     const html = editingEditorRef.current?.innerHTML?.trim() || editingHtmlRef.current.trim()
-    await updatePost(undefined, editingPostId, {
+    await updatePost(editingPostId, {
       title: editingTitle.trim(),
       content: html || undefined,
       category: editingCategory,
@@ -1421,7 +1118,7 @@ function PostManagement() {
   }
 
   const insertBlock = (
-    editorRef: React.RefObject<HTMLDivElement>,
+    editorRef: React.RefObject<HTMLDivElement | null>,
     html: string,
     htmlRef: React.MutableRefObject<string>,
   ) => {
@@ -1471,7 +1168,7 @@ function PostManagement() {
   }
 
   const insertTable = (
-    editorRef: React.RefObject<HTMLDivElement>,
+    editorRef: React.RefObject<HTMLDivElement | null>,
     htmlRef: React.MutableRefObject<string>,
     rows: number,
     cols: number,
@@ -1596,7 +1293,7 @@ function PostManagement() {
     let publicUrl: string
 
     try {
-      const response = await createPostImageUploadUrl(undefined, filePath)
+      const response = await createPostImageUploadUrl(filePath)
       uploadUrl = response.uploadUrl
       publicUrl = response.publicUrl
     } catch (error) {
@@ -1628,7 +1325,7 @@ function PostManagement() {
   }
 
   const handleDelete = async (id: string) => {
-    await deletePost(undefined, id)
+    await deletePost(id)
     loadPosts()
   }
 

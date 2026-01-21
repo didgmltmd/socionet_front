@@ -56,7 +56,6 @@ function DefaultLayout() {
 
 function OnlineEducationRoute() {
   const navigate = useNavigate()
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [authStatus, setAuthStatus] = useState<'checking' | 'authorized' | 'blocked'>(
     'checking',
   )

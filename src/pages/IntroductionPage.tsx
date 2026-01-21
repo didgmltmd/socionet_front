@@ -133,7 +133,14 @@ SOCIONET 집단용 심리검사는 현장에서 고민하는 교직자, 기업 �
   },
 }
 
-const historyTables = [
+type HistoryRow = Record<string, string>
+type HistoryTable = {
+  title: string
+  columns: Array<{ key: string; label: string; align?: string }>
+  rows: HistoryRow[]
+}
+
+const historyTables: HistoryTable[] = [
   {
     title: '저널중심',
     columns: [

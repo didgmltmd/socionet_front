@@ -209,7 +209,7 @@ export default function OnlineEducationPage({ onBack }: OnlineEducationPageProps
     setSelectedLectureId(lecture.id)
     setIsLoadingVideo(true)
     try {
-      const result = await fetchVideo(undefined, lecture.videoId)
+      const result = await fetchVideo(lecture.videoId)
       setSelectedVideoUrl(result.video.signedUrl || null)
       if (typeof result.video.completed === 'boolean') {
         setAccessibleVideos((prev) =>
@@ -235,7 +235,7 @@ export default function OnlineEducationPage({ onBack }: OnlineEducationPageProps
     if (!isAuthenticated) {
       return
     }
-    await updateVideoProgress(undefined, videoId, value)
+    await updateVideoProgress(videoId, value)
     setAccessibleVideos((prev) =>
       prev.map((video) =>
         video.id === videoId ? { ...video, completed: value } : video,
@@ -288,7 +288,7 @@ export default function OnlineEducationPage({ onBack }: OnlineEducationPageProps
               onClick={() => {
                 setSelectedLevel(tab.level)
                 setSelectedCourse(null)
-                setSelectedLecture(null)
+                setSelectedLectureId(null)
                 setSelectedVideoUrl(null)
               }}
               className={`min-w-[150px] flex-1 rounded-lg px-6 py-3 font-bold transition-all ${

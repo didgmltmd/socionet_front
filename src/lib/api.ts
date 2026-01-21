@@ -1,6 +1,7 @@
 const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:4000'
 
-const authHeaders = (token?: string) => (token ? { Authorization: `Bearer ${token}` } : {})
+const authHeaders = (token?: string): Record<string, string> =>
+  token ? { Authorization: `Bearer ${token}` } : {}
 
 interface ApiError extends Error {
   status?: number
@@ -93,7 +94,7 @@ export async function fetchUsers(token?: string) {
   )
 }
 
-export async function updateUser(token?: string, id: string, payload: { status?: string; role?: string }) {
+export async function updateUser(id: string, payload: { status?: string; role?: string }, token?: string) {
   return apiRequest<{ user: { id: string; role: string; status: string } }>(
     `/admin/users/${id}`,
     {
@@ -106,7 +107,7 @@ export async function updateUser(token?: string, id: string, payload: { status?:
   )
 }
 
-export async function deleteUser(token?: string, id: string) {
+export async function deleteUser(id: string, token?: string) {
   return apiRequest<void>(`/admin/users/${id}`, {
     method: 'DELETE',
     headers: {
@@ -115,7 +116,7 @@ export async function deleteUser(token?: string, id: string) {
   })
 }
 
-export async function createUploadUrl(token?: string, filePath: string) {
+export async function createUploadUrl(filePath: string, token?: string) {
   return apiRequest<{ uploadUrl: string; path: string }>(
     '/admin/videos/upload-url',
     {
@@ -157,7 +158,7 @@ export async function uploadVideo(formData: FormData) {
   return JSON.parse(text) as { video: { id: string } }
 }
 
-export async function createVideo(token?: string, payload: { title: string; description?: string; storagePath: string; requiredRole: string; isPublished?: boolean; durationSeconds?: number }) {
+export async function createVideo(payload: { title: string; description?: string; storagePath: string; requiredRole: string; isPublished?: boolean; durationSeconds?: number }, token?: string) {
   return apiRequest<{ video: { id: string } }>(
     '/admin/videos',
     {
@@ -171,7 +172,7 @@ export async function createVideo(token?: string, payload: { title: string; desc
 }
 
 export async function fetchAdminVideos(token?: string) {
-  return apiRequest<{ videos: Array<{ id: string; title: string; description?: string; requiredRole: string; isPublished: boolean; storagePath: string; createdAt: string }> }>(
+  return apiRequest<{ videos: Array<{ id: string; title: string; description?: string; requiredRole: string; isPublished: boolean; storagePath: string; createdAt: string; durationSeconds?: number }> }>(
     '/admin/videos',
     {
       headers: {
@@ -181,7 +182,7 @@ export async function fetchAdminVideos(token?: string) {
   )
 }
 
-export async function deleteVideo(token?: string, id: string) {
+export async function deleteVideo(id: string, token?: string) {
   return apiRequest<void>(`/admin/videos/${id}`, {
     method: 'DELETE',
     headers: {
@@ -191,9 +192,9 @@ export async function deleteVideo(token?: string, id: string) {
 }
 
 export async function updateVideo(
-  token?: string,
   id: string,
-  payload: { title?: string; description?: string; requiredRole?: string; isPublished?: boolean },
+  payload: { title?: string; description?: string; requiredRole?: string; isPublished?: boolean; durationSeconds?: number | null },
+  token?: string,
 ) {
   return apiRequest<{ video: { id: string } }>(`/admin/videos/${id}`, {
     method: 'PATCH',
@@ -204,7 +205,7 @@ export async function updateVideo(
   })
 }
 
-export async function fetchVideo(token?: string, id: string) {
+export async function fetchVideo(id: string, token?: string) {
   return apiRequest<{ video: { id: string; title: string; signedUrl?: string; requiredRole: string; durationSeconds?: number; completed?: boolean } }>(
     `/videos/${id}`,
     {
@@ -226,7 +227,7 @@ export async function fetchVideos(token?: string) {
   )
 }
 
-export async function updateVideoProgress(token?: string, id: string, completed: boolean) {
+export async function updateVideoProgress(id: string, completed: boolean, token?: string) {
   return apiRequest<{ progress: { videoId: string; completed: boolean } }>(`/videos/${id}/progress`, {
     method: 'PATCH',
     headers: {
@@ -261,7 +262,7 @@ export async function fetchAdminPosts(token?: string) {
   )
 }
 
-export async function createPost(token?: string, payload: { title: string; content?: string; category: 'NOTICE' | 'ACTIVITY'; isPinned?: boolean }) {
+export async function createPost(payload: { title: string; content?: string; category: 'NOTICE' | 'ACTIVITY'; isPinned?: boolean }, token?: string) {
   return apiRequest<{ post: { id: string } }>(
     '/admin/posts',
     {
@@ -275,9 +276,9 @@ export async function createPost(token?: string, payload: { title: string; conte
 }
 
 export async function updatePost(
-  token?: string,
   id: string,
   payload: { title?: string; content?: string; category?: 'NOTICE' | 'ACTIVITY'; isPinned?: boolean },
+  token?: string,
 ) {
   return apiRequest<{ post: { id: string } }>(`/admin/posts/${id}`, {
     method: 'PATCH',
@@ -288,7 +289,7 @@ export async function updatePost(
   })
 }
 
-export async function deletePost(token?: string, id: string) {
+export async function deletePost(id: string, token?: string) {
   return apiRequest<void>(`/admin/posts/${id}`, {
     method: 'DELETE',
     headers: {
@@ -297,7 +298,7 @@ export async function deletePost(token?: string, id: string) {
   })
 }
 
-export async function createPostImageUploadUrl(token?: string, filePath: string) {
+export async function createPostImageUploadUrl(filePath: string, token?: string) {
   return apiRequest<{ uploadUrl: string; publicUrl: string; path: string }>(
     '/admin/posts/upload-url',
     {
