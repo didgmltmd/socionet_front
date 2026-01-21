@@ -88,6 +88,7 @@ export default function PageLayout({
                             navigate(route)
                           }
                           onSubPageChange(item.value)
+                          window.scrollTo({ top: 0, behavior: 'smooth' })
                         }}
                         className={`w-full rounded-lg px-3 py-2 text-left text-sm transition-all hover:cursor-pointer sm:px-4 sm:py-3 sm:text-base ${
                           currentSubPage === item.value
