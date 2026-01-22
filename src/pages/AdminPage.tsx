@@ -12,7 +12,6 @@ import {
   Trash2,
   FileText,
 } from 'lucide-react'
-import { AnimatePresence, motion } from 'motion/react'
 import { createPost, createPostImageUploadUrl, deletePost, deleteUser as deleteUserApi, deleteVideo as deleteVideoApi, fetchAdminPosts, fetchAdminVideos, fetchMe, fetchUsers, updatePost, updateUser, updateVideo, uploadVideo } from '../lib/api'
 
 type UserStatus = 'PENDING' | 'APPROVED' | 'REJECTED'
