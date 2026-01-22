@@ -12,7 +12,7 @@ import {
   Trash2,
   FileText,
 } from 'lucide-react'
-import { createPost, createPostImageUploadUrl, deletePost, deleteUser as deleteUserApi, deleteVideo as deleteVideoApi, fetchAdminPosts, fetchAdminVideos, fetchMe, fetchUsers, updatePost, updateUser, updateVideo, uploadVideo } from '../lib/api'
+import { createPost, createPostImageUploadUrl, deletePost, deleteUser as deleteUserApi, deleteVideo as deleteVideoApi, fetchAdminPosts, fetchAdminVideos, fetchMe, fetchUsers, fetchVideo, updatePost, updateUser, updateVideo, uploadVideo } from '../lib/api'
 
 type UserStatus = 'PENDING' | 'APPROVED' | 'REJECTED'
 type CourseLevel = 'BEGINNER' | 'INTERMEDIATE' | 'ADVANCED' | 'INSTRUCTOR'
@@ -410,6 +410,9 @@ function EducationManagement() {
   const [editingRole, setEditingRole] = useState<CourseLevel>('BEGINNER')
   const [editingDurationSeconds, setEditingDurationSeconds] = useState<number | null>(null)
   const [isSavingEdit, setIsSavingEdit] = useState(false)
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null)
+  const [previewError, setPreviewError] = useState<string | null>(null)
+  const [isPreviewLoading, setIsPreviewLoading] = useState(false)
 
   const loadVideos = async () => {
     try {
@@ -521,6 +524,19 @@ function EducationManagement() {
     setEditingDurationSeconds(
       typeof video.durationSeconds === 'number' ? video.durationSeconds : null,
     )
+    setPreviewUrl(null)
+    setPreviewError(null)
+    setIsPreviewLoading(true)
+    fetchVideo(video.id)
+      .then(({ video: detail }) => {
+        if (detail.signedUrl) {
+          setPreviewUrl(detail.signedUrl)
+        } else {
+          setPreviewError('영상 미리보기를 불러올 수 없습니다.')
+        }
+      })
+      .catch(() => setPreviewError('영상 미리보기에 실패했습니다.'))
+      .finally(() => setIsPreviewLoading(false))
   }
 
   const handleUpdateVideo = async () => {
@@ -772,11 +788,37 @@ function EducationManagement() {
                   placeholder={'\uC790\uB3D9\uC73C\uB85C \uC124\uC815\uB429\uB2C8\uB2E4.'}
                 />
               </div>
+              <div>
+                <label className="mb-2 block text-sm font-bold text-gray-700">
+                  {'\uC601\uC0C1 \uBBF8\uB9AC\uBCF4\uAE30'}
+                </label>
+                <div className="rounded-lg border border-gray-200 bg-gray-50 p-3">
+                  {isPreviewLoading ? (
+                    <p className="text-sm text-gray-500">
+                      {'\uBBF8\uB9AC\uBCF4\uAE30\uB97C \uBD88\uB7EC\uC624\uB294 \uC911...'}
+                    </p>
+                  ) : previewUrl ? (
+                    <video
+                      src={previewUrl}
+                      controls
+                      className="w-full rounded-md bg-black"
+                    />
+                  ) : (
+                    <p className="text-sm text-gray-500">
+                      {previewError || '\uBBF8\uB9AC\uBCF4\uAE30\uAC00 \uC5C6\uC2B5\uB2C8\uB2E4.'}
+                    </p>
+                  )}
+                </div>
+              </div>
             </div>
             <div className="mt-6 flex justify-end gap-2">
               <button
                 type="button"
-                onClick={() => setEditingVideoId(null)}
+                onClick={() => {
+                  setEditingVideoId(null)
+                  setPreviewUrl(null)
+                  setPreviewError(null)
+                }}
                 className="rounded-lg bg-gray-200 px-4 py-2 text-sm font-bold text-gray-700 hover:cursor-pointer"
               >
                 {'\uCDE8\uC18C'}
