@@ -29,12 +29,6 @@ interface User {
   appliedDate?: string
 }
 
-interface ConfirmModalState {
-  isOpen: boolean
-  type: 'approve' | 'reject' | 'save' | null
-  userId: string | null
-  userName: string
-}
 
 const courseOptions: CourseLevel[] = ['BEGINNER', 'INTERMEDIATE', 'ADVANCED', 'INSTRUCTOR']
 const courseLabels: Record<CourseLevel, string> = {
@@ -46,22 +40,11 @@ const courseLabels: Record<CourseLevel, string> = {
 
 const initialUsers: User[] = []
 
-const emptyConfirmModal: ConfirmModalState = {
-  isOpen: false,
-  type: null,
-  userId: null,
-  userName: '',
-}
-
 export default function AdminPage() {
   const navigate = useNavigate()
   const [activeTab, setActiveTab] = useState<AdminTab>('users')
   const [searchTerm, setSearchTerm] = useState('')
-  const [statusFilter, setStatusFilter] = useState<
-    'all' | 'PENDING' | 'APPROVED' | 'REJECTED'
-  >('all')
-  const [confirmModal, setConfirmModal] =
-    useState<ConfirmModalState>(emptyConfirmModal)
+  const [statusFilter, setStatusFilter] = useState<'all' | UserStatus>('all')
   const [users, setUsers] = useState<User[]>(initialUsers)
   const [editingUserId, setEditingUserId] = useState<string | null>(null)
   const [editingRole, setEditingRole] = useState<CourseLevel | null>(null)
@@ -70,7 +53,7 @@ export default function AdminPage() {
   useEffect(() => {
     fetchMe()
       .then(({ user }) => {
-        if (user.role !== 'ADMIN') {
+        if (user.role != 'ADMIN') {
           navigate('/')
           return
         }
@@ -84,9 +67,9 @@ export default function AdminPage() {
       return
     }
     fetchUsers()
-      .then(({ users }) => {
+      .then(({ users: userList }) => {
         setUsers(
-          users.map((user) => ({
+          userList.map((user) => ({
             id: user.id,
             name: user.name || '이름 없음',
             email: user.email,
@@ -97,8 +80,9 @@ export default function AdminPage() {
           })),
         )
       })
-      .finally(() => {})
+      .catch(() => {})
   }, [isAdminUser])
+
   const handleApprove = async (userId: string) => {
     try {
       const { user } = await updateUser(userId, { status: 'APPROVED' })
@@ -163,7 +147,7 @@ export default function AdminPage() {
       const matchesSearch =
         user.name.toLowerCase().includes(lowerSearch) ||
         user.email.toLowerCase().includes(lowerSearch)
-      const matchesStatus = statusFilter === 'all' || user.status === statusFilter
+      const matchesStatus = statusFilter == 'all' || user.status == statusFilter
       return matchesSearch && matchesStatus
     })
   }, [searchTerm, statusFilter, users])
@@ -173,31 +157,34 @@ export default function AdminPage() {
       case 'PENDING':
         return (
           <span className="rounded-full bg-orange-100 px-3 py-1 text-xs font-bold text-orange-700">
-            승인 대기
+            {'\uC2B9\uC778 \uB300\uAE30'}
           </span>
         )
       case 'APPROVED':
         return (
           <span className="rounded-full bg-green-100 px-3 py-1 text-xs font-bold text-green-700">
-            승인 완료
+            {'\uC2B9\uC778 \uC644\uB8CC'}
           </span>
         )
       case 'REJECTED':
         return (
           <span className="rounded-full bg-red-100 px-3 py-1 text-xs font-bold text-red-700">
-            승인 거부
+            {'\uC2B9\uC778 \uAC70\uC808'}
           </span>
         )
       default:
         return null
     }
   }
+
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="bg-gradient-to-r from-teal-600 to-teal-500 p-6 text-white shadow-lg">
         <div className="mx-auto max-w-7xl">
           <h1 className="mb-2 text-3xl font-bold">{'\uAD00\uB9AC\uC790 \uD398\uC774\uC9C0'}</h1>
-          <p className="text-teal-50">{'\uD68C\uC6D0 \uAD00\uB9AC \uBC0F \uAD50\uC721/\uAC8C\uC2DC\uAE00 \uAD00\uB9AC'}</p>
+          <p className="text-teal-50">
+            {'\uD68C\uC6D0 \uAD00\uB9AC \uBC0F \uAD50\uC721/\uAC8C\uC2DC\uAE00 \uAD00\uB9AC'}
+          </p>
         </div>
       </div>
 
@@ -213,7 +200,9 @@ export default function AdminPage() {
               } cursor-pointer`}
               type="button"
             >
-              <Users className="mr-2 inline-block" size={20} /> {'\uD68C\uC6D0 \uAD00\uB9AC'}</button>
+              <Users className="mr-2 inline-block" size={20} />{' '}
+              {'\uD68C\uC6D0 \uAD00\uB9AC'}
+            </button>
             <button
               onClick={() => setActiveTab('education')}
               className={`flex-1 px-6 py-4 font-bold transition-colors ${
@@ -223,7 +212,9 @@ export default function AdminPage() {
               } cursor-pointer`}
               type="button"
             >
-              <Video className="mr-2 inline-block" size={20} /> {'\uAD50\uC721 \uAD00\uB9AC'}</button>
+              <Video className="mr-2 inline-block" size={20} />{' '}
+              {'\uAD50\uC721 \uAD00\uB9AC'}
+            </button>
             <button
               onClick={() => setActiveTab('posts')}
               className={`flex-1 px-6 py-4 font-bold transition-colors ${
@@ -233,14 +224,16 @@ export default function AdminPage() {
               } cursor-pointer`}
               type="button"
             >
-              <FileText className="mr-2 inline-block" size={20} /> {'\uAC8C\uC2DC\uAE00 \uAD00\uB9AC'}</button>
+              <FileText className="mr-2 inline-block" size={20} />{' '}
+              {'\uAC8C\uC2DC\uAE00 \uAD00\uB9AC'}
+            </button>
           </div>
         </div>
 
         {activeTab === 'users' && (
           <div className="space-y-6">
             <div className="rounded-xl bg-white p-6 shadow-md">
-              <div className="flex flex-col gap-4 lg:flex-row">
+              <div className="flex flex-col gap-4 lg:flex-row lg:items-center">
                 <div className="relative flex-1">
                   <Search
                     className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
@@ -250,279 +243,144 @@ export default function AdminPage() {
                     type="text"
                     value={searchTerm}
                     onChange={(event) => setSearchTerm(event.target.value)}
-                    placeholder="이름 또는 이메일로 검색..."
+                    placeholder={'\uC774\uB984 \uB610\uB294 \uC774\uBA54\uC77C\uB85C \uAC80\uC0C9\uD558\uC138\uC694.'}
                     className="w-full rounded-lg border-2 border-gray-200 py-3 pl-10 pr-4 transition-colors focus:border-teal-500 focus:outline-none"
                   />
                 </div>
                 <div className="flex items-center gap-2">
-                  <Filter className="text-gray-400" size={20} />
+                  <Filter className="text-gray-400" size={18} />
                   <select
                     value={statusFilter}
                     onChange={(event) =>
-                      setStatusFilter(
-                        event.target.value as 'all' | UserStatus,
-                      )
+                      setStatusFilter(event.target.value as 'all' | UserStatus)
                     }
-                    className="rounded-lg border-2 border-gray-200 px-4 py-3 transition-colors focus:border-teal-500 focus:outline-none"
+                    className="rounded-lg border-2 border-gray-200 px-3 py-2 text-sm"
                   >
-                    <option value="all">전체 상태</option>
-                    <option value="PENDING">승인 대기</option>
-                    <option value="APPROVED">승인 완료</option>
-                    <option value="REJECTED">승인 거부</option>
+                    <option value="all">{'\uC804\uCCB4'}</option>
+                    <option value="PENDING">{'\uC2B9\uC778 \uB300\uAE30'}</option>
+                    <option value="APPROVED">{'\uC2B9\uC778 \uC644\uB8CC'}</option>
+                    <option value="REJECTED">{'\uC2B9\uC778 \uAC70\uC808'}</option>
                   </select>
                 </div>
               </div>
             </div>
 
-            <div className="overflow-hidden rounded-xl bg-white shadow-md">
-              <div className="overflow-x-auto">
-                <table className="w-full">
-                  <thead className="border-b-2 border-gray-200 bg-gray-50">
+            <div className="overflow-x-auto rounded-xl bg-white shadow-md">
+              <table className="w-full min-w-[920px] table-auto">
+                <thead className="bg-gray-50 text-left text-sm font-bold text-gray-600">
+                  <tr>
+                    <th className="px-4 py-3">{'\uC774\uB984'}</th>
+                    <th className="px-4 py-3">{'\uC774\uBA54\uC77C'}</th>
+                    <th className="px-4 py-3">{'\uC804\uD654\uBC88\uD638'}</th>
+                    <th className="px-4 py-3">{'\uC2E0\uCCAD\uC77C'}</th>
+                    <th className="px-4 py-3">{'\uC0C1\uD0DC'}</th>
+                    <th className="px-4 py-3">{'\uAC15\uC758 \uAD8C\uD55C'}</th>
+                    <th className="px-4 py-3">{'\uC791\uC5C5'}</th>
+                  </tr>
+                </thead>
+                <tbody className="text-sm text-gray-700">
+                  {filteredUsers.length === 0 ? (
                     <tr>
-                      <th className="px-6 py-4 text-left text-sm font-bold text-gray-700">
-                        이름
-                      </th>
-                      <th className="px-6 py-4 text-left text-sm font-bold text-gray-700">
-                        이메일
-                      </th>
-                      <th className="px-6 py-4 text-left text-sm font-bold text-gray-700">
-                        전화번호
-                      </th>
-                      <th className="px-6 py-4 text-left text-sm font-bold text-gray-700">
-                        신청일
-                      </th>
-                      <th className="px-6 py-4 text-left text-sm font-bold text-gray-700">
-                        상태
-                      </th>
-                      <th className="px-6 py-4 text-left text-sm font-bold text-gray-700">
-                        강의 권한
-                      </th>
-                      <th className="px-6 py-4 text-center text-sm font-bold text-gray-700">
-                        작업
-                      </th>
+                      <td className="px-4 py-10 text-center text-gray-500" colSpan={7}>
+                        {'\uB4F1\uB85D\uB41C \uD68C\uC6D0\uC774 \uC5C6\uC2B5\uB2C8\uB2E4.'}
+                      </td>
                     </tr>
-                  </thead>
-                  <tbody className="divide-y divide-gray-200">
-                    {filteredUsers.map((user) => (
-                      <tr
-                        key={user.id}
-                        className="transition-colors hover:bg-gray-50"
-                      >
-                        <td className="px-6 py-4 text-sm font-medium text-gray-800">
-                          {user.name}
-                        </td>
-                        <td className="px-6 py-4 text-sm text-gray-600">
-                          {user.email}
-                        </td>
-                        <td className="px-6 py-4 text-sm text-gray-600">
-                          {user.phone || "-"}
-                        </td>
-                        <td className="px-6 py-4 text-sm text-gray-600">
-                          {user.appliedDate || "-"}
-                        </td>
-                        <td className="px-6 py-4">
-                          {getStatusBadge(user.status)}
-                        </td>
-                        <td className="px-6 py-4">
-                          {editingUserId === user.id ? (
-                            <select
-                              value={editingRole || user.role}
-                              onChange={(event) =>
-                                setEditingRole(event.target.value as CourseLevel)
-                              }
-                              className="w-full rounded border border-gray-200 px-2 py-1 text-sm"
-                            >
-                              {courseOptions.map((course) => (
-                                <option key={course} value={course}>
-                                  {courseLabels[course]}
-                                </option>
-                              ))}
-                            </select>
+                  ) : (
+                    filteredUsers.map((user) => (
+                      <tr key={user.id} className="border-t">
+                        <td className="px-4 py-3 font-semibold">{user.name}</td>
+                        <td className="px-4 py-3">{user.email}</td>
+                        <td className="px-4 py-3">{user.phone || '-'}</td>
+                        <td className="px-4 py-3">{user.appliedDate || '-'}</td>
+                        <td className="px-4 py-3">{getStatusBadge(user.status)}</td>
+                        <td className="px-4 py-3">
+                          {editingUserId == user.id ? (
+                            <div className="flex items-center gap-2">
+                              <select
+                                value={editingRole || user.role}
+                                onChange={(event) =>
+                                  setEditingRole(event.target.value as CourseLevel)
+                                }
+                                className="rounded-lg border-2 border-gray-200 px-2 py-1 text-sm"
+                              >
+                                {courseOptions.map((role) => (
+                                  <option key={role} value={role}>
+                                    {courseLabels[role]}
+                                  </option>
+                                ))}
+                              </select>
+                              <button
+                                type="button"
+                                onClick={() => handleSaveRole(user.id)}
+                                className="rounded-lg bg-teal-600 px-3 py-1 text-xs font-bold text-white hover:cursor-pointer"
+                              >
+                                <Save size={14} className="inline-block" />
+                              </button>
+                            </div>
                           ) : (
-                            <span className="rounded bg-teal-100 px-2 py-1 text-xs text-teal-700">
-                              {courseLabels[user.role]}
-                            </span>
+                            <div className="flex items-center gap-2">
+                              <span className="text-sm font-semibold text-gray-700">
+                                {courseLabels[user.role]}
+                              </span>
+                              <button
+                                type="button"
+                                onClick={() => handleEditRole(user.id, user.role)}
+                                className="rounded-lg bg-gray-100 px-2 py-1 text-xs font-bold text-gray-600 hover:cursor-pointer"
+                              >
+                                <Edit2 size={14} className="inline-block" />
+                              </button>
+                            </div>
                           )}
                         </td>
-                        <td className="px-6 py-4">
-                          <div className="flex items-center justify-center gap-2">
-                            {editingUserId === user.id ? (
+                        <td className="px-4 py-3">
+                          <div className="flex flex-wrap gap-2">
+                            {user.status == 'PENDING' && (
                               <>
                                 <button
-                                  onClick={() =>
-                                    setConfirmModal({
-                                      isOpen: true,
-                                      type: 'save',
-                                      userId: user.id,
-                                      userName: user.name,
-                                    })
-                                  }
-                                  className="rounded-lg bg-teal-600 p-2 text-white transition-colors hover:bg-teal-700"
-                                  title="저장"
                                   type="button"
+                                  onClick={() => handleApprove(user.id)}
+                                  className="rounded-lg bg-emerald-500 px-3 py-1 text-xs font-bold text-white hover:cursor-pointer"
                                 >
-                                  <Save size={16} />
+                                  <CheckCircle size={14} className="mr-1 inline-block" />
+                                  {'\uC2B9\uC778'}
                                 </button>
                                 <button
-                                  onClick={() => { setEditingUserId(null); setEditingRole(null) }}
-                                  className="rounded-lg bg-gray-400 p-2 text-white transition-colors hover:bg-gray-500"
-                                  title="취소"
                                   type="button"
+                                  onClick={() => handleReject(user.id)}
+                                  className="rounded-lg bg-orange-500 px-3 py-1 text-xs font-bold text-white hover:cursor-pointer"
                                 >
-                                  <XCircle size={16} />
-                                </button>
-                              </>
-                            ) : (
-                              <>
-                                <button
-                                  onClick={() =>
-                                    handleEditRole(user.id, user.role)
-                                  }
-                                  className="rounded-lg bg-orange-500 p-2 text-white transition-colors hover:bg-orange-600"
-                                  title="권한 편집"
-                                  type="button"
-                                >
-                                  <Edit2 size={16} />
-                                </button>
-                                {user.status === 'PENDING' && (
-                                  <>
-                                    <button
-                                      onClick={() =>
-                                        setConfirmModal({
-                                          isOpen: true,
-                                          type: 'approve',
-                                          userId: user.id,
-                                          userName: user.name,
-                                        })
-                                      }
-                                      className="rounded-lg bg-green-500 p-2 text-white transition-colors hover:bg-green-600"
-                                      title="승인"
-                                      type="button"
-                                    >
-                                      <CheckCircle size={16} />
-                                    </button>
-                                    <button
-                                      onClick={() =>
-                                        setConfirmModal({
-                                          isOpen: true,
-                                          type: 'reject',
-                                          userId: user.id,
-                                          userName: user.name,
-                                        })
-                                      }
-                                      className="rounded-lg bg-red-500 p-2 text-white transition-colors hover:bg-red-600"
-                                      title="거부"
-                                      type="button"
-                                    >
-                                      <XCircle size={16} />
-                                    </button>
-                                  </>
-                                )}
-                                <button
-                                  onClick={() => {
-                                    if (confirm('정말 삭제하시겠습니까?')) {
-                                      void handleDeleteUser(user.id)
-                                    }
-                                  }}
-                                  className="rounded-lg bg-gray-500 p-2 text-white transition-colors hover:bg-gray-600"
-                                  title="삭제"
-                                  type="button"
-                                >
-                                  <Trash2 size={16} />
+                                  <XCircle size={14} className="mr-1 inline-block" />
+                                  {'\uAC70\uC808'}
                                 </button>
                               </>
                             )}
+                            <button
+                              type="button"
+                              onClick={() => {
+                                if (confirm('\uC0AD\uC81C\uD558\uC2DC\uACA0\uC2B5\uB2C8\uAE4C?')) {
+                                  void handleDeleteUser(user.id)
+                                }
+                              }}
+                              className="rounded-lg bg-gray-200 px-3 py-1 text-xs font-bold text-gray-700 hover:cursor-pointer"
+                            >
+                              <Trash2 size={14} className="mr-1 inline-block" />
+                              {'\uC0AD\uC81C'}
+                            </button>
                           </div>
                         </td>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-              {filteredUsers.length === 0 && (
-                <div className="py-12 text-center text-gray-500">
-                  검색 결과가 없습니다.
-                </div>
-              )}
+                    ))
+                  )}
+                </tbody>
+              </table>
             </div>
           </div>
         )}
 
         {activeTab === 'education' && <EducationManagement />}
+
         {activeTab === 'posts' && <PostManagement />}
       </div>
-
-      <AnimatePresence>
-        {confirmModal.isOpen && (
-          <motion.div
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
-            onClick={() => setConfirmModal(emptyConfirmModal)}
-          >
-            <motion.div
-              className="w-96 rounded-lg bg-white p-6 shadow-lg"
-              initial={{ scale: 0.9, opacity: 0, y: 20 }}
-              animate={{ scale: 1, opacity: 1, y: 0 }}
-              exit={{ scale: 0.9, opacity: 0, y: 20 }}
-              transition={{ duration: 0.2 }}
-              onClick={(event) => event.stopPropagation()}
-            >
-              <h3 className="mb-4 text-xl font-bold text-gray-800">
-                {confirmModal.type === 'approve'
-                  ? '승인 확인'
-                  : confirmModal.type === 'reject'
-                    ? '거부 확인'
-                    : '저장 확인'}
-              </h3>
-              <p className="mb-6 text-gray-600">
-                {confirmModal.type === 'approve'
-                  ? '회원을 승인하시겠습니까?'
-                  : confirmModal.type === 'reject'
-                    ? '회원을 거부하시겠습니까?'
-                    : '변경 사항을 저장하시겠습니까?'}
-                <br />
-                <span className="font-bold">{confirmModal.userName}</span>님의
-                상태를 변경합니다.
-              </p>
-              <div className="flex justify-end gap-2">
-                <motion.button
-                  onClick={() => setConfirmModal(emptyConfirmModal)}
-                  className="rounded-lg bg-gray-400 px-4 py-2 text-white transition-colors hover:bg-gray-500"
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  type="button"
-                >
-                  취소
-                </motion.button>
-                <motion.button
-                  onClick={async () => {
-                    if (confirmModal.type === 'approve' && confirmModal.userId) {
-                      await handleApprove(confirmModal.userId)
-                    } else if (
-                      confirmModal.type === 'reject' &&
-                      confirmModal.userId
-                    ) {
-                      await handleReject(confirmModal.userId)
-                    } else if (confirmModal.type === 'save' && confirmModal.userId) {
-                      await handleSaveRole(confirmModal.userId)
-                    }
-                    setConfirmModal(emptyConfirmModal)
-                  }}
-                  className="rounded-lg bg-teal-600 px-4 py-2 text-white transition-colors hover:bg-teal-700"
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  type="button"
-                >
-                  확인
-                </motion.button>
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </div>
   )
 }
@@ -543,45 +401,38 @@ function EducationManagement() {
   const [description, setDescription] = useState('')
   const [requiredRole, setRequiredRole] = useState<CourseLevel>('BEGINNER')
   const [file, setFile] = useState<File | null>(null)
-  const [isPublished, setIsPublished] = useState(true)
   const [isUploading, setIsUploading] = useState(false)
   const [durationSeconds, setDurationSeconds] = useState<number | null>(null)
+  const [videoFilter, setVideoFilter] = useState<CourseLevel | 'ALL'>('ALL')
   const fileInputRef = useRef<HTMLInputElement | null>(null)
   const [editingVideoId, setEditingVideoId] = useState<string | null>(null)
   const [editingTitle, setEditingTitle] = useState('')
   const [editingDescription, setEditingDescription] = useState('')
   const [editingRole, setEditingRole] = useState<CourseLevel>('BEGINNER')
-  const [editingPublished, setEditingPublished] = useState(true)
   const [editingDurationSeconds, setEditingDurationSeconds] = useState<number | null>(null)
   const [isSavingEdit, setIsSavingEdit] = useState(false)
-  const [videoFilter, setVideoFilter] = useState<CourseLevel | 'ALL'>('ALL')
-  const roleLabels: Record<CourseLevel, string> = {
-    BEGINNER: '\ucd08\uae09',
-    INTERMEDIATE: '\uc911\uae09',
-    ADVANCED: '\uace0\uae09',
-    INSTRUCTOR: '\uc77c\ubc18\uac15\uc0ac\uacfc\uc815',
-  }
 
-  const loadVideos = () => {
-    fetchAdminVideos()
-      .then(({ videos }) => {
-        setVideos(
-          videos.map((video) => ({
-            id: video.id,
-            title: video.title,
-            description: video.description || '',
-            requiredRole: video.requiredRole as CourseLevel,
-            storagePath: video.storagePath,
-            isPublished: video.isPublished,
-            durationSeconds: video.durationSeconds,
-          })),
-        )
-      })
-      .catch(() => setVideos([]))
+  const loadVideos = async () => {
+    try {
+      const { videos: videoList } = await fetchAdminVideos()
+      setVideos(
+        videoList.map((video) => ({
+          id: video.id,
+          title: video.title,
+          description: video.description || '',
+          requiredRole: video.requiredRole as CourseLevel,
+          storagePath: video.storagePath,
+          isPublished: video.isPublished,
+          durationSeconds: video.durationSeconds,
+        })),
+      )
+    } catch {
+      setVideos([])
+    }
   }
 
   useEffect(() => {
-    loadVideos()
+    void loadVideos()
   }, [])
 
   const extractDuration = (videoFile: File) => {
@@ -602,6 +453,15 @@ function EducationManagement() {
     media.src = url
   }
 
+  const handleFileSelect = (selected: File | null) => {
+    setFile(selected)
+    if (selected) {
+      extractDuration(selected)
+    } else {
+      setDurationSeconds(null)
+    }
+  }
+
   const handleUpload = async () => {
     if (!file) {
       return
@@ -611,10 +471,13 @@ function EducationManagement() {
     try {
       const formData = new FormData()
       formData.append('file', file)
-      formData.append('title', title)
-      formData.append('description', description)
+      formData.append('title', title.trim())
+      formData.append('description', description.trim())
       formData.append('requiredRole', requiredRole)
-      formData.append('isPublished', String(isPublished))
+      formData.append('isPublished', 'true')
+      if (typeof durationSeconds === 'number') {
+        formData.append('durationSeconds', String(durationSeconds))
+      }
 
       await uploadVideo(formData)
 
@@ -625,12 +488,16 @@ function EducationManagement() {
       if (fileInputRef.current) {
         fileInputRef.current.value = ''
       }
-      setIsPublished(true)
       setDurationSeconds(null)
-      loadVideos()
-      alert('\uc601\uc0c1 \ub4f1\ub85d\uc774 \uc644\ub8cc\ub418\uc5c8\uc2b5\ub2c8\ub2e4.')
+      setVideoFilter('ALL')
+      await loadVideos()
+      alert('영상이 등록되었습니다.')
     } catch (error) {
-      alert(error instanceof Error ? error.message : '?????????? ???????????????.')
+      alert(
+        error instanceof Error
+          ? error.message
+          : '영상 등록에 실패했습니다.',
+      )
     } finally {
       setIsUploading(false)
     }
@@ -646,14 +513,12 @@ function EducationManagement() {
     title: string
     description?: string
     requiredRole: CourseLevel
-    isPublished: boolean
     durationSeconds?: number
   }) => {
     setEditingVideoId(video.id)
     setEditingTitle(video.title)
     setEditingDescription(video.description || '')
     setEditingRole(video.requiredRole)
-    setEditingPublished(video.isPublished)
     setEditingDurationSeconds(
       typeof video.durationSeconds === 'number' ? video.durationSeconds : null,
     )
@@ -667,37 +532,43 @@ function EducationManagement() {
     setIsSavingEdit(true)
     try {
       await updateVideo(editingVideoId, {
-        title: editingTitle,
-        description: editingDescription,
+        title: editingTitle.trim(),
+        description: editingDescription.trim() || undefined,
         requiredRole: editingRole,
-        isPublished: editingPublished,
-        durationSeconds: editingDurationSeconds ?? undefined,
       })
       await loadVideos()
       setEditingVideoId(null)
     } catch (error) {
-      alert(error instanceof Error ? error.message : '강의 수정에 실패했습니다.')
+      alert(
+        error instanceof Error
+          ? error.message
+          : '영상 수정에 실패했습니다.',
+      )
     } finally {
       setIsSavingEdit(false)
     }
   }
 
+  const filteredVideos = videos.filter(
+    (video) => videoFilter === 'ALL' || video.requiredRole === videoFilter,
+  )
+
   return (
     <div className="space-y-6">
       <div className="rounded-xl bg-white p-6 shadow-md">
-        <h3 className="mb-4 text-xl font-bold text-gray-800">영상 등록</h3>
+        <h3 className="mb-4 text-xl font-bold text-gray-800">{'\uC601\uC0C1 \uB4F1\uB85D'}</h3>
         <div className="grid gap-4 md:grid-cols-2">
           <div>
-            <label className="mb-2 block text-sm font-bold text-gray-700">제목</label>
+            <label className="mb-2 block text-sm font-bold text-gray-700">{'\uC81C\uBAA9'}</label>
             <input
               value={title}
               onChange={(event) => setTitle(event.target.value)}
               className="w-full rounded-lg border-2 border-gray-200 px-4 py-2"
-              placeholder="영상 제목을 입력하세요..."
+              placeholder={'\uC601\uC0C1 \uC81C\uBAA9\uC744 \uC785\uB825\uD558\uC138\uC694.'}
             />
           </div>
           <div>
-            <label className="mb-2 block text-sm font-bold text-gray-700">권한</label>
+            <label className="mb-2 block text-sm font-bold text-gray-700">{'\uAD8C\uD55C'}</label>
             <select
               value={requiredRole}
               onChange={(event) => setRequiredRole(event.target.value as CourseLevel)}
@@ -705,13 +576,13 @@ function EducationManagement() {
             >
               {courseOptions.map((role) => (
                 <option key={role} value={role}>
-                  {roleLabels[role]}
+                  {courseLabels[role]}
                 </option>
               ))}
             </select>
           </div>
           <div className="md:col-span-2">
-            <label className="mb-2 block text-sm font-bold text-gray-700">설명</label>
+            <label className="mb-2 block text-sm font-bold text-gray-700">{'\uC124\uBA85'}</label>
             <textarea
               value={description}
               onChange={(event) => setDescription(event.target.value)}
@@ -719,65 +590,55 @@ function EducationManagement() {
               rows={3}
             />
           </div>
-                    <div className="md:col-span-2">
-            <label className="mb-2 block text-sm font-bold text-gray-700">{'\uc601\uc0c1 \ud30c\uc77c'}</label>
-            <div className="flex flex-wrap items-center gap-3">
-              <input
-                ref={fileInputRef}
-                type="file"
-                accept="video/*"
-                className="hidden"
-                onChange={(event) => {
-                  const selected = event.target.files?.[0] || null
-                  setFile(selected)
-                  if (selected) {
-                    extractDuration(selected)
-                  } else {
-                    setDurationSeconds(null)
-                  }
-                }}
-              />
+          <div className="md:col-span-2">
+            <label className="mb-2 block text-sm font-bold text-gray-700">{'\uC601\uC0C1 \uD30C\uC77C'}</label>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="video/*"
+              className="hidden"
+              onChange={(event) => {
+                const selected = event.target.files?.[0] || null
+                handleFileSelect(selected)
+              }}
+            />
+            <div
+              className="flex flex-col gap-3 rounded-lg border-2 border-dashed border-teal-200 bg-teal-50/50 p-4 text-center text-sm text-gray-600 transition-colors hover:border-teal-400"
+              onDragOver={(event) => event.preventDefault()}
+              onDrop={(event) => {
+                event.preventDefault()
+                const dropped = event.dataTransfer.files?.[0] || null
+                if (dropped) {
+                  handleFileSelect(dropped)
+                }
+              }}
+            >
+              <p className="font-semibold text-teal-700">
+                {'\uD30C\uC77C\uC744 \uB4DC\uB798\uADF8\uD574\uC11C \uC62C\uB9AC\uAC70\uB098 \uC120\uD0DD\uD574\uC8FC\uC138\uC694.'}
+              </p>
               <button
                 type="button"
                 onClick={() => fileInputRef.current?.click()}
-                className="rounded-lg border-2 border-teal-600 px-4 py-2 text-sm font-semibold text-teal-700 transition-colors hover:bg-teal-50 hover:cursor-pointer"
+                className="mx-auto rounded-lg border-2 border-teal-600 px-4 py-2 text-sm font-semibold text-teal-700 transition-colors hover:bg-teal-50 hover:cursor-pointer"
               >
-                {'\ud30c\uc77c \uc120\ud0dd'}
+                {'\uD30C\uC77C \uC120\uD0DD'}
               </button>
-              <span className="text-sm text-gray-600">
-                {file ? file.name : '\ud30c\uc77c\uc744 \uc120\ud0dd\ud574\uc8fc\uc138\uc694.'}
+              <span className="text-xs text-gray-500">
+                {file ? file.name : '\uD30C\uC77C\uC744 \uC120\uD0DD\uD574\uC8FC\uC138\uC694.'}
               </span>
             </div>
           </div>
-
           <div>
-            <label className="mb-2 block text-sm font-bold text-gray-700">
-              재생시간(초)
-            </label>
+            <label className="mb-2 block text-sm font-bold text-gray-700">{'\uC7AC\uC0DD\uC2DC\uAC04(\uCD08)'}</label>
             <input
               type="number"
               min="0"
               value={durationSeconds ?? ''}
-              onChange={(event) => {
-                const value = Number(event.target.value)
-                if (Number.isFinite(value) && value >= 0) {
-                  setDurationSeconds(Math.floor(value))
-                } else {
-                  setDurationSeconds(null)
-                }
-              }}
-              className="w-full rounded-lg border-2 border-gray-200 px-4 py-2"
-              placeholder="자동으로 입력됩니다."
+              readOnly
+              disabled
+              className="w-full cursor-not-allowed rounded-lg border-2 border-gray-200 bg-gray-100 px-4 py-2 text-gray-500"
+              placeholder={'\uC790\uB3D9\uC73C\uB85C \uC124\uC815\uB429\uB2C8\uB2E4.'}
             />
-          </div>
-          <div className="flex items-center gap-2">
-            <input
-              type="checkbox"
-              checked={isPublished}
-              onChange={(event) => setIsPublished(event.target.checked)}
-              className="h-4 w-4"
-            />
-            <span className="text-sm text-gray-700">즉시 공개</span>
           </div>
         </div>
         <button
@@ -786,12 +647,12 @@ function EducationManagement() {
           disabled={!title || !file || isUploading}
           className="mt-4 rounded-lg bg-teal-600 px-4 py-2 font-bold text-white transition-colors hover:bg-teal-700 disabled:opacity-50"
         >
-          {isUploading ? '업로드 중...' : '영상 등록'}
+          {isUploading ? '\uC5C5\uB85C\uB4DC \uC911...' : '\uC601\uC0C1 \uB4F1\uB85D'}
         </button>
       </div>
 
       <div className="rounded-xl bg-white p-6 shadow-md">
-        <h3 className="mb-4 text-xl font-bold text-gray-800">등록된 영상</h3>
+        <h3 className="mb-4 text-xl font-bold text-gray-800">{'\uB4F1\uB85D\uB41C \uC601\uC0C1'}</h3>
         <div className="mb-4 flex flex-wrap gap-2">
           {(['ALL', ...courseOptions] as Array<CourseLevel | 'ALL'>).map((role) => (
             <button
@@ -802,37 +663,24 @@ function EducationManagement() {
                 videoFilter === role
                   ? 'bg-teal-600 text-white'
                   : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-              } cursor-pointer`}
+              } hover:cursor-pointer`}
             >
-              {role === 'ALL' ? '전체' : roleLabels[role]}
+              {role === 'ALL' ? '\uC804\uCCB4' : courseLabels[role]}
             </button>
           ))}
         </div>
-        {(() => {
-          const filtered = videos.filter(
-            (video) => videoFilter === 'ALL' || video.requiredRole === videoFilter,
-          )
-
-          if (filtered.length === 0) {
-            return (
-              <p className="text-sm text-gray-500">
-                등록된 영상이 없습니다.
-              </p>
-            )
-          }
-
-          return (
-            <div className="space-y-3">
-              {filtered.map((video) => (
+        {filteredVideos.length === 0 ? (
+          <p className="text-sm text-gray-500">{'\uB4F1\uB85D\uB41C \uC601\uC0C1\uC774 \uC5C6\uC2B5\uB2C8\uB2E4.'}</p>
+        ) : (
+          <div className="space-y-3">
+            {filteredVideos.map((video) => (
               <div
                 key={video.id}
                 className="flex flex-col gap-3 rounded-lg border border-gray-200 p-4 md:flex-row md:items-center md:justify-between"
               >
                 <div>
                   <p className="font-bold text-gray-800">{video.title}</p>
-                  <p className="text-sm text-gray-500">
-                    {roleLabels[video.requiredRole]}
-                  </p>
+                  <p className="text-sm text-gray-500">{courseLabels[video.requiredRole]}</p>
                 </div>
                 <div className="flex gap-2">
                   <button
@@ -840,25 +688,24 @@ function EducationManagement() {
                     onClick={() => handleEditVideo(video)}
                     className="rounded-lg bg-orange-500 px-3 py-1.5 text-sm font-bold text-white hover:cursor-pointer"
                   >
-                    편집
+                    {'\uD3B8\uC9D1'}
                   </button>
                   <button
                     type="button"
                     onClick={() => {
-                      if (confirm('삭제하시겠습니까?')) {
+                      if (confirm('\uC0AD\uC81C\uD558\uC2DC\uACA0\uC2B5\uB2C8\uAE4C?')) {
                         void handleDeleteVideo(video.id)
                       }
                     }}
                     className="rounded-lg bg-red-500 px-3 py-1.5 text-sm font-bold text-white hover:cursor-pointer"
                   >
-                    삭제
+                    {'\uC0AD\uC81C'}
                   </button>
                 </div>
               </div>
-              ))}
-            </div>
-          )
-        })()}
+            ))}
+          </div>
+        )}
       </div>
 
       {editingVideoId && (
@@ -872,21 +719,19 @@ function EducationManagement() {
         >
           <div className="w-full max-w-lg rounded-xl bg-white p-6 shadow-xl">
             <div className="mb-4 flex items-center justify-between">
-              <h3 className="text-lg font-bold text-gray-800">강의 정보 수정</h3>
+              <h3 className="text-lg font-bold text-gray-800">{'\uAC15\uC758 \uC815\uBCF4 \uC218\uC815'}</h3>
               <button
                 type="button"
                 onClick={() => setEditingVideoId(null)}
                 className="rounded-full p-2 text-gray-500 transition-colors hover:bg-gray-100"
-                aria-label="닫기"
+                aria-label={'\uB2EB\uAE30'}
               >
                 <XCircle size={18} />
               </button>
             </div>
             <div className="space-y-4">
               <div>
-                <label className="mb-2 block text-sm font-bold text-gray-700">
-                  제목
-                </label>
+                <label className="mb-2 block text-sm font-bold text-gray-700">{'\uC81C\uBAA9'}</label>
                 <input
                   value={editingTitle}
                   onChange={(event) => setEditingTitle(event.target.value)}
@@ -894,27 +739,21 @@ function EducationManagement() {
                 />
               </div>
               <div>
-                <label className="mb-2 block text-sm font-bold text-gray-700">
-                  권한
-                </label>
+                <label className="mb-2 block text-sm font-bold text-gray-700">{'\uAD8C\uD55C'}</label>
                 <select
                   value={editingRole}
-                  onChange={(event) =>
-                    setEditingRole(event.target.value as CourseLevel)
-                  }
+                  onChange={(event) => setEditingRole(event.target.value as CourseLevel)}
                   className="w-full rounded-lg border-2 border-gray-200 px-4 py-2"
                 >
                   {courseOptions.map((role) => (
                     <option key={role} value={role}>
-                      {roleLabels[role]}
+                      {courseLabels[role]}
                     </option>
                   ))}
                 </select>
               </div>
               <div>
-                <label className="mb-2 block text-sm font-bold text-gray-700">
-                  설명
-                </label>
+                <label className="mb-2 block text-sm font-bold text-gray-700">{'\uC124\uBA85'}</label>
                 <textarea
                   value={editingDescription}
                   onChange={(event) => setEditingDescription(event.target.value)}
@@ -923,42 +762,25 @@ function EducationManagement() {
                 />
               </div>
               <div>
-                <label className="mb-2 block text-sm font-bold text-gray-700">
-                  재생시간(초)
-                </label>
+                <label className="mb-2 block text-sm font-bold text-gray-700">{'\uC7AC\uC0DD\uC2DC\uAC04(\uCD08)'}</label>
                 <input
                   type="number"
                   min="0"
                   value={editingDurationSeconds ?? ''}
-                  onChange={(event) => {
-                    const value = Number(event.target.value)
-                    if (Number.isFinite(value) && value >= 0) {
-                      setEditingDurationSeconds(Math.floor(value))
-                    } else {
-                      setEditingDurationSeconds(null)
-                    }
-                  }}
-                  className="w-full rounded-lg border-2 border-gray-200 px-4 py-2"
-                  placeholder="비워두면 변경하지 않습니다."
+                  readOnly
+                  disabled
+                  className="w-full cursor-not-allowed rounded-lg border-2 border-gray-200 bg-gray-100 px-4 py-2 text-gray-500"
+                  placeholder={'\uC790\uB3D9\uC73C\uB85C \uC124\uC815\uB429\uB2C8\uB2E4.'}
                 />
-              </div>
-              <div className="flex items-center gap-2">
-                <input
-                  type="checkbox"
-                  checked={editingPublished}
-                  onChange={(event) => setEditingPublished(event.target.checked)}
-                  className="h-4 w-4"
-                />
-                <span className="text-sm text-gray-700">즉시 공개</span>
               </div>
             </div>
             <div className="mt-6 flex justify-end gap-2">
               <button
                 type="button"
                 onClick={() => setEditingVideoId(null)}
-                className="rounded-lg bg-gray-200 px-4 py-2 text-sm font-bold text-gray-700"
+                className="rounded-lg bg-gray-200 px-4 py-2 text-sm font-bold text-gray-700 hover:cursor-pointer"
               >
-                취소
+                {'\uCDE8\uC18C'}
               </button>
               <button
                 type="button"
@@ -966,9 +788,9 @@ function EducationManagement() {
                   void handleUpdateVideo()
                 }}
                 disabled={isSavingEdit || !editingTitle}
-                className="rounded-lg bg-teal-600 px-4 py-2 text-sm font-bold text-white disabled:opacity-50"
+                className="rounded-lg bg-teal-600 px-4 py-2 text-sm font-bold text-white disabled:opacity-50 hover:cursor-pointer"
               >
-                {isSavingEdit ? '저장 중...' : '저장'}
+                {isSavingEdit ? '\uC800\uC7A5 \uC911...' : '\uC800\uC7A5'}
               </button>
             </div>
           </div>
