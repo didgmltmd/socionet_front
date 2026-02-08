@@ -991,8 +991,85 @@ function PostManagement() {
     mode: 'create' | 'edit'
   } | null>(null)
   const [linkUrl, setLinkUrl] = useState('')
+  const [editingPostId, setEditingPostId] = useState<string | null>(null)
+  const [editingTitle, setEditingTitle] = useState('')
+  const [editingCategory, setEditingCategory] = useState<PostCategory>('NOTICE')
+  const [editingPinned, setEditingPinned] = useState(false)
+  const [editingContent, setEditingContent] = useState('')
+  const editingEditorRef = useRef<HTMLDivElement | null>(null)
+  const editingImageInputRef = useRef<HTMLInputElement | null>(null)
+  const editingHtmlRef = useRef('')
+  const [tableRows, setTableRows] = useState('3')
+  const [tableCols, setTableCols] = useState('3')
 
-    const formatPlainTextToHtml = (raw: string) => {
+  const loadPosts = () => {
+    setIsLoading(true)
+    fetchAdminPosts()
+      .then(({ posts: postList }) => {
+        setPosts(
+          postList.map((post) => ({
+            id: post.id,
+            title: post.title,
+            content: post.content,
+            category: post.category as PostCategory,
+            isPublished: post.isPublished,
+            isPinned: Boolean(post.isPinned),
+            views: post.views ?? 0,
+            publishedAt: post.publishedAt,
+          })),
+        )
+      })
+      .catch(() => {
+        setPosts([])
+      })
+      .finally(() => setIsLoading(false))
+  }
+
+  useEffect(() => {
+    loadPosts()
+  }, [])
+
+  const handleCreate = async () => {
+    const html = contentEditorRef.current?.innerHTML?.trim() || contentHtmlRef.current.trim()
+    const formatted = html || undefined
+    await createPost({
+      title: title.trim(),
+      content: formatted,
+      category,
+      isPinned,
+      isPublished: true,
+    })
+    setTitle('')
+    setCategory('NOTICE')
+    setIsPinned(false)
+    contentHtmlRef.current = ''
+    if (contentEditorRef.current) {
+      contentEditorRef.current.innerHTML = ''
+    }
+    loadPosts()
+  }
+
+  const handleEdit = (post: {
+    id: string
+    title: string
+    content?: string
+    category: PostCategory
+    isPinned: boolean
+  }) => {
+    setEditingPostId(post.id)
+    setEditingTitle(post.title)
+    setEditingCategory(post.category)
+    setEditingPinned(Boolean(post.isPinned))
+    setEditingContent(post.content || '')
+    editingHtmlRef.current = post.content || ''
+  }
+
+  const handleDelete = async (postId: string) => {
+    await deletePost(postId)
+    loadPosts()
+  }
+
+  const formatPlainTextToHtml = (raw: string) => {
     const lines = raw
       .split(/\r?\n/)
       .map((line) => line.trim())
@@ -1130,7 +1207,21 @@ function PostManagement() {
 
     return blocks.join('')
   }
-const applyCommand = (command: string, value?: string) => {
+
+  const applyAutoFormat = (mode: 'create' | 'edit') => {
+    const editorRef = mode === 'create' ? contentEditorRef : editingEditorRef
+    const htmlRef = mode === 'create' ? contentHtmlRef : editingHtmlRef
+    const target = editorRef.current
+    if (!target) {
+      return
+    }
+    const rawText = target.innerText || ''
+    const formatted = formatPlainTextToHtml(rawText)
+    target.innerHTML = formatted || rawText
+    htmlRef.current = target.innerHTML
+  }
+
+  const applyCommand = (command: string, value?: string) => {
     const target = contentEditorRef.current
     if (!target) {
       return
