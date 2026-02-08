@@ -578,9 +578,8 @@ function EducationManagement() {
             try {
               const { job } = await fetchEncodeStatus(jobId)
               if (typeof job.progress === 'number') {
-                setEncodingProgress((prev) =>
-                  Math.max(prev ?? 0, Math.max(0, Math.min(100, job.progress))),
-                )
+                const nextProgress = Math.max(0, Math.min(100, Number(job.progress)))
+                setEncodingProgress((prev) => Math.max(prev, nextProgress))
               }
               if (job.message) {
                 setUploadMessage(job.message)
