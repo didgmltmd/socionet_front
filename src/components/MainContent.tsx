@@ -1,5 +1,5 @@
 ﻿import { AnimatePresence, motion } from 'motion/react'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Network } from 'lucide-react'
 import mainImage1 from '../assets/main_1.png'
@@ -20,6 +20,9 @@ interface MainContentProps {
   currentSubPage: string
 }
 
+let cachedNotices: Array<{ id: string; title: string; publishedAt: string }> | null = null
+let cachedActivities: Array<{ id: string; title: string; publishedAt: string }> | null = null
+
 
 function HomePage() {
   const navigate = useNavigate()
@@ -38,9 +41,17 @@ function HomePage() {
   })
 
   useEffect(() => {
+    if (cachedNotices && cachedActivities) {
+      setNotices(cachedNotices)
+      setActivities(cachedActivities)
+      return
+    }
+
     setIsLoadingPosts(true)
     Promise.all([fetchPosts('NOTICE'), fetchPosts('ACTIVITY')])
       .then(([noticeResult, activityResult]) => {
+        cachedNotices = noticeResult.posts
+        cachedActivities = activityResult.posts
         setNotices(noticeResult.posts)
         setActivities(activityResult.posts)
       })
@@ -50,6 +61,8 @@ function HomePage() {
       })
       .finally(() => setIsLoadingPosts(false))
   }, [])
+
+  const latestNotices = useMemo(() => notices.slice(0, 5), [notices])
 
   const formatDate = (value: string) => value.slice(0, 10)
 
@@ -159,15 +172,15 @@ function HomePage() {
             <div className="border-b border-teal-100 bg-gradient-to-r from-teal-600 to-teal-500 px-5 py-4 text-center text-base font-semibold text-white">
               개인의 사회적 특성 분석
             </div>
-            <div className="flex flex-1 items-center bg-white p-2">
+            <div className="flex flex-1 items-center justify-center overflow-hidden bg-white p-3">
               <motion.img
                 src={mainImage1}
                 alt="개인의 사회적 특성 분석"
-                className="h-80 w-full object-contain scale-[1.35] md:scale-[1.45]"
-        whileHover={{ scale: 1.03 }}
-        transition={{ duration: 0.2 }}
-      />
-    </div>
+                className="h-72 w-full origin-center object-contain scale-[1.1] sm:scale-[1.2] md:scale-[1.3] lg:scale-[1.4]"
+                whileHover={{ scale: 1.03 }}
+                transition={{ duration: 0.2 }}
+              />
+            </div>
   </button>
 
           <div className="flex h-full flex-col overflow-hidden rounded-2xl border border-teal-100 bg-white shadow-md">
@@ -183,15 +196,15 @@ function HomePage() {
                 <div className="border-b border-teal-100 bg-teal-50 px-4 py-2.5 text-center text-sm font-semibold text-teal-700">
                   자기분석
                 </div>
-                <div className="flex items-center bg-white p-2">
-                  <motion.img
-                    src={mainImage2}
-                    alt="자기분석"
-                    className="h-60 w-full object-contain scale-[1.3] md:scale-[1.4]"
-            whileHover={{ scale: 1.03 }}
-            transition={{ duration: 0.2 }}
-          />
-        </div>
+              <div className="flex items-center justify-center overflow-hidden bg-white p-3">
+                <motion.img
+                  src={mainImage2}
+                  alt="자기분석"
+                  className="h-56 w-full origin-center object-contain scale-[1.1] sm:scale-[1.2] md:scale-[1.3] lg:scale-[1.4]"
+                  whileHover={{ scale: 1.03 }}
+                  transition={{ duration: 0.2 }}
+                />
+              </div>
       </button>
       <button
         type="button"
@@ -201,15 +214,15 @@ function HomePage() {
                 <div className="border-b border-teal-100 bg-teal-50 px-4 py-2.5 text-center text-sm font-semibold text-teal-700">
                   자기망
                 </div>
-                <div className="flex items-center bg-white p-2">
-                  <motion.img
-                    src={mainImage3}
-                    alt="자기망"
-                    className="h-60 w-full object-contain scale-[1.3] md:scale-[1.4]"
-            whileHover={{ scale: 1.03 }}
-            transition={{ duration: 0.2 }}
-          />
-        </div>
+              <div className="flex items-center justify-center overflow-hidden bg-white p-3">
+                <motion.img
+                  src={mainImage3}
+                  alt="자기망"
+                  className="h-56 w-full origin-center object-contain scale-[1.1] sm:scale-[1.2] md:scale-[1.3] lg:scale-[1.4]"
+                  whileHover={{ scale: 1.03 }}
+                  transition={{ duration: 0.2 }}
+                />
+              </div>
       </button>
     </div>
   </div>
@@ -224,15 +237,15 @@ function HomePage() {
             <div className="border-b border-teal-100 bg-gradient-to-r from-teal-600 to-teal-500 px-5 py-4 text-center text-base font-semibold text-white">
               소집단 관계망 분석
             </div>
-            <div className="flex flex-1 items-center bg-white p-2">
+            <div className="flex flex-1 items-center justify-center overflow-hidden bg-white p-3">
               <motion.img
                 src={mainImage4}
                 alt="소집단 관계망 분석"
-                className="h-80 w-full object-contain scale-[1.35] md:scale-[1.45]"
-        whileHover={{ scale: 1.03 }}
-        transition={{ duration: 0.2 }}
-      />
-    </div>
+                className="h-72 w-full origin-center object-contain scale-[1.1] sm:scale-[1.2] md:scale-[1.3] lg:scale-[1.4]"
+                whileHover={{ scale: 1.03 }}
+                transition={{ duration: 0.2 }}
+              />
+            </div>
   </button>
 </div>
 
@@ -460,7 +473,7 @@ function HomePage() {
                 <div className="text-sm text-gray-500">불러오는 중...</div>
               ) : notices.length === 0 ? (
                 <div className="text-sm text-gray-500">등록된 공지사항이 없습니다.</div>
-              ) : notices.slice(0, 5).map((notice) => (
+              ) : latestNotices.map((notice) => (
                 <button
                   key={notice.id}
                   type="button"
