@@ -287,8 +287,9 @@ export async function createVideo(payload: { title: string; description?: string
 }
 
 export async function fetchAdminVideos(token?: string) {
+  const cacheBuster = Date.now()
   return apiRequest<{ videos: Array<{ id: string; title: string; description?: string; requiredRole: string; isPublished: boolean; storagePath: string; createdAt: string; durationSeconds?: number }> }>(
-    '/admin/videos',
+    `/admin/videos?ts=${cacheBuster}`,
     {
       headers: {
         ...authHeaders(token),
