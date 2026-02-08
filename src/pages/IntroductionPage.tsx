@@ -620,7 +620,6 @@ export default function IntroductionPage({ subPage }: IntroductionPageProps) {
       mapRef.current = map
       const zoomControl = new maps.ZoomControl()
       map.addControl(zoomControl, maps.ControlPosition.RIGHT)
-      const geocoder = new maps.services.Geocoder()
 
       const lat = 35.222954
       const lng = 129.153528

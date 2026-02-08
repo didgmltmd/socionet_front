@@ -81,7 +81,6 @@ export default function CommunityPostPage() {
         )
       })
       .catch(() => {
-        setAllPosts([])
         setPrevPostId(null)
         setNextPostId(null)
       })

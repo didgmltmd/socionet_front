@@ -136,7 +136,7 @@ export default function CommunityPage({ subPage }: CommunityPageProps) {
       title="커뮤니티"
       menuItems={menuItems}
       currentSubPage={currentSubPage}
-      onSubPageChange={setCurrentSubPage}
+      onSubPageChange={(subPage) => setCurrentSubPage(subPage as CommunitySubPage)}
       bannerImage="banner"
       subPageRoutes={subPageRoutes}
     >

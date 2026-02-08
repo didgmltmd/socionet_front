@@ -71,7 +71,7 @@ export default function AdminPage() {
         setUsers(
           userList.map((user) => ({
             id: user.id,
-            name: user.name || '이름 없음',
+            name: user.name || '?�름 ?�음',
             email: user.email,
             phone: user.phone,
             status: user.status as UserStatus,
@@ -92,7 +92,7 @@ export default function AdminPage() {
         ),
       )
     } catch (error) {
-      alert(error instanceof Error ? error.message : '승인 처리에 실패했습니다.')
+      alert(error instanceof Error ? error.message : '?�인 처리???�패?�습?�다.')
     }
   }
 
@@ -105,7 +105,7 @@ export default function AdminPage() {
         ),
       )
     } catch (error) {
-      alert(error instanceof Error ? error.message : '거절 처리에 실패했습니다.')
+      alert(error instanceof Error ? error.message : '거절 처리???�패?�습?�다.')
     }
   }
 
@@ -128,7 +128,7 @@ export default function AdminPage() {
       setEditingUserId(null)
       setEditingRole(null)
     } catch (error) {
-      alert(error instanceof Error ? error.message : '권한 저장에 실패했습니다.')
+      alert(error instanceof Error ? error.message : '권한 ?�?�에 ?�패?�습?�다.')
     }
   }
 
@@ -137,7 +137,7 @@ export default function AdminPage() {
       await deleteUserApi(userId)
       setUsers((prev) => prev.filter((item) => item.id !== userId))
     } catch (error) {
-      alert(error instanceof Error ? error.message : '삭제에 실패했습니다.')
+      alert(error instanceof Error ? error.message : '??��???�패?�습?�다.')
     }
   }
 
@@ -497,7 +497,7 @@ function EducationManagement() {
     const supabaseUrl = import.meta.env.VITE_SUPABASE_URL as string | undefined
     const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY as string | undefined
     if (!supabaseUrl || !supabaseAnonKey) {
-      alert('Supabase 환경변수가 설정되지 않았습니다.')
+      alert('Supabase ?�경변?��? ?�정?��? ?�았?�니??')
       return
     }
 
@@ -545,7 +545,7 @@ function EducationManagement() {
       })
 
       setIsEncoding(true)
-      setUploadMessage('인코딩 중...')
+      setUploadMessage('?�코??�?..')
 
       const encodeController = new AbortController()
       const encodeTimeout = window.setTimeout(() => {
@@ -570,7 +570,7 @@ function EducationManagement() {
 
       setIsEncoding(false)
       setEncodingProgress(100)
-      setUploadMessage('업로드되었습니다!')
+      setUploadMessage('?�로?�되?�습?�다!')
 
       setTitle('')
       setDescription('')
@@ -588,9 +588,9 @@ function EducationManagement() {
       const message =
         error instanceof Error
           ? error.name === 'AbortError'
-            ? '인코딩 시간이 초과되었습니다. 다시 시도해주세요.'
+            ? '?�코???�간??초과?�었?�니?? ?�시 ?�도?�주?�요.'
             : error.message
-          : '영상 등록에 실패했습니다.'
+          : '?�상 ?�록???�패?�습?�다.'
       setUploadMessage(message)
       alert(message)
     } finally {
@@ -625,10 +625,10 @@ function EducationManagement() {
         if (detail.signedUrl) {
           setPreviewUrl(detail.signedUrl)
         } else {
-          setPreviewError('영상 미리보기를 불러올 수 없습니다.')
+          setPreviewError('?�상 미리보기�?불러?????�습?�다.')
         }
       })
-      .catch(() => setPreviewError('영상 미리보기에 실패했습니다.'))
+      .catch(() => setPreviewError('?�상 미리보기???�패?�습?�다.'))
       .finally(() => setIsPreviewLoading(false))
   }
 
@@ -650,7 +650,7 @@ function EducationManagement() {
       alert(
         error instanceof Error
           ? error.message
-          : '영상 수정에 실패했습니다.',
+          : '?�상 ?�정???�패?�습?�다.',
       )
     } finally {
       setIsSavingEdit(false)
@@ -774,9 +774,9 @@ function EducationManagement() {
             </div>
             <p className="mt-2 text-sm text-gray-600">
               {isUploading
-                ? `업로드 중... ${uploadProgress}%`
+                ? `?�로??�?.. ${uploadProgress}%`
                 : isEncoding
-                  ? `인코딩 중... ${encodingProgress}%`
+                  ? `?�코??�?.. ${encodingProgress}%`
                   : uploadMessage}
             </p>
           </div>
@@ -962,8 +962,8 @@ function PostManagement() {
   type PostCategory = 'NOTICE' | 'ACTIVITY'
 
   const categoryLabels: Record<PostCategory, string> = {
-    NOTICE: '공지사항',
-    ACTIVITY: '커뮤니티 활동',
+    NOTICE: '공�??�항',
+    ACTIVITY: '커�??�티 ?�동',
   }
 
   const [posts, setPosts] = useState<
@@ -1003,7 +1003,7 @@ function PostManagement() {
     }
 
     const blocks: string[] = []
-    const datePattern = /\d{4}년\s*\d{1,2}월\s*\d{1,2}일/
+    const datePattern = /\d{4}??s*\d{1,2}??s*\d{1,2}??
 
     const pushParagraph = (text: string) => {
       blocks.push(`<p>${text}</p>`)
@@ -1011,7 +1011,7 @@ function PostManagement() {
 
     const parseScheduleTable = (tableLines: string[]) => {
       const headerIndex = tableLines.findIndex((line) =>
-        ['날짜', '시간', '발표자', '참관자', '인정학회'].includes(line),
+        ['?�짜', '?�간', '발표??, '참�???, '?�정?�회'].includes(line),
       )
 
       if (headerIndex === -1) {
@@ -1084,13 +1084,13 @@ function PostManagement() {
         continue
       }
 
-      if (line.startsWith('*일 정') || line.startsWith('▲일 정')) {
-        blocks.push(`<h3>${line.replace(/^[*▲]\s*/, '')}</h3>`)
+      if (line.startsWith('*????) || line.startsWith('?�일 ??)) {
+        blocks.push(`<h3>${line.replace(/^[*??\s*/, '')}</h3>`)
         index += 1
         const tableLines: string[] = []
         while (index < lines.length) {
           const nextLine = lines[index]
-          if (nextLine.startsWith('*') || nextLine.startsWith('▲')) {
+          if (nextLine.startsWith('*') || nextLine.startsWith('??)) {
             break
           }
           tableLines.push(nextLine)
@@ -1102,8 +1102,8 @@ function PostManagement() {
         continue
       }
 
-      if (line.startsWith('*') || line.startsWith('▲')) {
-        blocks.push(`<h3>${line.replace(/^[*▲]\s*/, '')}</h3>`)
+      if (line.startsWith('*') || line.startsWith('??)) {
+        blocks.push(`<h3>${line.replace(/^[*??\s*/, '')}</h3>`)
         index += 1
         continue
       }
@@ -1232,7 +1232,7 @@ function PostManagement() {
       return
     }
     target.focus()
-    document.execCommand('styleWithCSS', false, true)
+    document.execCommand('styleWithCSS', false, 'true')
     document.execCommand(command, false, value)
     contentHtmlRef.current = target.innerHTML
   }
@@ -1243,7 +1243,7 @@ function PostManagement() {
       return
     }
     target.focus()
-    document.execCommand('styleWithCSS', false, true)
+    document.execCommand('styleWithCSS', false, 'true')
     document.execCommand(command, false, value)
     editingHtmlRef.current = target.innerHTML
   }
@@ -1255,7 +1255,7 @@ function PostManagement() {
       return
     }
     target.focus()
-    document.execCommand('styleWithCSS', false, true)
+    document.execCommand('styleWithCSS', false, 'true')
     document.execCommand('fontName', false, value)
     htmlRef.current = target.innerHTML
   }
@@ -1276,7 +1276,7 @@ function PostManagement() {
       '28': '7',
     }
     target.focus()
-    document.execCommand('styleWithCSS', false, true)
+    document.execCommand('styleWithCSS', false, 'true')
     document.execCommand('fontSize', false, sizeMap[size] ?? '3')
     htmlRef.current = target.innerHTML
   }
@@ -1288,7 +1288,7 @@ function PostManagement() {
       return
     }
     target.focus()
-    document.execCommand('styleWithCSS', false, true)
+    document.execCommand('styleWithCSS', false, 'true')
     document.execCommand('foreColor', false, color)
     htmlRef.current = target.innerHTML
   }
@@ -1300,7 +1300,7 @@ function PostManagement() {
       return
     }
     target.focus()
-    document.execCommand('styleWithCSS', false, true)
+    document.execCommand('styleWithCSS', false, 'true')
     document.execCommand('hiliteColor', false, color)
     htmlRef.current = target.innerHTML
   }
@@ -1321,7 +1321,7 @@ function PostManagement() {
       return
     }
     target.focus()
-    document.execCommand('styleWithCSS', false, true)
+    document.execCommand('styleWithCSS', false, 'true')
     document.execCommand('formatBlock', false, 'blockquote')
     htmlRef.current = target.innerHTML
   }
@@ -1331,7 +1331,7 @@ function PostManagement() {
     const htmlRef = mode === 'create' ? contentHtmlRef : editingHtmlRef
     insertBlock(
       editorRef,
-      '<ul><li data-block-id="__BLOCK_ID__" data-placeholder="체크 항목">□ </li></ul><p><br></p>',
+      '<ul><li data-block-id="__BLOCK_ID__" data-placeholder="체크 ??��">??</li></ul><p><br></p>',
       htmlRef,
     )
   }
@@ -1361,14 +1361,14 @@ function PostManagement() {
       <div className="mb-3 space-y-2 rounded-2xl border border-gray-100 bg-gray-50/80 p-2">
         <div className="flex flex-wrap items-center gap-2">
           <div className="flex items-center gap-2 rounded-xl bg-white px-3 py-2 shadow-sm">
-            <span className="text-[11px] font-semibold text-gray-500">글꼴</span>
+            <span className="text-[11px] font-semibold text-gray-500">글�?/span>
             <select
               onChange={(event) => applyFontFamily(mode, event.target.value)}
               className="rounded-md border border-gray-200 bg-white px-2 py-1 text-xs"
-              defaultValue="맑은 고딕"
+              defaultValue="맑�? 고딕"
             >
-              <option value="맑은 고딕">맑은 고딕</option>
-              <option value="나눔고딕">나눔고딕</option>
+              <option value="맑�? 고딕">맑�? 고딕</option>
+              <option value="?�눔고딕">?�눔고딕</option>
               <option value="굴림">굴림</option>
               <option value="바탕">바탕</option>
             </select>
@@ -1388,7 +1388,7 @@ function PostManagement() {
           </div>
 
           <div className="flex items-center gap-2 rounded-xl bg-white px-3 py-2 shadow-sm">
-            <span className="text-[11px] font-semibold text-gray-500">서식</span>
+            <span className="text-[11px] font-semibold text-gray-500">?�식</span>
             <button
               type="button"
               onClick={() => applyCmd('bold')}
@@ -1401,8 +1401,7 @@ function PostManagement() {
               onClick={() => applyCmd('italic')}
               className="rounded-md border border-gray-200 px-2 py-1 text-xs font-semibold text-gray-700 hover:bg-gray-50 hover:cursor-pointer"
             >
-              기울임
-            </button>
+              기울??            </button>
             <button
               type="button"
               onClick={() => applyCmd('underline')}
@@ -1415,41 +1414,38 @@ function PostManagement() {
               onClick={() =>
                 insertBlock(
                   mode === 'create' ? contentEditorRef : editingEditorRef,
-                  '<h2 data-block-id="__BLOCK_ID__" data-placeholder="제목"></h2><p><br></p>',
+                  '<h2 data-block-id="__BLOCK_ID__" data-placeholder="?�목"></h2><p><br></p>',
                   mode === 'create' ? contentHtmlRef : editingHtmlRef,
                 )
               }
               className="rounded-md border border-gray-200 px-2 py-1 text-xs font-semibold text-gray-700 hover:bg-gray-50 hover:cursor-pointer"
             >
-              제목
+              ?�목
             </button>
             <button
               type="button"
               onClick={() =>
                 insertBlock(
                   mode === 'create' ? contentEditorRef : editingEditorRef,
-                  '<h3 data-block-id="__BLOCK_ID__" data-placeholder="소제목"></h3><p><br></p>',
+                  '<h3 data-block-id="__BLOCK_ID__" data-placeholder="?�제�?></h3><p><br></p>',
                   mode === 'create' ? contentHtmlRef : editingHtmlRef,
                 )
               }
               className="rounded-md border border-gray-200 px-2 py-1 text-xs font-semibold text-gray-700 hover:bg-gray-50 hover:cursor-pointer"
             >
-              소제목
-            </button>
+              ?�제�?            </button>
             <button
               type="button"
               onClick={() => toggleBlockquote(mode)}
               className="rounded-md border border-gray-200 px-2 py-1 text-xs font-semibold text-gray-700 hover:bg-gray-50 hover:cursor-pointer"
             >
-              인용문
-            </button>
+              ?�용�?            </button>
           </div>
 
           <div className="flex items-center gap-2 rounded-xl bg-white px-3 py-2 shadow-sm">
-            <span className="text-[11px] font-semibold text-gray-500">색상</span>
+            <span className="text-[11px] font-semibold text-gray-500">?�상</span>
             <label className="flex items-center gap-1 text-xs text-gray-600">
-              글자
-              <input
+              글??              <input
                 type="color"
                 onChange={(event) => applyTextColor(mode, event.target.value)}
                 className="h-6 w-6 cursor-pointer rounded border border-gray-200"
@@ -1466,52 +1462,50 @@ function PostManagement() {
           </div>
 
           <div className="flex items-center gap-2 rounded-xl bg-white px-3 py-2 shadow-sm">
-            <span className="text-[11px] font-semibold text-gray-500">정렬</span>
+            <span className="text-[11px] font-semibold text-gray-500">?�렬</span>
             <button
               type="button"
               onClick={() => applyAlignment(mode, 'justifyLeft')}
               className="rounded-md border border-gray-200 px-2 py-1 text-xs font-semibold text-gray-700 hover:bg-gray-50 hover:cursor-pointer"
             >
-              좌
-            </button>
+              �?            </button>
             <button
               type="button"
               onClick={() => applyAlignment(mode, 'justifyCenter')}
               className="rounded-md border border-gray-200 px-2 py-1 text-xs font-semibold text-gray-700 hover:bg-gray-50 hover:cursor-pointer"
             >
-              가운데
+              가?�데
             </button>
             <button
               type="button"
               onClick={() => applyAlignment(mode, 'justifyRight')}
               className="rounded-md border border-gray-200 px-2 py-1 text-xs font-semibold text-gray-700 hover:bg-gray-50 hover:cursor-pointer"
             >
-              우
-            </button>
+              ??            </button>
             <button
               type="button"
               onClick={() => applyAlignment(mode, 'justifyFull')}
               className="rounded-md border border-gray-200 px-2 py-1 text-xs font-semibold text-gray-700 hover:bg-gray-50 hover:cursor-pointer"
             >
-              양쪽
+              ?�쪽
             </button>
           </div>
 
           <div className="flex items-center gap-2 rounded-xl bg-white px-3 py-2 shadow-sm">
-            <span className="text-[11px] font-semibold text-gray-500">들여쓰기</span>
+            <span className="text-[11px] font-semibold text-gray-500">?�여?�기</span>
             <button
               type="button"
               onClick={() => applyCmd('indent')}
               className="rounded-md border border-gray-200 px-2 py-1 text-xs font-semibold text-gray-700 hover:bg-gray-50 hover:cursor-pointer"
             >
-              들여쓰기
+              ?�여?�기
             </button>
             <button
               type="button"
               onClick={() => applyCmd('outdent')}
               className="rounded-md border border-gray-200 px-2 py-1 text-xs font-semibold text-gray-700 hover:bg-gray-50 hover:cursor-pointer"
             >
-              내어쓰기
+              ?�어?�기
             </button>
           </div>
         </div>
@@ -1524,7 +1518,7 @@ function PostManagement() {
               onClick={() =>
                 insertBlock(
                   mode === 'create' ? contentEditorRef : editingEditorRef,
-                  '<ul><li data-block-id="__BLOCK_ID__" data-placeholder="목록 항목"></li></ul><p><br></p>',
+                  '<ul><li data-block-id="__BLOCK_ID__" data-placeholder="목록 ??��"></li></ul><p><br></p>',
                   mode === 'create' ? contentHtmlRef : editingHtmlRef,
                 )
               }
@@ -1537,7 +1531,7 @@ function PostManagement() {
               onClick={() =>
                 insertBlock(
                   mode === 'create' ? contentEditorRef : editingEditorRef,
-                  '<ol><li data-block-id="__BLOCK_ID__" data-placeholder="목록 항목"></li></ol><p><br></p>',
+                  '<ol><li data-block-id="__BLOCK_ID__" data-placeholder="목록 ??��"></li></ol><p><br></p>',
                   mode === 'create' ? contentHtmlRef : editingHtmlRef,
                 )
               }
@@ -1550,12 +1544,11 @@ function PostManagement() {
               onClick={() => insertChecklist(mode)}
               className="rounded-md border border-gray-200 px-2 py-1 text-xs font-semibold text-gray-700 hover:bg-gray-50 hover:cursor-pointer"
             >
-              체크리스트
-            </button>
+              체크리스??            </button>
           </div>
 
           <div className="flex items-center gap-2 rounded-xl bg-white px-3 py-2 shadow-sm">
-            <span className="text-[11px] font-semibold text-gray-500">삽입</span>
+            <span className="text-[11px] font-semibold text-gray-500">?�입</span>
             <button
               type="button"
               onClick={() => openLinkModal(mode)}
@@ -1574,17 +1567,16 @@ function PostManagement() {
               }}
               className="rounded-md border border-gray-200 px-2 py-1 text-xs font-semibold text-gray-700 hover:bg-gray-50 hover:cursor-pointer"
             >
-              이미지
+              ?��?지
             </button>
             <button
               type="button"
               onClick={() => openTableModal(mode)}
               className="rounded-md border border-gray-200 px-2 py-1 text-xs font-semibold text-gray-700 hover:bg-gray-50 hover:cursor-pointer"
             >
-              표
-            </button>
+              ??            </button>
             <label className="flex items-center gap-1 text-xs text-gray-600">
-              셀 배경
+              ?� 배경
               <input
                 type="color"
                 onChange={(event) => applyCellBackground(mode, event.target.value)}
@@ -1596,14 +1588,13 @@ function PostManagement() {
               onClick={() => applyCmd('insertHorizontalRule')}
               className="rounded-md border border-gray-200 px-2 py-1 text-xs font-semibold text-gray-700 hover:bg-gray-50 hover:cursor-pointer"
             >
-              구분선
-            </button>
+              구분??            </button>
             <button
               type="button"
               onClick={() => applyAutoFormat(mode)}
               className="rounded-md border border-gray-200 px-2 py-1 text-xs font-semibold text-gray-700 hover:bg-gray-50 hover:cursor-pointer"
             >
-              자동 정리
+              ?�동 ?�리
             </button>
           </div>
         </div>
@@ -1672,13 +1663,13 @@ function PostManagement() {
     }
     const clampedRows = Math.min(Math.floor(rows), 20)
     const clampedCols = Math.min(Math.floor(cols), 10)
-    const headerCells = Array.from({ length: clampedCols }, () => '<th>항목</th>').join('')
+    const headerCells = Array.from({ length: clampedCols }, () => '<th>??��</th>').join('')
     const bodyRows = Array.from({ length: clampedRows }, (_row, rowIndex) => {
       return `<tr>${Array.from({ length: clampedCols }, (_col, colIndex) => {
         const cellAttrs =
           rowIndex === 0 && colIndex === 0
-            ? ' data-block-id="__BLOCK_ID__" data-placeholder="내용"'
-            : ' data-placeholder="내용"'
+            ? ' data-block-id="__BLOCK_ID__" data-placeholder="?�용"'
+            : ' data-placeholder="?�용"'
         return `<td${cellAttrs}></td>`
       }).join('')}</tr>`
     }).join('')
@@ -1753,7 +1744,7 @@ function PostManagement() {
     } else {
       insertBlock(
         editorRef,
-        `<p><a href="${url}" target="_blank" rel="noopener noreferrer" data-block-id="__BLOCK_ID__" data-placeholder="링크 텍스트"></a></p>`,
+        `<p><a href="${url}" target="_blank" rel="noopener noreferrer" data-block-id="__BLOCK_ID__" data-placeholder="링크 ?�스??></a></p>`,
         htmlRef,
       )
     }
@@ -1792,7 +1783,7 @@ function PostManagement() {
       publicUrl = response.publicUrl
     } catch (error) {
       const message =
-        error instanceof Error ? error.message : '이미지 업로드 URL을 만들지 못했습니다.'
+        error instanceof Error ? error.message : '?��?지 ?�로??URL??만들지 못했?�니??'
       throw new Error(message)
     }
 
@@ -1812,7 +1803,7 @@ function PostManagement() {
         details = ''
       }
       const suffix = details ? ` (${details})` : ''
-      throw new Error(`이미지 업로드에 실패했습니다.${suffix}`)
+      throw new Error(`?��?지 ?�로?�에 ?�패?�습?�다.${suffix}`)
     }
 
     onInsert(publicUrl)
@@ -1826,17 +1817,17 @@ function PostManagement() {
   return (
     <div className="space-y-6">
       <div className="rounded-xl bg-white p-6 shadow-md">
-        <h3 className="mb-4 text-xl font-bold text-gray-800">게시글 등록</h3>
+        <h3 className="mb-4 text-xl font-bold text-gray-800">게시글 ?�록</h3>
         <div className="grid gap-4 md:grid-cols-2">
           <div>
             <label className="mb-2 block text-sm font-bold text-gray-700">
-              제목
+              ?�목
             </label>
             <input
               value={title}
               onChange={(event) => setTitle(event.target.value)}
               className="w-full rounded-lg border-2 border-gray-200 px-4 py-2"
-              placeholder="게시글 제목을 입력하세요."
+              placeholder="게시글 ?�목???�력?�세??"
             />
           </div>
           <div>
@@ -1848,13 +1839,13 @@ function PostManagement() {
               onChange={(event) => setCategory(event.target.value as PostCategory)}
               className="w-full rounded-lg border-2 border-gray-200 px-4 py-2"
             >
-              <option value="NOTICE">공지사항</option>
-              <option value="ACTIVITY">커뮤니티 활동</option>
+              <option value="NOTICE">공�??�항</option>
+              <option value="ACTIVITY">커�??�티 ?�동</option>
             </select>
           </div>
           <div className="md:col-span-2">
             <label className="mb-2 block text-sm font-bold text-gray-700">
-              내용
+              ?�용
             </label>
             {renderRibbon('create')}
             {/*
@@ -1871,7 +1862,7 @@ function PostManagement() {
                 onClick={() => applyCommand('italic')}
                 className="rounded-lg border border-gray-200 px-3 py-1 text-xs font-semibold text-gray-700 hover:bg-gray-50 hover:cursor-pointer"
               >
-                기울임
+                기울??
               </button>
               <button
                 type="button"
@@ -1885,33 +1876,33 @@ function PostManagement() {
                 onClick={() =>
                   insertBlock(
                     contentEditorRef,
-                    '<h2 data-block-id="__BLOCK_ID__" data-placeholder="제목"></h2><p><br></p>',
+                    '<h2 data-block-id="__BLOCK_ID__" data-placeholder="?�목"></h2><p><br></p>',
                     contentHtmlRef,
                   )
                 }
                 className="rounded-lg border border-gray-200 px-3 py-1 text-xs font-semibold text-gray-700 hover:bg-gray-50 hover:cursor-pointer"
               >
-                제목
+                ?�목
               </button>
               <button
                 type="button"
                 onClick={() =>
                   insertBlock(
                     contentEditorRef,
-                    '<h3 data-block-id="__BLOCK_ID__" data-placeholder="소제목"></h3><p><br></p>',
+                    '<h3 data-block-id="__BLOCK_ID__" data-placeholder="?�제�?></h3><p><br></p>',
                     contentHtmlRef,
                   )
                 }
                 className="rounded-lg border border-gray-200 px-3 py-1 text-xs font-semibold text-gray-700 hover:bg-gray-50 hover:cursor-pointer"
               >
-                소제목
+                ?�제�?
               </button>
               <button
                 type="button"
                 onClick={() =>
                   insertBlock(
                     contentEditorRef,
-                    '<ul><li data-block-id="__BLOCK_ID__" data-placeholder="목록 항목"></li></ul><p><br></p>',
+                    '<ul><li data-block-id="__BLOCK_ID__" data-placeholder="목록 ??��"></li></ul><p><br></p>',
                     contentHtmlRef,
                   )
                 }
@@ -1924,7 +1915,7 @@ function PostManagement() {
                 onClick={() =>
                   insertBlock(
                     contentEditorRef,
-                    '<ol><li data-block-id="__BLOCK_ID__" data-placeholder="목록 항목"></li></ol><p><br></p>',
+                    '<ol><li data-block-id="__BLOCK_ID__" data-placeholder="목록 ??��"></li></ol><p><br></p>',
                     contentHtmlRef,
                   )
                 }
@@ -1949,28 +1940,27 @@ function PostManagement() {
                 }}
                 className="rounded-lg border border-gray-200 px-3 py-1 text-xs font-semibold text-gray-700 hover:bg-gray-50 hover:cursor-pointer"
               >
-                이미지
+                ?��?지
               </button>
                 <button
                   type="button"
                   onClick={() => openTableModal('create')}
                   className="rounded-lg border border-gray-200 px-3 py-1 text-xs font-semibold text-gray-700 hover:bg-gray-50 hover:cursor-pointer"
                 >
-                  표
-                </button>
+                  ??                </button>
                 <button
                   type="button"
                   onClick={() => applyAutoFormat('create')}
                   className="rounded-lg border border-gray-200 px-3 py-1 text-xs font-semibold text-gray-700 hover:bg-gray-50 hover:cursor-pointer"
                 >
-                  자동 정리
+                  ?�동 ?�리
                 </button>
                 <button
                   type="button"
                   onClick={() => applyCommand('insertHorizontalRule')}
                   className="rounded-lg border border-gray-200 px-3 py-1 text-xs font-semibold text-gray-700 hover:bg-gray-50 hover:cursor-pointer"
                 >
-                구분선
+                구분??
               </button>
             */}
             <div
@@ -1998,7 +1988,7 @@ function PostManagement() {
                     applyCommand('insertImage', url)
                   })
                 } catch (error) {
-                  alert(error instanceof Error ? error.message : '이미지 업로드에 실패했습니다.')
+                  alert(error instanceof Error ? error.message : '?��?지 ?�로?�에 ?�패?�습?�다.')
                 }
               }}
             />
@@ -2010,7 +2000,7 @@ function PostManagement() {
               onChange={(event) => setIsPinned(event.target.checked)}
               className="h-4 w-4"
             />
-            <span className="text-sm text-gray-700">상단 고정</span>
+            <span className="text-sm text-gray-700">?�단 고정</span>
           </div>
         </div>
         <button
@@ -2019,16 +2009,16 @@ function PostManagement() {
           disabled={!title.trim()}
           className="mt-4 rounded-lg bg-teal-600 px-4 py-2 font-bold text-white transition-colors hover:bg-teal-700 disabled:opacity-50"
         >
-          게시글 등록
+          게시글 ?�록
         </button>
       </div>
 
       <div className="rounded-xl bg-white p-6 shadow-md">
         <h3 className="mb-4 text-xl font-bold text-gray-800">게시글 목록</h3>
         {isLoading ? (
-          <p className="text-sm text-gray-500">불러오는 중...</p>
+          <p className="text-sm text-gray-500">불러?�는 �?..</p>
         ) : posts.length === 0 ? (
-          <p className="text-sm text-gray-500">등록된 게시글이 없습니다.</p>
+          <p className="text-sm text-gray-500">?�록??게시글???�습?�다.</p>
         ) : (
           <div className="space-y-3">
             {posts.map((post) => (
@@ -2050,18 +2040,18 @@ function PostManagement() {
                     onClick={() => handleEdit(post)}
                     className="rounded-lg bg-orange-500 px-3 py-1.5 text-sm font-bold text-white hover:cursor-pointer"
                   >
-                    편집
+                    ?�집
                   </button>
                   <button
                     type="button"
                     onClick={() => {
-                      if (confirm('삭제하시겠습니까?')) {
+                      if (confirm('??��?�시겠습?�까?')) {
                         void handleDelete(post.id)
                       }
                     }}
                     className="rounded-lg bg-red-500 px-3 py-1.5 text-sm font-bold text-white hover:cursor-pointer"
                   >
-                    삭제
+                    ??��
                   </button>
                 </div>
               </div>
@@ -2081,12 +2071,12 @@ function PostManagement() {
         >
           <div className="w-full max-w-lg rounded-xl bg-white p-6 shadow-xl">
             <div className="mb-4 flex items-center justify-between">
-              <h3 className="text-lg font-bold text-gray-800">게시글 수정</h3>
+              <h3 className="text-lg font-bold text-gray-800">게시글 ?�정</h3>
               <button
                 type="button"
                 onClick={() => setEditingPostId(null)}
                 className="rounded-full p-2 text-gray-500 transition-colors hover:bg-gray-100"
-                aria-label="닫기"
+                aria-label="?�기"
               >
                 <XCircle size={18} />
               </button>
@@ -2094,7 +2084,7 @@ function PostManagement() {
             <div className="space-y-4">
               <div>
                 <label className="mb-2 block text-sm font-bold text-gray-700">
-                  제목
+                  ?�목
                 </label>
                 <input
                   value={editingTitle}
@@ -2113,13 +2103,13 @@ function PostManagement() {
                   }
                   className="w-full rounded-lg border-2 border-gray-200 px-4 py-2"
                 >
-                  <option value="NOTICE">공지사항</option>
-                  <option value="ACTIVITY">커뮤니티 활동</option>
+                  <option value="NOTICE">공�??�항</option>
+                  <option value="ACTIVITY">커�??�티 ?�동</option>
                 </select>
               </div>
               <div>
                 <label className="mb-2 block text-sm font-bold text-gray-700">
-                  내용
+                  ?�용
                 </label>
                 {renderRibbon('edit')}
                 {/*
@@ -2136,7 +2126,7 @@ function PostManagement() {
                     onClick={() => applyEditCommand('italic')}
                     className="rounded-lg border border-gray-200 px-3 py-1 text-xs font-semibold text-gray-700 hover:bg-gray-50 hover:cursor-pointer"
                   >
-                    기울임
+                    기울??
                   </button>
                   <button
                     type="button"
@@ -2150,33 +2140,33 @@ function PostManagement() {
                     onClick={() =>
                       insertBlock(
                         editingEditorRef,
-                        '<h2 data-block-id="__BLOCK_ID__" data-placeholder="제목"></h2><p><br></p>',
+                        '<h2 data-block-id="__BLOCK_ID__" data-placeholder="?�목"></h2><p><br></p>',
                         editingHtmlRef,
                       )
                     }
                     className="rounded-lg border border-gray-200 px-3 py-1 text-xs font-semibold text-gray-700 hover:bg-gray-50 hover:cursor-pointer"
                   >
-                    제목
+                    ?�목
                   </button>
                   <button
                     type="button"
                     onClick={() =>
                       insertBlock(
                         editingEditorRef,
-                        '<h3 data-block-id="__BLOCK_ID__" data-placeholder="소제목"></h3><p><br></p>',
+                        '<h3 data-block-id="__BLOCK_ID__" data-placeholder="?�제�?></h3><p><br></p>',
                         editingHtmlRef,
                       )
                     }
                     className="rounded-lg border border-gray-200 px-3 py-1 text-xs font-semibold text-gray-700 hover:bg-gray-50 hover:cursor-pointer"
                   >
-                    소제목
+                    ?�제�?
                   </button>
                   <button
                     type="button"
                     onClick={() =>
                       insertBlock(
                         editingEditorRef,
-                        '<ul><li data-block-id="__BLOCK_ID__" data-placeholder="목록 항목"></li></ul><p><br></p>',
+                        '<ul><li data-block-id="__BLOCK_ID__" data-placeholder="목록 ??��"></li></ul><p><br></p>',
                         editingHtmlRef,
                       )
                     }
@@ -2189,7 +2179,7 @@ function PostManagement() {
                     onClick={() =>
                       insertBlock(
                         editingEditorRef,
-                        '<ol><li data-block-id="__BLOCK_ID__" data-placeholder="목록 항목"></li></ol><p><br></p>',
+                        '<ol><li data-block-id="__BLOCK_ID__" data-placeholder="목록 ??��"></li></ol><p><br></p>',
                         editingHtmlRef,
                       )
                     }
@@ -2214,28 +2204,27 @@ function PostManagement() {
                     }}
                     className="rounded-lg border border-gray-200 px-3 py-1 text-xs font-semibold text-gray-700 hover:bg-gray-50 hover:cursor-pointer"
                   >
-                    이미지
+                    ?��?지
                   </button>
                   <button
                     type="button"
                     onClick={() => openTableModal('edit')}
                     className="rounded-lg border border-gray-200 px-3 py-1 text-xs font-semibold text-gray-700 hover:bg-gray-50 hover:cursor-pointer"
                   >
-                    표
-                  </button>
+                    ??                  </button>
                   <button
                     type="button"
                     onClick={() => applyAutoFormat('edit')}
                     className="rounded-lg border border-gray-200 px-3 py-1 text-xs font-semibold text-gray-700 hover:bg-gray-50 hover:cursor-pointer"
                   >
-                    자동 정리
+                    ?�동 ?�리
                   </button>
                   <button
                     type="button"
                     onClick={() => applyEditCommand('insertHorizontalRule')}
                     className="rounded-lg border border-gray-200 px-3 py-1 text-xs font-semibold text-gray-700 hover:bg-gray-50 hover:cursor-pointer"
                   >
-                    구분선
+                    구분??
                   </button>
                 */}
                 <div
@@ -2263,7 +2252,7 @@ function PostManagement() {
                         applyEditCommand('insertImage', url)
                       })
                     } catch (error) {
-                      alert(error instanceof Error ? error.message : '이미지 업로드에 실패했습니다.')
+                      alert(error instanceof Error ? error.message : '?��?지 ?�로?�에 ?�패?�습?�다.')
                     }
                   }}
                 />
@@ -2275,7 +2264,7 @@ function PostManagement() {
                   onChange={(event) => setEditingPinned(event.target.checked)}
                   className="h-4 w-4"
                 />
-                <span className="text-sm text-gray-700">상단 고정</span>
+                <span className="text-sm text-gray-700">?�단 고정</span>
               </div>
             </div>
             <div className="mt-6 flex justify-end gap-2">
@@ -2292,7 +2281,7 @@ function PostManagement() {
                 disabled={!editingTitle.trim()}
                 className="rounded-lg bg-teal-600 px-4 py-2 text-sm font-bold text-white disabled:opacity-50"
               >
-                저장
+                ?�??
               </button>
             </div>
           </div>
@@ -2311,7 +2300,7 @@ function PostManagement() {
           <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl">
             <div className="mb-4 flex items-center justify-between">
               <h4 className="text-lg font-bold text-gray-800">
-                {activeModal.type === 'link' ? '링크 추가' : '표 만들기'}
+                {activeModal.type === 'link' ? '링크 추�?' : '??만들�?}
               </h4>
               <button
                 type="button"
@@ -2320,7 +2309,7 @@ function PostManagement() {
                   selectionRangeRef.current = null
                 }}
                 className="rounded-full p-2 text-gray-500 transition-colors hover:bg-gray-100"
-                aria-label="닫기"
+                aria-label="?�기"
               >
                 <XCircle size={18} />
               </button>
@@ -2342,7 +2331,7 @@ function PostManagement() {
               <div className="grid gap-4 sm:grid-cols-2">
                 <div>
                   <label className="block text-sm font-semibold text-gray-700">
-                    행 개수
+                    ??개수
                   </label>
                   <input
                     type="number"
@@ -2356,7 +2345,7 @@ function PostManagement() {
                 </div>
                 <div>
                   <label className="block text-sm font-semibold text-gray-700">
-                    열 개수
+                    ??개수
                   </label>
                   <input
                     type="number"
@@ -2391,7 +2380,7 @@ function PostManagement() {
                 }}
                 className="rounded-lg bg-teal-600 px-4 py-2 text-sm font-semibold text-white hover:cursor-pointer"
               >
-                확인
+                ?�인
               </button>
             </div>
           </div>

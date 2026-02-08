@@ -124,17 +124,6 @@ function PapersSection() {
   )
 }
 
-function TextSection({ title, text }: { title: string; text: string }) {
-  return (
-    <div className="max-w-5xl">
-      <h1 className="mb-8 border-b-2 border-gray-200 pb-4 text-3xl font-bold text-gray-900">
-        {title}
-      </h1>
-      <p className="whitespace-pre-wrap leading-relaxed text-gray-700">{text}</p>
-    </div>
-  )
-}
-
 function ListSection({
   title,
   items,
