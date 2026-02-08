@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+﻿import { useEffect, useMemo, useRef, useState } from 'react'
 import * as tus from 'tus-js-client'
 import { useNavigate } from 'react-router-dom'
 import {
@@ -71,7 +71,7 @@ export default function AdminPage() {
         setUsers(
           userList.map((user) => ({
             id: user.id,
-            name: user.name || '?�름 ?�음',
+            name: user.name || '?대쫫 ?놁쓬',
             email: user.email,
             phone: user.phone,
             status: user.status as UserStatus,
@@ -92,7 +92,7 @@ export default function AdminPage() {
         ),
       )
     } catch (error) {
-      alert(error instanceof Error ? error.message : '?�인 처리???�패?�습?�다.')
+      alert(error instanceof Error ? error.message : '?뱀씤 泥섎━???ㅽ뙣?덉뒿?덈떎.')
     }
   }
 
@@ -105,7 +105,7 @@ export default function AdminPage() {
         ),
       )
     } catch (error) {
-      alert(error instanceof Error ? error.message : '거절 처리???�패?�습?�다.')
+      alert(error instanceof Error ? error.message : '嫄곗젅 泥섎━???ㅽ뙣?덉뒿?덈떎.')
     }
   }
 
@@ -128,7 +128,7 @@ export default function AdminPage() {
       setEditingUserId(null)
       setEditingRole(null)
     } catch (error) {
-      alert(error instanceof Error ? error.message : '권한 ?�?�에 ?�패?�습?�다.')
+      alert(error instanceof Error ? error.message : '沅뚰븳 ??μ뿉 ?ㅽ뙣?덉뒿?덈떎.')
     }
   }
 
@@ -137,7 +137,7 @@ export default function AdminPage() {
       await deleteUserApi(userId)
       setUsers((prev) => prev.filter((item) => item.id !== userId))
     } catch (error) {
-      alert(error instanceof Error ? error.message : '??��???�패?�습?�다.')
+      alert(error instanceof Error ? error.message : '??젣???ㅽ뙣?덉뒿?덈떎.')
     }
   }
 
@@ -497,7 +497,7 @@ function EducationManagement() {
     const supabaseUrl = import.meta.env.VITE_SUPABASE_URL as string | undefined
     const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY as string | undefined
     if (!supabaseUrl || !supabaseAnonKey) {
-      alert('Supabase ?�경변?��? ?�정?��? ?�았?�니??')
+      alert('Supabase ?섍꼍蹂?섍? ?ㅼ젙?섏? ?딆븯?듬땲??')
       return
     }
 
@@ -545,7 +545,7 @@ function EducationManagement() {
       })
 
       setIsEncoding(true)
-      setUploadMessage('?�코??�?..')
+      setUploadMessage('?몄퐫??以?..')
 
       const encodeController = new AbortController()
       const encodeTimeout = window.setTimeout(() => {
@@ -570,7 +570,7 @@ function EducationManagement() {
 
       setIsEncoding(false)
       setEncodingProgress(100)
-      setUploadMessage('?�로?�되?�습?�다!')
+      setUploadMessage('?낅줈?쒕릺?덉뒿?덈떎!')
 
       setTitle('')
       setDescription('')
@@ -588,9 +588,9 @@ function EducationManagement() {
       const message =
         error instanceof Error
           ? error.name === 'AbortError'
-            ? '?�코???�간??초과?�었?�니?? ?�시 ?�도?�주?�요.'
+            ? '?몄퐫???쒓컙??珥덇낵?섏뿀?듬땲?? ?ㅼ떆 ?쒕룄?댁＜?몄슂.'
             : error.message
-          : '?�상 ?�록???�패?�습?�다.'
+          : '?곸긽 ?깅줉???ㅽ뙣?덉뒿?덈떎.'
       setUploadMessage(message)
       alert(message)
     } finally {
@@ -625,10 +625,10 @@ function EducationManagement() {
         if (detail.signedUrl) {
           setPreviewUrl(detail.signedUrl)
         } else {
-          setPreviewError('?�상 미리보기�?불러?????�습?�다.')
+          setPreviewError('?곸긽 誘몃━蹂닿린瑜?遺덈윭?????놁뒿?덈떎.')
         }
       })
-      .catch(() => setPreviewError('?�상 미리보기???�패?�습?�다.'))
+      .catch(() => setPreviewError('?곸긽 誘몃━蹂닿린???ㅽ뙣?덉뒿?덈떎.'))
       .finally(() => setIsPreviewLoading(false))
   }
 
@@ -650,7 +650,7 @@ function EducationManagement() {
       alert(
         error instanceof Error
           ? error.message
-          : '?�상 ?�정???�패?�습?�다.',
+          : '?곸긽 ?섏젙???ㅽ뙣?덉뒿?덈떎.',
       )
     } finally {
       setIsSavingEdit(false)
@@ -774,9 +774,9 @@ function EducationManagement() {
             </div>
             <p className="mt-2 text-sm text-gray-600">
               {isUploading
-                ? `?�로??�?.. ${uploadProgress}%`
+                ? `?낅줈??以?.. ${uploadProgress}%`
                 : isEncoding
-                  ? `?�코??�?.. ${encodingProgress}%`
+                  ? `?몄퐫??以?.. ${encodingProgress}%`
                   : uploadMessage}
             </p>
           </div>
@@ -962,8 +962,8 @@ function PostManagement() {
   type PostCategory = 'NOTICE' | 'ACTIVITY'
 
   const categoryLabels: Record<PostCategory, string> = {
-    NOTICE: '공�??�항',
-    ACTIVITY: '커�??�티 ?�동',
+    NOTICE: '怨듭??ы빆',
+    ACTIVITY: '而ㅻ??덊떚 ?쒕룞',
   }
 
   const [posts, setPosts] = useState<
@@ -992,7 +992,7 @@ function PostManagement() {
   } | null>(null)
   const [linkUrl, setLinkUrl] = useState('')
 
-  const formatPlainTextToHtml = (raw: string) => {
+    const formatPlainTextToHtml = (raw: string) => {
     const lines = raw
       .split(/\r?\n/)
       .map((line) => line.trim())
@@ -1003,23 +1003,22 @@ function PostManagement() {
     }
 
     const blocks: string[] = []
-    const datePattern = /\d{4}??s*\d{1,2}??s*\d{1,2}??
+    const datePattern = /\d{4}\s*년?\s*\d{1,2}\s*월?\s*\d{1,2}/
 
     const pushParagraph = (text: string) => {
       blocks.push(`<p>${text}</p>`)
     }
 
     const parseScheduleTable = (tableLines: string[]) => {
-      const headerIndex = tableLines.findIndex((line) =>
-        ['?�짜', '?�간', '발표??, '참�???, '?�정?�회'].includes(line),
-      )
+      const headerLabels = ['날짜', '시간', '발표자', '참관자', '인정학회']
+      const headerIndex = tableLines.findIndex((line) => headerLabels.includes(line))
 
       if (headerIndex === -1) {
         tableLines.forEach((line) => pushParagraph(line))
         return
       }
 
-      const header = tableLines.slice(headerIndex, headerIndex + 5)
+      const header = tableLines.slice(headerIndex, headerIndex + headerLabels.length)
       const dataLines = tableLines.slice(headerIndex + header.length)
       const rows: string[][] = []
       let current: string[] | null = null
@@ -1084,13 +1083,18 @@ function PostManagement() {
         continue
       }
 
-      if (line.startsWith('*????) || line.startsWith('?�일 ??)) {
-        blocks.push(`<h3>${line.replace(/^[*??\s*/, '')}</h3>`)
+      if (
+        line.startsWith('*일정') ||
+        line.startsWith('*일 정') ||
+        line.startsWith('▲일정') ||
+        line.startsWith('▲일 정')
+      ) {
+        blocks.push(`<h3>${line.replace(/^[*▲\s]+/, '')}</h3>`)
         index += 1
         const tableLines: string[] = []
         while (index < lines.length) {
           const nextLine = lines[index]
-          if (nextLine.startsWith('*') || nextLine.startsWith('??)) {
+          if (nextLine.startsWith('*') || nextLine.startsWith('▲')) {
             break
           }
           tableLines.push(nextLine)
@@ -1102,8 +1106,8 @@ function PostManagement() {
         continue
       }
 
-      if (line.startsWith('*') || line.startsWith('??)) {
-        blocks.push(`<h3>${line.replace(/^[*??\s*/, '')}</h3>`)
+      if (line.startsWith('*') || line.startsWith('▲')) {
+        blocks.push(`<h3>${line.replace(/^[*▲\s]+/, '')}</h3>`)
         index += 1
         continue
       }
@@ -1126,107 +1130,7 @@ function PostManagement() {
 
     return blocks.join('')
   }
-
-  const applyAutoFormat = (mode: 'create' | 'edit') => {
-    const editorRef = mode === 'create' ? contentEditorRef : editingEditorRef
-    const htmlRef = mode === 'create' ? contentHtmlRef : editingHtmlRef
-    const target = editorRef.current
-    if (!target) {
-      return
-    }
-    const rawText = target.innerText || ''
-    const formatted = formatPlainTextToHtml(rawText)
-    target.innerHTML = formatted
-    htmlRef.current = formatted
-  }
-  const [tableRows, setTableRows] = useState('3')
-  const [tableCols, setTableCols] = useState('3')
-  const [editingPostId, setEditingPostId] = useState<string | null>(null)
-  const [editingTitle, setEditingTitle] = useState('')
-  const [editingContent, setEditingContent] = useState('')
-  const [editingCategory, setEditingCategory] = useState<PostCategory>('NOTICE')
-  const [editingPinned, setEditingPinned] = useState(false)
-  const editingEditorRef = useRef<HTMLDivElement | null>(null)
-  const editingImageInputRef = useRef<HTMLInputElement | null>(null)
-  const editingHtmlRef = useRef('')
-
-  const loadPosts = () => {
-    setIsLoading(true)
-    fetchAdminPosts()
-      .then(({ posts: postList }) => {
-        setPosts(postList)
-      })
-      .finally(() => setIsLoading(false))
-  }
-
-  useEffect(() => {
-    loadPosts()
-  }, [])
-
-  const handleCreate = async () => {
-    if (!title.trim()) {
-      return
-    }
-
-    const html = contentEditorRef.current?.innerHTML?.trim() || contentHtmlRef.current.trim()
-    await createPost({
-      title: title.trim(),
-      content: html || undefined,
-      category,
-      isPinned,
-    })
-    setTitle('')
-    setCategory('NOTICE')
-    setIsPinned(false)
-    contentHtmlRef.current = ''
-    if (contentEditorRef.current) {
-      contentEditorRef.current.innerHTML = ''
-    }
-    loadPosts()
-  }
-
-  const handleEdit = (post: {
-    id: string
-    title: string
-    content?: string
-    category: PostCategory
-    isPublished: boolean
-    isPinned?: boolean
-    publishedAt: string
-  }) => {
-    setEditingPostId(post.id)
-    setEditingTitle(post.title)
-    setEditingContent(post.content || '')
-    editingHtmlRef.current = post.content || ''
-    setEditingCategory(post.category)
-    setEditingPinned(Boolean(post.isPinned))
-  }
-
-  const handleUpdate = async () => {
-    if (!editingPostId) {
-      return
-    }
-
-    const html = editingEditorRef.current?.innerHTML?.trim() || editingHtmlRef.current.trim()
-    await updatePost(editingPostId, {
-      title: editingTitle.trim(),
-      content: html || undefined,
-      category: editingCategory,
-      isPinned: editingPinned,
-    })
-    setEditingPostId(null)
-    loadPosts()
-  }
-
-  useEffect(() => {
-    if (!editingPostId || !editingEditorRef.current) {
-      return
-    }
-    editingEditorRef.current.innerHTML = editingContent || ''
-    editingHtmlRef.current = editingContent || ''
-  }, [editingPostId, editingContent])
-
-  const applyCommand = (command: string, value?: string) => {
+const applyCommand = (command: string, value?: string) => {
     const target = contentEditorRef.current
     if (!target) {
       return
@@ -1331,7 +1235,7 @@ function PostManagement() {
     const htmlRef = mode === 'create' ? contentHtmlRef : editingHtmlRef
     insertBlock(
       editorRef,
-      '<ul><li data-block-id="__BLOCK_ID__" data-placeholder="체크 ??��">??</li></ul><p><br></p>',
+      '<ul><li data-block-id="__BLOCK_ID__" data-placeholder="泥댄겕 ??ぉ">??</li></ul><p><br></p>',
       htmlRef,
     )
   }
@@ -1361,16 +1265,16 @@ function PostManagement() {
       <div className="mb-3 space-y-2 rounded-2xl border border-gray-100 bg-gray-50/80 p-2">
         <div className="flex flex-wrap items-center gap-2">
           <div className="flex items-center gap-2 rounded-xl bg-white px-3 py-2 shadow-sm">
-            <span className="text-[11px] font-semibold text-gray-500">글�?/span>
+            <span className="text-[11px] font-semibold text-gray-500">湲瑗?/span>
             <select
               onChange={(event) => applyFontFamily(mode, event.target.value)}
               className="rounded-md border border-gray-200 bg-white px-2 py-1 text-xs"
-              defaultValue="맑�? 고딕"
+              defaultValue="留묒? 怨좊뵓"
             >
-              <option value="맑�? 고딕">맑�? 고딕</option>
-              <option value="?�눔고딕">?�눔고딕</option>
-              <option value="굴림">굴림</option>
-              <option value="바탕">바탕</option>
+              <option value="留묒? 怨좊뵓">留묒? 怨좊뵓</option>
+              <option value="?섎닎怨좊뵓">?섎닎怨좊뵓</option>
+              <option value="援대┝">援대┝</option>
+              <option value="諛뷀깢">諛뷀깢</option>
             </select>
             <select
               onChange={(event) => applyFontSize(mode, event.target.value)}
@@ -1388,71 +1292,71 @@ function PostManagement() {
           </div>
 
           <div className="flex items-center gap-2 rounded-xl bg-white px-3 py-2 shadow-sm">
-            <span className="text-[11px] font-semibold text-gray-500">?�식</span>
+            <span className="text-[11px] font-semibold text-gray-500">?쒖떇</span>
             <button
               type="button"
               onClick={() => applyCmd('bold')}
               className="rounded-md border border-gray-200 px-2 py-1 text-xs font-semibold text-gray-700 hover:bg-gray-50 hover:cursor-pointer"
             >
-              굵게
+              援듦쾶
             </button>
             <button
               type="button"
               onClick={() => applyCmd('italic')}
               className="rounded-md border border-gray-200 px-2 py-1 text-xs font-semibold text-gray-700 hover:bg-gray-50 hover:cursor-pointer"
             >
-              기울??            </button>
+              湲곗슱??            </button>
             <button
               type="button"
               onClick={() => applyCmd('underline')}
               className="rounded-md border border-gray-200 px-2 py-1 text-xs font-semibold text-gray-700 hover:bg-gray-50 hover:cursor-pointer"
             >
-              밑줄
+              諛묒쨪
             </button>
             <button
               type="button"
               onClick={() =>
                 insertBlock(
                   mode === 'create' ? contentEditorRef : editingEditorRef,
-                  '<h2 data-block-id="__BLOCK_ID__" data-placeholder="?�목"></h2><p><br></p>',
+                  '<h2 data-block-id="__BLOCK_ID__" data-placeholder="?쒕ぉ"></h2><p><br></p>',
                   mode === 'create' ? contentHtmlRef : editingHtmlRef,
                 )
               }
               className="rounded-md border border-gray-200 px-2 py-1 text-xs font-semibold text-gray-700 hover:bg-gray-50 hover:cursor-pointer"
             >
-              ?�목
+              ?쒕ぉ
             </button>
             <button
               type="button"
               onClick={() =>
                 insertBlock(
                   mode === 'create' ? contentEditorRef : editingEditorRef,
-                  '<h3 data-block-id="__BLOCK_ID__" data-placeholder="?�제�?></h3><p><br></p>',
+                  '<h3 data-block-id="__BLOCK_ID__" data-placeholder="?뚯젣紐?></h3><p><br></p>',
                   mode === 'create' ? contentHtmlRef : editingHtmlRef,
                 )
               }
               className="rounded-md border border-gray-200 px-2 py-1 text-xs font-semibold text-gray-700 hover:bg-gray-50 hover:cursor-pointer"
             >
-              ?�제�?            </button>
+              ?뚯젣紐?            </button>
             <button
               type="button"
               onClick={() => toggleBlockquote(mode)}
               className="rounded-md border border-gray-200 px-2 py-1 text-xs font-semibold text-gray-700 hover:bg-gray-50 hover:cursor-pointer"
             >
-              ?�용�?            </button>
+              ?몄슜臾?            </button>
           </div>
 
           <div className="flex items-center gap-2 rounded-xl bg-white px-3 py-2 shadow-sm">
-            <span className="text-[11px] font-semibold text-gray-500">?�상</span>
+            <span className="text-[11px] font-semibold text-gray-500">?됱긽</span>
             <label className="flex items-center gap-1 text-xs text-gray-600">
-              글??              <input
+              湲??              <input
                 type="color"
                 onChange={(event) => applyTextColor(mode, event.target.value)}
                 className="h-6 w-6 cursor-pointer rounded border border-gray-200"
               />
             </label>
             <label className="flex items-center gap-1 text-xs text-gray-600">
-              배경
+              諛곌꼍
               <input
                 type="color"
                 onChange={(event) => applyHighlight(mode, event.target.value)}
@@ -1462,19 +1366,19 @@ function PostManagement() {
           </div>
 
           <div className="flex items-center gap-2 rounded-xl bg-white px-3 py-2 shadow-sm">
-            <span className="text-[11px] font-semibold text-gray-500">?�렬</span>
+            <span className="text-[11px] font-semibold text-gray-500">?뺣젹</span>
             <button
               type="button"
               onClick={() => applyAlignment(mode, 'justifyLeft')}
               className="rounded-md border border-gray-200 px-2 py-1 text-xs font-semibold text-gray-700 hover:bg-gray-50 hover:cursor-pointer"
             >
-              �?            </button>
+              醫?            </button>
             <button
               type="button"
               onClick={() => applyAlignment(mode, 'justifyCenter')}
               className="rounded-md border border-gray-200 px-2 py-1 text-xs font-semibold text-gray-700 hover:bg-gray-50 hover:cursor-pointer"
             >
-              가?�데
+              媛?대뜲
             </button>
             <button
               type="button"
@@ -1487,74 +1391,74 @@ function PostManagement() {
               onClick={() => applyAlignment(mode, 'justifyFull')}
               className="rounded-md border border-gray-200 px-2 py-1 text-xs font-semibold text-gray-700 hover:bg-gray-50 hover:cursor-pointer"
             >
-              ?�쪽
+              ?묒そ
             </button>
           </div>
 
           <div className="flex items-center gap-2 rounded-xl bg-white px-3 py-2 shadow-sm">
-            <span className="text-[11px] font-semibold text-gray-500">?�여?�기</span>
+            <span className="text-[11px] font-semibold text-gray-500">?ㅼ뿬?곌린</span>
             <button
               type="button"
               onClick={() => applyCmd('indent')}
               className="rounded-md border border-gray-200 px-2 py-1 text-xs font-semibold text-gray-700 hover:bg-gray-50 hover:cursor-pointer"
             >
-              ?�여?�기
+              ?ㅼ뿬?곌린
             </button>
             <button
               type="button"
               onClick={() => applyCmd('outdent')}
               className="rounded-md border border-gray-200 px-2 py-1 text-xs font-semibold text-gray-700 hover:bg-gray-50 hover:cursor-pointer"
             >
-              ?�어?�기
+              ?댁뼱?곌린
             </button>
           </div>
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
           <div className="flex items-center gap-2 rounded-xl bg-white px-3 py-2 shadow-sm">
-            <span className="text-[11px] font-semibold text-gray-500">목록</span>
+            <span className="text-[11px] font-semibold text-gray-500">紐⑸줉</span>
             <button
               type="button"
               onClick={() =>
                 insertBlock(
                   mode === 'create' ? contentEditorRef : editingEditorRef,
-                  '<ul><li data-block-id="__BLOCK_ID__" data-placeholder="목록 ??��"></li></ul><p><br></p>',
+                  '<ul><li data-block-id="__BLOCK_ID__" data-placeholder="紐⑸줉 ??ぉ"></li></ul><p><br></p>',
                   mode === 'create' ? contentHtmlRef : editingHtmlRef,
                 )
               }
               className="rounded-md border border-gray-200 px-2 py-1 text-xs font-semibold text-gray-700 hover:bg-gray-50 hover:cursor-pointer"
             >
-              목록
+              紐⑸줉
             </button>
             <button
               type="button"
               onClick={() =>
                 insertBlock(
                   mode === 'create' ? contentEditorRef : editingEditorRef,
-                  '<ol><li data-block-id="__BLOCK_ID__" data-placeholder="목록 ??��"></li></ol><p><br></p>',
+                  '<ol><li data-block-id="__BLOCK_ID__" data-placeholder="紐⑸줉 ??ぉ"></li></ol><p><br></p>',
                   mode === 'create' ? contentHtmlRef : editingHtmlRef,
                 )
               }
               className="rounded-md border border-gray-200 px-2 py-1 text-xs font-semibold text-gray-700 hover:bg-gray-50 hover:cursor-pointer"
             >
-              번호 목록
+              踰덊샇 紐⑸줉
             </button>
             <button
               type="button"
               onClick={() => insertChecklist(mode)}
               className="rounded-md border border-gray-200 px-2 py-1 text-xs font-semibold text-gray-700 hover:bg-gray-50 hover:cursor-pointer"
             >
-              체크리스??            </button>
+              泥댄겕由ъ뒪??            </button>
           </div>
 
           <div className="flex items-center gap-2 rounded-xl bg-white px-3 py-2 shadow-sm">
-            <span className="text-[11px] font-semibold text-gray-500">?�입</span>
+            <span className="text-[11px] font-semibold text-gray-500">?쎌엯</span>
             <button
               type="button"
               onClick={() => openLinkModal(mode)}
               className="rounded-md border border-gray-200 px-2 py-1 text-xs font-semibold text-gray-700 hover:bg-gray-50 hover:cursor-pointer"
             >
-              링크
+              留곹겕
             </button>
             <button
               type="button"
@@ -1567,7 +1471,7 @@ function PostManagement() {
               }}
               className="rounded-md border border-gray-200 px-2 py-1 text-xs font-semibold text-gray-700 hover:bg-gray-50 hover:cursor-pointer"
             >
-              ?��?지
+              ?대?吏
             </button>
             <button
               type="button"
@@ -1576,7 +1480,7 @@ function PostManagement() {
             >
               ??            </button>
             <label className="flex items-center gap-1 text-xs text-gray-600">
-              ?� 배경
+              ? 諛곌꼍
               <input
                 type="color"
                 onChange={(event) => applyCellBackground(mode, event.target.value)}
@@ -1588,13 +1492,13 @@ function PostManagement() {
               onClick={() => applyCmd('insertHorizontalRule')}
               className="rounded-md border border-gray-200 px-2 py-1 text-xs font-semibold text-gray-700 hover:bg-gray-50 hover:cursor-pointer"
             >
-              구분??            </button>
+              援щ텇??            </button>
             <button
               type="button"
               onClick={() => applyAutoFormat(mode)}
               className="rounded-md border border-gray-200 px-2 py-1 text-xs font-semibold text-gray-700 hover:bg-gray-50 hover:cursor-pointer"
             >
-              ?�동 ?�리
+              ?먮룞 ?뺣━
             </button>
           </div>
         </div>
@@ -1663,13 +1567,13 @@ function PostManagement() {
     }
     const clampedRows = Math.min(Math.floor(rows), 20)
     const clampedCols = Math.min(Math.floor(cols), 10)
-    const headerCells = Array.from({ length: clampedCols }, () => '<th>??��</th>').join('')
+    const headerCells = Array.from({ length: clampedCols }, () => '<th>??ぉ</th>').join('')
     const bodyRows = Array.from({ length: clampedRows }, (_row, rowIndex) => {
       return `<tr>${Array.from({ length: clampedCols }, (_col, colIndex) => {
         const cellAttrs =
           rowIndex === 0 && colIndex === 0
-            ? ' data-block-id="__BLOCK_ID__" data-placeholder="?�용"'
-            : ' data-placeholder="?�용"'
+            ? ' data-block-id="__BLOCK_ID__" data-placeholder="?댁슜"'
+            : ' data-placeholder="?댁슜"'
         return `<td${cellAttrs}></td>`
       }).join('')}</tr>`
     }).join('')
@@ -1744,7 +1648,7 @@ function PostManagement() {
     } else {
       insertBlock(
         editorRef,
-        `<p><a href="${url}" target="_blank" rel="noopener noreferrer" data-block-id="__BLOCK_ID__" data-placeholder="링크 ?�스??></a></p>`,
+        `<p><a href="${url}" target="_blank" rel="noopener noreferrer" data-block-id="__BLOCK_ID__" data-placeholder="留곹겕 ?띿뒪??></a></p>`,
         htmlRef,
       )
     }
@@ -1783,7 +1687,7 @@ function PostManagement() {
       publicUrl = response.publicUrl
     } catch (error) {
       const message =
-        error instanceof Error ? error.message : '?��?지 ?�로??URL??만들지 못했?�니??'
+        error instanceof Error ? error.message : '?대?吏 ?낅줈??URL??留뚮뱾吏 紐삵뻽?듬땲??'
       throw new Error(message)
     }
 
@@ -1803,7 +1707,7 @@ function PostManagement() {
         details = ''
       }
       const suffix = details ? ` (${details})` : ''
-      throw new Error(`?��?지 ?�로?�에 ?�패?�습?�다.${suffix}`)
+      throw new Error(`?대?吏 ?낅줈?쒖뿉 ?ㅽ뙣?덉뒿?덈떎.${suffix}`)
     }
 
     onInsert(publicUrl)
@@ -1817,35 +1721,35 @@ function PostManagement() {
   return (
     <div className="space-y-6">
       <div className="rounded-xl bg-white p-6 shadow-md">
-        <h3 className="mb-4 text-xl font-bold text-gray-800">게시글 ?�록</h3>
+        <h3 className="mb-4 text-xl font-bold text-gray-800">寃뚯떆湲 ?깅줉</h3>
         <div className="grid gap-4 md:grid-cols-2">
           <div>
             <label className="mb-2 block text-sm font-bold text-gray-700">
-              ?�목
+              ?쒕ぉ
             </label>
             <input
               value={title}
               onChange={(event) => setTitle(event.target.value)}
               className="w-full rounded-lg border-2 border-gray-200 px-4 py-2"
-              placeholder="게시글 ?�목???�력?�세??"
+              placeholder="寃뚯떆湲 ?쒕ぉ???낅젰?섏꽭??"
             />
           </div>
           <div>
             <label className="mb-2 block text-sm font-bold text-gray-700">
-              카테고리
+              移댄뀒怨좊━
             </label>
             <select
               value={category}
               onChange={(event) => setCategory(event.target.value as PostCategory)}
               className="w-full rounded-lg border-2 border-gray-200 px-4 py-2"
             >
-              <option value="NOTICE">공�??�항</option>
-              <option value="ACTIVITY">커�??�티 ?�동</option>
+              <option value="NOTICE">怨듭??ы빆</option>
+              <option value="ACTIVITY">而ㅻ??덊떚 ?쒕룞</option>
             </select>
           </div>
           <div className="md:col-span-2">
             <label className="mb-2 block text-sm font-bold text-gray-700">
-              ?�용
+              ?댁슜
             </label>
             {renderRibbon('create')}
             {/*
@@ -1855,80 +1759,80 @@ function PostManagement() {
                 onClick={() => applyCommand('bold')}
                 className="rounded-lg border border-gray-200 px-3 py-1 text-xs font-semibold text-gray-700 hover:bg-gray-50 hover:cursor-pointer"
               >
-                굵게
+                援듦쾶
               </button>
               <button
                 type="button"
                 onClick={() => applyCommand('italic')}
                 className="rounded-lg border border-gray-200 px-3 py-1 text-xs font-semibold text-gray-700 hover:bg-gray-50 hover:cursor-pointer"
               >
-                기울??
+                湲곗슱??
               </button>
               <button
                 type="button"
                 onClick={() => applyCommand('underline')}
                 className="rounded-lg border border-gray-200 px-3 py-1 text-xs font-semibold text-gray-700 hover:bg-gray-50 hover:cursor-pointer"
               >
-                밑줄
+                諛묒쨪
               </button>
               <button
                 type="button"
                 onClick={() =>
                   insertBlock(
                     contentEditorRef,
-                    '<h2 data-block-id="__BLOCK_ID__" data-placeholder="?�목"></h2><p><br></p>',
+                    '<h2 data-block-id="__BLOCK_ID__" data-placeholder="?쒕ぉ"></h2><p><br></p>',
                     contentHtmlRef,
                   )
                 }
                 className="rounded-lg border border-gray-200 px-3 py-1 text-xs font-semibold text-gray-700 hover:bg-gray-50 hover:cursor-pointer"
               >
-                ?�목
+                ?쒕ぉ
               </button>
               <button
                 type="button"
                 onClick={() =>
                   insertBlock(
                     contentEditorRef,
-                    '<h3 data-block-id="__BLOCK_ID__" data-placeholder="?�제�?></h3><p><br></p>',
+                    '<h3 data-block-id="__BLOCK_ID__" data-placeholder="?뚯젣紐?></h3><p><br></p>',
                     contentHtmlRef,
                   )
                 }
                 className="rounded-lg border border-gray-200 px-3 py-1 text-xs font-semibold text-gray-700 hover:bg-gray-50 hover:cursor-pointer"
               >
-                ?�제�?
+                ?뚯젣紐?
               </button>
               <button
                 type="button"
                 onClick={() =>
                   insertBlock(
                     contentEditorRef,
-                    '<ul><li data-block-id="__BLOCK_ID__" data-placeholder="목록 ??��"></li></ul><p><br></p>',
+                    '<ul><li data-block-id="__BLOCK_ID__" data-placeholder="紐⑸줉 ??ぉ"></li></ul><p><br></p>',
                     contentHtmlRef,
                   )
                 }
                 className="rounded-lg border border-gray-200 px-3 py-1 text-xs font-semibold text-gray-700 hover:bg-gray-50 hover:cursor-pointer"
               >
-                목록
+                紐⑸줉
               </button>
               <button
                 type="button"
                 onClick={() =>
                   insertBlock(
                     contentEditorRef,
-                    '<ol><li data-block-id="__BLOCK_ID__" data-placeholder="목록 ??��"></li></ol><p><br></p>',
+                    '<ol><li data-block-id="__BLOCK_ID__" data-placeholder="紐⑸줉 ??ぉ"></li></ol><p><br></p>',
                     contentHtmlRef,
                   )
                 }
                 className="rounded-lg border border-gray-200 px-3 py-1 text-xs font-semibold text-gray-700 hover:bg-gray-50 hover:cursor-pointer"
               >
-                번호 목록
+                踰덊샇 紐⑸줉
               </button>
               <button
                 type="button"
                 onClick={() => openLinkModal('create')}
                 className="rounded-lg border border-gray-200 px-3 py-1 text-xs font-semibold text-gray-700 hover:bg-gray-50 hover:cursor-pointer"
               >
-                링크
+                留곹겕
               </button>
               <button
                 type="button"
@@ -1940,7 +1844,7 @@ function PostManagement() {
                 }}
                 className="rounded-lg border border-gray-200 px-3 py-1 text-xs font-semibold text-gray-700 hover:bg-gray-50 hover:cursor-pointer"
               >
-                ?��?지
+                ?대?吏
               </button>
                 <button
                   type="button"
@@ -1953,14 +1857,14 @@ function PostManagement() {
                   onClick={() => applyAutoFormat('create')}
                   className="rounded-lg border border-gray-200 px-3 py-1 text-xs font-semibold text-gray-700 hover:bg-gray-50 hover:cursor-pointer"
                 >
-                  ?�동 ?�리
+                  ?먮룞 ?뺣━
                 </button>
                 <button
                   type="button"
                   onClick={() => applyCommand('insertHorizontalRule')}
                   className="rounded-lg border border-gray-200 px-3 py-1 text-xs font-semibold text-gray-700 hover:bg-gray-50 hover:cursor-pointer"
                 >
-                구분??
+                援щ텇??
               </button>
             */}
             <div
@@ -1988,7 +1892,7 @@ function PostManagement() {
                     applyCommand('insertImage', url)
                   })
                 } catch (error) {
-                  alert(error instanceof Error ? error.message : '?��?지 ?�로?�에 ?�패?�습?�다.')
+                  alert(error instanceof Error ? error.message : '?대?吏 ?낅줈?쒖뿉 ?ㅽ뙣?덉뒿?덈떎.')
                 }
               }}
             />
@@ -2000,7 +1904,7 @@ function PostManagement() {
               onChange={(event) => setIsPinned(event.target.checked)}
               className="h-4 w-4"
             />
-            <span className="text-sm text-gray-700">?�단 고정</span>
+            <span className="text-sm text-gray-700">?곷떒 怨좎젙</span>
           </div>
         </div>
         <button
@@ -2009,16 +1913,16 @@ function PostManagement() {
           disabled={!title.trim()}
           className="mt-4 rounded-lg bg-teal-600 px-4 py-2 font-bold text-white transition-colors hover:bg-teal-700 disabled:opacity-50"
         >
-          게시글 ?�록
+          寃뚯떆湲 ?깅줉
         </button>
       </div>
 
       <div className="rounded-xl bg-white p-6 shadow-md">
-        <h3 className="mb-4 text-xl font-bold text-gray-800">게시글 목록</h3>
+        <h3 className="mb-4 text-xl font-bold text-gray-800">寃뚯떆湲 紐⑸줉</h3>
         {isLoading ? (
-          <p className="text-sm text-gray-500">불러?�는 �?..</p>
+          <p className="text-sm text-gray-500">遺덈윭?ㅻ뒗 以?..</p>
         ) : posts.length === 0 ? (
-          <p className="text-sm text-gray-500">?�록??게시글???�습?�다.</p>
+          <p className="text-sm text-gray-500">?깅줉??寃뚯떆湲???놁뒿?덈떎.</p>
         ) : (
           <div className="space-y-3">
             {posts.map((post) => (
@@ -2031,7 +1935,7 @@ function PostManagement() {
                 <div>
                   <p className="font-bold text-gray-800">{post.title}</p>
                   <p className="text-sm text-gray-500">
-                    {categoryLabels[post.category]} · {post.publishedAt.slice(0, 10)}
+                    {categoryLabels[post.category]} 쨌 {post.publishedAt.slice(0, 10)}
                   </p>
                 </div>
                 <div className="flex gap-2">
@@ -2040,18 +1944,18 @@ function PostManagement() {
                     onClick={() => handleEdit(post)}
                     className="rounded-lg bg-orange-500 px-3 py-1.5 text-sm font-bold text-white hover:cursor-pointer"
                   >
-                    ?�집
+                    ?몄쭛
                   </button>
                   <button
                     type="button"
                     onClick={() => {
-                      if (confirm('??��?�시겠습?�까?')) {
+                      if (confirm('??젣?섏떆寃좎뒿?덇퉴?')) {
                         void handleDelete(post.id)
                       }
                     }}
                     className="rounded-lg bg-red-500 px-3 py-1.5 text-sm font-bold text-white hover:cursor-pointer"
                   >
-                    ??��
+                    ??젣
                   </button>
                 </div>
               </div>
@@ -2071,12 +1975,12 @@ function PostManagement() {
         >
           <div className="w-full max-w-lg rounded-xl bg-white p-6 shadow-xl">
             <div className="mb-4 flex items-center justify-between">
-              <h3 className="text-lg font-bold text-gray-800">게시글 ?�정</h3>
+              <h3 className="text-lg font-bold text-gray-800">寃뚯떆湲 ?섏젙</h3>
               <button
                 type="button"
                 onClick={() => setEditingPostId(null)}
                 className="rounded-full p-2 text-gray-500 transition-colors hover:bg-gray-100"
-                aria-label="?�기"
+                aria-label="?リ린"
               >
                 <XCircle size={18} />
               </button>
@@ -2084,7 +1988,7 @@ function PostManagement() {
             <div className="space-y-4">
               <div>
                 <label className="mb-2 block text-sm font-bold text-gray-700">
-                  ?�목
+                  ?쒕ぉ
                 </label>
                 <input
                   value={editingTitle}
@@ -2094,7 +1998,7 @@ function PostManagement() {
               </div>
               <div>
                 <label className="mb-2 block text-sm font-bold text-gray-700">
-                  카테고리
+                  移댄뀒怨좊━
                 </label>
                 <select
                   value={editingCategory}
@@ -2103,13 +2007,13 @@ function PostManagement() {
                   }
                   className="w-full rounded-lg border-2 border-gray-200 px-4 py-2"
                 >
-                  <option value="NOTICE">공�??�항</option>
-                  <option value="ACTIVITY">커�??�티 ?�동</option>
+                  <option value="NOTICE">怨듭??ы빆</option>
+                  <option value="ACTIVITY">而ㅻ??덊떚 ?쒕룞</option>
                 </select>
               </div>
               <div>
                 <label className="mb-2 block text-sm font-bold text-gray-700">
-                  ?�용
+                  ?댁슜
                 </label>
                 {renderRibbon('edit')}
                 {/*
@@ -2119,80 +2023,80 @@ function PostManagement() {
                     onClick={() => applyEditCommand('bold')}
                     className="rounded-lg border border-gray-200 px-3 py-1 text-xs font-semibold text-gray-700 hover:bg-gray-50 hover:cursor-pointer"
                   >
-                    굵게
+                    援듦쾶
                   </button>
                   <button
                     type="button"
                     onClick={() => applyEditCommand('italic')}
                     className="rounded-lg border border-gray-200 px-3 py-1 text-xs font-semibold text-gray-700 hover:bg-gray-50 hover:cursor-pointer"
                   >
-                    기울??
+                    湲곗슱??
                   </button>
                   <button
                     type="button"
                     onClick={() => applyEditCommand('underline')}
                     className="rounded-lg border border-gray-200 px-3 py-1 text-xs font-semibold text-gray-700 hover:bg-gray-50 hover:cursor-pointer"
                   >
-                    밑줄
+                    諛묒쨪
                   </button>
                   <button
                     type="button"
                     onClick={() =>
                       insertBlock(
                         editingEditorRef,
-                        '<h2 data-block-id="__BLOCK_ID__" data-placeholder="?�목"></h2><p><br></p>',
+                        '<h2 data-block-id="__BLOCK_ID__" data-placeholder="?쒕ぉ"></h2><p><br></p>',
                         editingHtmlRef,
                       )
                     }
                     className="rounded-lg border border-gray-200 px-3 py-1 text-xs font-semibold text-gray-700 hover:bg-gray-50 hover:cursor-pointer"
                   >
-                    ?�목
+                    ?쒕ぉ
                   </button>
                   <button
                     type="button"
                     onClick={() =>
                       insertBlock(
                         editingEditorRef,
-                        '<h3 data-block-id="__BLOCK_ID__" data-placeholder="?�제�?></h3><p><br></p>',
+                        '<h3 data-block-id="__BLOCK_ID__" data-placeholder="?뚯젣紐?></h3><p><br></p>',
                         editingHtmlRef,
                       )
                     }
                     className="rounded-lg border border-gray-200 px-3 py-1 text-xs font-semibold text-gray-700 hover:bg-gray-50 hover:cursor-pointer"
                   >
-                    ?�제�?
+                    ?뚯젣紐?
                   </button>
                   <button
                     type="button"
                     onClick={() =>
                       insertBlock(
                         editingEditorRef,
-                        '<ul><li data-block-id="__BLOCK_ID__" data-placeholder="목록 ??��"></li></ul><p><br></p>',
+                        '<ul><li data-block-id="__BLOCK_ID__" data-placeholder="紐⑸줉 ??ぉ"></li></ul><p><br></p>',
                         editingHtmlRef,
                       )
                     }
                     className="rounded-lg border border-gray-200 px-3 py-1 text-xs font-semibold text-gray-700 hover:bg-gray-50 hover:cursor-pointer"
                   >
-                    목록
+                    紐⑸줉
                   </button>
                   <button
                     type="button"
                     onClick={() =>
                       insertBlock(
                         editingEditorRef,
-                        '<ol><li data-block-id="__BLOCK_ID__" data-placeholder="목록 ??��"></li></ol><p><br></p>',
+                        '<ol><li data-block-id="__BLOCK_ID__" data-placeholder="紐⑸줉 ??ぉ"></li></ol><p><br></p>',
                         editingHtmlRef,
                       )
                     }
                     className="rounded-lg border border-gray-200 px-3 py-1 text-xs font-semibold text-gray-700 hover:bg-gray-50 hover:cursor-pointer"
                   >
-                    번호 목록
+                    踰덊샇 紐⑸줉
                   </button>
                   <button
                     type="button"
                     onClick={() => openLinkModal('edit')}
                     className="rounded-lg border border-gray-200 px-3 py-1 text-xs font-semibold text-gray-700 hover:bg-gray-50 hover:cursor-pointer"
                   >
-                    링크
+                    留곹겕
                   </button>
                   <button
                     type="button"
@@ -2204,7 +2108,7 @@ function PostManagement() {
                     }}
                     className="rounded-lg border border-gray-200 px-3 py-1 text-xs font-semibold text-gray-700 hover:bg-gray-50 hover:cursor-pointer"
                   >
-                    ?��?지
+                    ?대?吏
                   </button>
                   <button
                     type="button"
@@ -2217,14 +2121,14 @@ function PostManagement() {
                     onClick={() => applyAutoFormat('edit')}
                     className="rounded-lg border border-gray-200 px-3 py-1 text-xs font-semibold text-gray-700 hover:bg-gray-50 hover:cursor-pointer"
                   >
-                    ?�동 ?�리
+                    ?먮룞 ?뺣━
                   </button>
                   <button
                     type="button"
                     onClick={() => applyEditCommand('insertHorizontalRule')}
                     className="rounded-lg border border-gray-200 px-3 py-1 text-xs font-semibold text-gray-700 hover:bg-gray-50 hover:cursor-pointer"
                   >
-                    구분??
+                    援щ텇??
                   </button>
                 */}
                 <div
@@ -2252,7 +2156,7 @@ function PostManagement() {
                         applyEditCommand('insertImage', url)
                       })
                     } catch (error) {
-                      alert(error instanceof Error ? error.message : '?��?지 ?�로?�에 ?�패?�습?�다.')
+                      alert(error instanceof Error ? error.message : '?대?吏 ?낅줈?쒖뿉 ?ㅽ뙣?덉뒿?덈떎.')
                     }
                   }}
                 />
@@ -2264,7 +2168,7 @@ function PostManagement() {
                   onChange={(event) => setEditingPinned(event.target.checked)}
                   className="h-4 w-4"
                 />
-                <span className="text-sm text-gray-700">?�단 고정</span>
+                <span className="text-sm text-gray-700">?곷떒 怨좎젙</span>
               </div>
             </div>
             <div className="mt-6 flex justify-end gap-2">
@@ -2273,7 +2177,7 @@ function PostManagement() {
                 onClick={() => setEditingPostId(null)}
                 className="rounded-lg bg-gray-200 px-4 py-2 text-sm font-bold text-gray-700"
               >
-                취소
+                痍⑥냼
               </button>
               <button
                 type="button"
@@ -2281,7 +2185,7 @@ function PostManagement() {
                 disabled={!editingTitle.trim()}
                 className="rounded-lg bg-teal-600 px-4 py-2 text-sm font-bold text-white disabled:opacity-50"
               >
-                ?�??
+                ???
               </button>
             </div>
           </div>
@@ -2300,7 +2204,7 @@ function PostManagement() {
           <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl">
             <div className="mb-4 flex items-center justify-between">
               <h4 className="text-lg font-bold text-gray-800">
-                {activeModal.type === 'link' ? '링크 추�?' : '??만들�?}
+                {activeModal.type === 'link' ? '留곹겕 異붽?' : '??留뚮뱾湲?}
               </h4>
               <button
                 type="button"
@@ -2309,7 +2213,7 @@ function PostManagement() {
                   selectionRangeRef.current = null
                 }}
                 className="rounded-full p-2 text-gray-500 transition-colors hover:bg-gray-100"
-                aria-label="?�기"
+                aria-label="?リ린"
               >
                 <XCircle size={18} />
               </button>
@@ -2317,7 +2221,7 @@ function PostManagement() {
             {activeModal.type === 'link' ? (
               <div className="space-y-4">
                 <label className="block text-sm font-semibold text-gray-700">
-                  링크 주소
+                  留곹겕 二쇱냼
                 </label>
                 <input
                   value={linkUrl}
@@ -2331,7 +2235,7 @@ function PostManagement() {
               <div className="grid gap-4 sm:grid-cols-2">
                 <div>
                   <label className="block text-sm font-semibold text-gray-700">
-                    ??개수
+                    ??媛쒖닔
                   </label>
                   <input
                     type="number"
@@ -2345,7 +2249,7 @@ function PostManagement() {
                 </div>
                 <div>
                   <label className="block text-sm font-semibold text-gray-700">
-                    ??개수
+                    ??媛쒖닔
                   </label>
                   <input
                     type="number"
@@ -2367,7 +2271,7 @@ function PostManagement() {
                 }}
                 className="rounded-lg bg-gray-100 px-4 py-2 text-sm font-semibold text-gray-600 hover:cursor-pointer"
               >
-                취소
+                痍⑥냼
               </button>
               <button
                 type="button"
@@ -2380,7 +2284,7 @@ function PostManagement() {
                 }}
                 className="rounded-lg bg-teal-600 px-4 py-2 text-sm font-semibold text-white hover:cursor-pointer"
               >
-                ?�인
+                ?뺤씤
               </button>
             </div>
           </div>
