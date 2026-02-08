@@ -233,13 +233,16 @@ export async function encodeUploadedVideo(
 }
 
 export async function fetchEncodeStatus(jobId: string, token?: string) {
+  const cacheBuster = Date.now()
   return apiRequest<{ job: { id: string; status: string; progress?: number; message?: string; videoId?: string } }>(
-    `/admin/videos/encode/${encodeURIComponent(jobId)}`,
+    `/admin/videos/encode/${encodeURIComponent(jobId)}?ts=${cacheBuster}`,
     {
       method: 'GET',
       headers: {
         ...authHeaders(token),
+        'Cache-Control': 'no-store',
       },
+      cache: 'no-store',
     },
   )
 }
