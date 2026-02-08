@@ -995,7 +995,7 @@ function PostManagement() {
   const [editingTitle, setEditingTitle] = useState('')
   const [editingCategory, setEditingCategory] = useState<PostCategory>('NOTICE')
   const [editingPinned, setEditingPinned] = useState(false)
-  const [editingContent, setEditingContent] = useState('')
+  
   const editingEditorRef = useRef<HTMLDivElement | null>(null)
   const editingImageInputRef = useRef<HTMLInputElement | null>(null)
   const editingHtmlRef = useRef('')
@@ -1037,7 +1037,6 @@ function PostManagement() {
       content: formatted,
       category,
       isPinned,
-      isPublished: true,
     })
     setTitle('')
     setCategory('NOTICE')
@@ -1060,14 +1059,35 @@ function PostManagement() {
     setEditingTitle(post.title)
     setEditingCategory(post.category)
     setEditingPinned(Boolean(post.isPinned))
-    setEditingContent(post.content || '')
     editingHtmlRef.current = post.content || ''
   }
 
-  const handleDelete = async (postId: string) => {
+  const handleDeletePost = async (postId: string) => {
     await deletePost(postId)
     loadPosts()
   }
+
+  const handleUpdate = async () => {
+    if (!editingPostId) {
+      return
+    }
+    const html = editingEditorRef.current?.innerHTML?.trim() || editingHtmlRef.current.trim()
+    await updatePost(editingPostId, {
+      title: editingTitle.trim(),
+      content: html || undefined,
+      category: editingCategory,
+      isPinned: editingPinned,
+    })
+    setEditingPostId(null)
+    loadPosts()
+  }
+
+  useEffect(() => {
+    if (!editingPostId || !editingEditorRef.current) {
+      return
+    }
+    editingEditorRef.current.innerHTML = editingHtmlRef.current || ''
+  }, [editingPostId])
 
   const formatPlainTextToHtml = (raw: string) => {
     const lines = raw
@@ -1804,11 +1824,6 @@ function PostManagement() {
     onInsert(publicUrl)
   }
 
-  const handleDelete = async (id: string) => {
-    await deletePost(id)
-    loadPosts()
-  }
-
   return (
     <div className="space-y-6">
       <div className="rounded-xl bg-white p-6 shadow-md">
@@ -2041,7 +2056,7 @@ function PostManagement() {
                     type="button"
                     onClick={() => {
                       if (confirm('??젣?섏떆寃좎뒿?덇퉴?')) {
-                        void handleDelete(post.id)
+                        void handleDeletePost(post.id)
                       }
                     }}
                     className="rounded-lg bg-red-500 px-3 py-1.5 text-sm font-bold text-white hover:cursor-pointer"
