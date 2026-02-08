@@ -13,7 +13,7 @@ import {
   Trash2,
   FileText,
 } from 'lucide-react'
-import { createPost, createPostImageUploadUrl, createTusToken, deletePost, deleteUser as deleteUserApi, deleteVideo as deleteVideoApi, encodeUploadedVideo, fetchAdminPosts, fetchAdminVideos, fetchMe, fetchUsers, fetchVideo, updatePost, updateUser, updateVideo } from '../lib/api'
+import { createPost, createPostImageUploadUrl, createTusToken, deletePost, deleteUser as deleteUserApi, deleteVideo as deleteVideoApi, encodeUploadedVideo, fetchAdminPosts, fetchAdminVideos, fetchEncodeStatus, fetchMe, fetchUsers, fetchVideo, updatePost, updateUser, updateVideo } from '../lib/api'
 
 type UserStatus = 'PENDING' | 'APPROVED' | 'REJECTED'
 type CourseLevel = 'BEGINNER' | 'INTERMEDIATE' | 'ADVANCED' | 'INSTRUCTOR'
@@ -545,15 +545,16 @@ function EducationManagement() {
       })
 
       setIsEncoding(true)
-      setUploadMessage('인코딩 중...')
+      setEncodingProgress(0)
+      setUploadMessage('인코딩 준비 중...')
 
       const encodeController = new AbortController()
       const encodeTimeout = window.setTimeout(() => {
         encodeController.abort()
-      }, 45 * 60 * 1000)
+      }, 60 * 60 * 1000)
 
       try {
-        await encodeUploadedVideo(
+        const { jobId } = await encodeUploadedVideo(
           {
             title: title.trim(),
             description: description.trim() || undefined,
@@ -564,6 +565,45 @@ function EducationManagement() {
           undefined,
           encodeController.signal,
         )
+
+        await new Promise<void>((resolve, reject) => {
+          const startedAt = Date.now()
+          const interval = window.setInterval(async () => {
+            if (encodeController.signal.aborted) {
+              window.clearInterval(interval)
+              reject(new Error('인코딩 시간이 초과되었습니다. 다시 시도해주세요.'))
+              return
+            }
+
+            try {
+              const { job } = await fetchEncodeStatus(jobId)
+              if (typeof job.progress === 'number') {
+                setEncodingProgress(Math.max(0, Math.min(100, job.progress)))
+              }
+              if (job.message) {
+                setUploadMessage(job.message)
+              }
+              if (job.status === 'done') {
+                window.clearInterval(interval)
+                setEncodingProgress(100)
+                resolve()
+                return
+              }
+              if (job.status === 'error') {
+                window.clearInterval(interval)
+                reject(new Error(job.message || '인코딩에 실패했습니다.'))
+                return
+              }
+              if (Date.now() - startedAt > 60 * 60 * 1000) {
+                window.clearInterval(interval)
+                reject(new Error('인코딩 시간이 초과되었습니다. 다시 시도해주세요.'))
+              }
+            } catch (pollError) {
+              window.clearInterval(interval)
+              reject(pollError)
+            }
+          }, 3000)
+        })
       } finally {
         window.clearTimeout(encodeTimeout)
       }

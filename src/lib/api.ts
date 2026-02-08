@@ -219,7 +219,7 @@ export async function encodeUploadedVideo(
   token?: string,
   signal?: AbortSignal,
 ) {
-  return apiRequest<{ video: { id: string } }>(
+  return apiRequest<{ jobId: string }>(
     '/admin/videos/encode',
     {
       method: 'POST',
@@ -228,6 +228,18 @@ export async function encodeUploadedVideo(
       },
       body: JSON.stringify(payload),
       signal,
+    },
+  )
+}
+
+export async function fetchEncodeStatus(jobId: string, token?: string) {
+  return apiRequest<{ job: { id: string; status: string; progress?: number; message?: string; videoId?: string } }>(
+    `/admin/videos/encode/${encodeURIComponent(jobId)}`,
+    {
+      method: 'GET',
+      headers: {
+        ...authHeaders(token),
+      },
     },
   )
 }
