@@ -240,7 +240,6 @@ export async function fetchEncodeStatus(jobId: string, token?: string) {
       method: 'GET',
       headers: {
         ...authHeaders(token),
-        'Cache-Control': 'no-store',
       },
       cache: 'no-store',
     },
