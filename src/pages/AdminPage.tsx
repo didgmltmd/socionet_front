@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
+import * as tus from 'tus-js-client'
 import { useNavigate } from 'react-router-dom'
 import {
   Users,
@@ -12,7 +13,7 @@ import {
   Trash2,
   FileText,
 } from 'lucide-react'
-import { createPost, createPostImageUploadUrl, deletePost, deleteUser as deleteUserApi, deleteVideo as deleteVideoApi, fetchAdminPosts, fetchAdminVideos, fetchMe, fetchUsers, fetchVideo, updatePost, updateUser, updateVideo, uploadVideo } from '../lib/api'
+import { createPost, createPostImageUploadUrl, createTusToken, deletePost, deleteUser as deleteUserApi, deleteVideo as deleteVideoApi, encodeUploadedVideo, fetchAdminPosts, fetchAdminVideos, fetchMe, fetchUsers, fetchVideo, updatePost, updateUser, updateVideo } from '../lib/api'
 
 type UserStatus = 'PENDING' | 'APPROVED' | 'REJECTED'
 type CourseLevel = 'BEGINNER' | 'INTERMEDIATE' | 'ADVANCED' | 'INSTRUCTOR'
@@ -401,6 +402,10 @@ function EducationManagement() {
   const [requiredRole, setRequiredRole] = useState<CourseLevel>('BEGINNER')
   const [file, setFile] = useState<File | null>(null)
   const [isUploading, setIsUploading] = useState(false)
+  const [uploadProgress, setUploadProgress] = useState(0)
+  const [uploadMessage, setUploadMessage] = useState('')
+  const [isEncoding, setIsEncoding] = useState(false)
+  const [encodingProgress, setEncodingProgress] = useState(0)
   const [durationSeconds, setDurationSeconds] = useState<number | null>(null)
   const [videoFilter, setVideoFilter] = useState<CourseLevel | 'ALL'>('ALL')
   const fileInputRef = useRef<HTMLInputElement | null>(null)
@@ -437,6 +442,26 @@ function EducationManagement() {
     void loadVideos()
   }, [])
 
+  useEffect(() => {
+    if (!isEncoding) {
+      setEncodingProgress(0)
+      return
+    }
+
+    setEncodingProgress(3)
+    const timer = window.setInterval(() => {
+      setEncodingProgress((prev) => {
+        if (prev >= 95) {
+          return prev
+        }
+        const next = prev + Math.max(1, Math.round((100 - prev) * 0.04))
+        return Math.min(next, 95)
+      })
+    }, 1200)
+
+    return () => window.clearInterval(timer)
+  }, [isEncoding])
+
   const extractDuration = (videoFile: File) => {
     const url = URL.createObjectURL(videoFile)
     const media = document.createElement('video')
@@ -469,19 +494,70 @@ function EducationManagement() {
       return
     }
 
-    setIsUploading(true)
-    try {
-      const formData = new FormData()
-      formData.append('file', file)
-      formData.append('title', title.trim())
-      formData.append('description', description.trim())
-      formData.append('requiredRole', requiredRole)
-      formData.append('isPublished', 'true')
-      if (typeof durationSeconds === 'number') {
-        formData.append('durationSeconds', String(durationSeconds))
-      }
+    const supabaseUrl = import.meta.env.VITE_SUPABASE_URL as string | undefined
+    const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY as string | undefined
+    if (!supabaseUrl || !supabaseAnonKey) {
+      alert('Supabase 환경변수가 설정되지 않았습니다.')
+      return
+    }
 
-      await uploadVideo(formData)
+    setIsUploading(true)
+    setUploadProgress(0)
+    setUploadMessage('')
+    setIsEncoding(false)
+    setEncodingProgress(0)
+    try {
+      const safeName = file.name
+        ? file.name.replace(/[^a-zA-Z0-9._-]/g, '-')
+        : `video-${Date.now()}.mp4`
+      const storagePath = `videos/${Date.now()}-${safeName}`
+
+      const { token: tusToken } = await createTusToken()
+
+      await new Promise<void>((resolve, reject) => {
+        const upload = new tus.Upload(file, {
+          endpoint: `${supabaseUrl.replace(/\/$/, '')}/storage/v1/upload/resumable`,
+          headers: {
+            authorization: `Bearer ${tusToken}`,
+            apikey: supabaseAnonKey,
+          },
+          metadata: {
+            bucketName: 'videos',
+            objectName: storagePath,
+            contentType: file.type || 'video/mp4',
+          },
+          chunkSize: 50 * 1024 * 1024,
+          onError: (error) => {
+            reject(error)
+          },
+          onProgress: (bytesUploaded, bytesTotal) => {
+            if (bytesTotal > 0) {
+              setUploadProgress(Math.round((bytesUploaded / bytesTotal) * 100))
+            }
+          },
+          onSuccess: () => {
+            setUploadProgress(100)
+            resolve()
+          },
+        })
+
+        upload.start()
+      })
+
+      setIsEncoding(true)
+      setUploadMessage('인코딩 중...')
+
+      await encodeUploadedVideo({
+        title: title.trim(),
+        description: description.trim() || undefined,
+        requiredRole,
+        isPublished: true,
+        storagePath,
+      })
+
+      setIsEncoding(false)
+      setEncodingProgress(100)
+      setUploadMessage('업로드되었습니다!')
 
       setTitle('')
       setDescription('')
@@ -493,13 +569,13 @@ function EducationManagement() {
       setDurationSeconds(null)
       setVideoFilter('ALL')
       await loadVideos()
-      alert('영상이 등록되었습니다.')
     } catch (error) {
-      alert(
-        error instanceof Error
-          ? error.message
-          : '영상 등록에 실패했습니다.',
-      )
+      setIsEncoding(false)
+      setEncodingProgress(0)
+      const message =
+        error instanceof Error ? error.message : '영상 등록에 실패했습니다.'
+      setUploadMessage(message)
+      alert(message)
     } finally {
       setIsUploading(false)
     }
@@ -664,6 +740,30 @@ function EducationManagement() {
         >
           {isUploading ? '\uC5C5\uB85C\uB4DC \uC911...' : '\uC601\uC0C1 \uB4F1\uB85D'}
         </button>
+
+        {isUploading || uploadProgress > 0 || uploadMessage || isEncoding ? (
+          <div className="mt-4">
+            <div className="h-2 w-full overflow-hidden rounded-full bg-gray-200">
+              <div
+                className="h-full bg-teal-500 transition-all"
+                style={{ width: `${uploadProgress}%` }}
+              />
+            </div>
+            <div className="mt-3 h-2 w-full overflow-hidden rounded-full bg-gray-100">
+              <div
+                className="h-full bg-orange-400 transition-all"
+                style={{ width: `${isEncoding ? encodingProgress : 0}%` }}
+              />
+            </div>
+            <p className="mt-2 text-sm text-gray-600">
+              {isUploading
+                ? `업로드 중... ${uploadProgress}%`
+                : isEncoding
+                  ? `인코딩 중... ${encodingProgress}%`
+                  : uploadMessage}
+            </p>
+          </div>
+        ) : null}
       </div>
 
       <div className="rounded-xl bg-white p-6 shadow-md">
@@ -874,6 +974,154 @@ function PostManagement() {
     mode: 'create' | 'edit'
   } | null>(null)
   const [linkUrl, setLinkUrl] = useState('')
+
+  const formatPlainTextToHtml = (raw: string) => {
+    const lines = raw
+      .split(/\r?\n/)
+      .map((line) => line.trim())
+      .filter(Boolean)
+
+    if (!lines.length) {
+      return ''
+    }
+
+    const blocks: string[] = []
+    const datePattern = /\d{4}년\s*\d{1,2}월\s*\d{1,2}일/
+
+    const pushParagraph = (text: string) => {
+      blocks.push(`<p>${text}</p>`)
+    }
+
+    const parseScheduleTable = (tableLines: string[]) => {
+      const headerIndex = tableLines.findIndex((line) =>
+        ['날짜', '시간', '발표자', '참관자', '인정학회'].includes(line),
+      )
+
+      if (headerIndex === -1) {
+        tableLines.forEach((line) => pushParagraph(line))
+        return
+      }
+
+      const header = tableLines.slice(headerIndex, headerIndex + 5)
+      const dataLines = tableLines.slice(headerIndex + header.length)
+      const rows: string[][] = []
+      let current: string[] | null = null
+
+      dataLines.forEach((line) => {
+        if (datePattern.test(line)) {
+          if (current) {
+            rows.push(current)
+          }
+          current = [line]
+          return
+        }
+
+        if (!current) {
+          current = [line]
+          return
+        }
+
+        current.push(line)
+      })
+
+      if (current) {
+        rows.push(current)
+      }
+
+      const rowHtml = rows
+        .map((row) => {
+          const cells = Array.from({ length: header.length }, () => '')
+          row.forEach((value, index) => {
+            if (index < cells.length) {
+              cells[index] = value
+            } else {
+              cells[cells.length - 1] += `<br>${value}`
+            }
+          })
+          return `<tr>${cells.map((cell) => `<td>${cell}</td>`).join('')}</tr>`
+        })
+        .join('')
+
+      blocks.push(
+        `<table><thead><tr>${header
+          .map((cell) => `<th>${cell}</th>`)
+          .join('')}</tr></thead><tbody>${rowHtml}</tbody></table>`,
+      )
+    }
+
+    let index = 0
+    while (index < lines.length) {
+      const line = lines[index]
+
+      if (line.startsWith('[') && line.endsWith(']')) {
+        blocks.push(
+          `<h3 style="text-align:center;">${line.replace(/^\[|\]$/g, '')}</h3>`,
+        )
+        index += 1
+        continue
+      }
+
+      if (line.startsWith('(') && line.endsWith(')')) {
+        blocks.push(`<p style="text-align:center;">${line}</p>`)
+        index += 1
+        continue
+      }
+
+      if (line.startsWith('*일 정') || line.startsWith('▲일 정')) {
+        blocks.push(`<h3>${line.replace(/^[*▲]\s*/, '')}</h3>`)
+        index += 1
+        const tableLines: string[] = []
+        while (index < lines.length) {
+          const nextLine = lines[index]
+          if (nextLine.startsWith('*') || nextLine.startsWith('▲')) {
+            break
+          }
+          tableLines.push(nextLine)
+          index += 1
+        }
+        if (tableLines.length) {
+          parseScheduleTable(tableLines)
+        }
+        continue
+      }
+
+      if (line.startsWith('*') || line.startsWith('▲')) {
+        blocks.push(`<h3>${line.replace(/^[*▲]\s*/, '')}</h3>`)
+        index += 1
+        continue
+      }
+
+      if (line.startsWith('-')) {
+        const items: string[] = []
+        while (index < lines.length && lines[index].startsWith('-')) {
+          items.push(lines[index].replace(/^-\s*/, ''))
+          index += 1
+        }
+        blocks.push(
+          `<ul>${items.map((item) => `<li>${item}</li>`).join('')}</ul>`,
+        )
+        continue
+      }
+
+      pushParagraph(line)
+      index += 1
+    }
+
+    return blocks.join('')
+  }
+
+  const applyAutoFormat = (mode: 'create' | 'edit') => {
+    const editorRef = mode === 'create' ? contentEditorRef : editingEditorRef
+    const htmlRef = mode === 'create' ? contentHtmlRef : editingHtmlRef
+    const target = editorRef.current
+    if (!target) {
+      return
+    }
+    const rawText = target.innerText || ''
+    const formatted = formatPlainTextToHtml(rawText)
+    target.innerHTML = formatted
+    htmlRef.current = formatted
+  }
   const [tableRows, setTableRows] = useState('3')
   const [tableCols, setTableCols] = useState('3')
   const [editingPostId, setEditingPostId] = useState<string | null>(null)
@@ -967,6 +1215,7 @@ function PostManagement() {
       return
     }
     target.focus()
+    document.execCommand('styleWithCSS', false, true)
     document.execCommand(command, false, value)
     contentHtmlRef.current = target.innerHTML
   }
@@ -977,8 +1226,372 @@ function PostManagement() {
       return
     }
     target.focus()
+    document.execCommand('styleWithCSS', false, true)
     document.execCommand(command, false, value)
     editingHtmlRef.current = target.innerHTML
+  }
+
+  const applyFontFamily = (mode: 'create' | 'edit', value: string) => {
+    const target = mode === 'create' ? contentEditorRef.current : editingEditorRef.current
+    const htmlRef = mode === 'create' ? contentHtmlRef : editingHtmlRef
+    if (!target) {
+      return
+    }
+    target.focus()
+    document.execCommand('styleWithCSS', false, true)
+    document.execCommand('fontName', false, value)
+    htmlRef.current = target.innerHTML
+  }
+
+  const applyFontSize = (mode: 'create' | 'edit', size: string) => {
+    const target = mode === 'create' ? contentEditorRef.current : editingEditorRef.current
+    const htmlRef = mode === 'create' ? contentHtmlRef : editingHtmlRef
+    if (!target) {
+      return
+    }
+    const sizeMap: Record<string, string> = {
+      '12': '2',
+      '14': '3',
+      '16': '4',
+      '18': '5',
+      '20': '5',
+      '24': '6',
+      '28': '7',
+    }
+    target.focus()
+    document.execCommand('styleWithCSS', false, true)
+    document.execCommand('fontSize', false, sizeMap[size] ?? '3')
+    htmlRef.current = target.innerHTML
+  }
+
+  const applyTextColor = (mode: 'create' | 'edit', color: string) => {
+    const target = mode === 'create' ? contentEditorRef.current : editingEditorRef.current
+    const htmlRef = mode === 'create' ? contentHtmlRef : editingHtmlRef
+    if (!target) {
+      return
+    }
+    target.focus()
+    document.execCommand('styleWithCSS', false, true)
+    document.execCommand('foreColor', false, color)
+    htmlRef.current = target.innerHTML
+  }
+
+  const applyHighlight = (mode: 'create' | 'edit', color: string) => {
+    const target = mode === 'create' ? contentEditorRef.current : editingEditorRef.current
+    const htmlRef = mode === 'create' ? contentHtmlRef : editingHtmlRef
+    if (!target) {
+      return
+    }
+    target.focus()
+    document.execCommand('styleWithCSS', false, true)
+    document.execCommand('hiliteColor', false, color)
+    htmlRef.current = target.innerHTML
+  }
+
+  const applyAlignment = (mode: 'create' | 'edit', command: string) => {
+    if (mode === 'create') {
+      applyCommand(command)
+      return
+    }
+    applyEditCommand(command)
+  }
+
+  const toggleBlockquote = (mode: 'create' | 'edit') => {
+    const editorRef = mode === 'create' ? contentEditorRef : editingEditorRef
+    const htmlRef = mode === 'create' ? contentHtmlRef : editingHtmlRef
+    const target = editorRef.current
+    if (!target) {
+      return
+    }
+    target.focus()
+    document.execCommand('styleWithCSS', false, true)
+    document.execCommand('formatBlock', false, 'blockquote')
+    htmlRef.current = target.innerHTML
+  }
+
+  const insertChecklist = (mode: 'create' | 'edit') => {
+    const editorRef = mode === 'create' ? contentEditorRef : editingEditorRef
+    const htmlRef = mode === 'create' ? contentHtmlRef : editingHtmlRef
+    insertBlock(
+      editorRef,
+      '<ul><li data-block-id="__BLOCK_ID__" data-placeholder="체크 항목">□ </li></ul><p><br></p>',
+      htmlRef,
+    )
+  }
+
+  const applyCellBackground = (mode: 'create' | 'edit', color: string) => {
+    const editorRef = mode === 'create' ? contentEditorRef : editingEditorRef
+    const htmlRef = mode === 'create' ? contentHtmlRef : editingHtmlRef
+    const target = editorRef.current
+    if (!target) {
+      return
+    }
+    const selection = window.getSelection()
+    const node =
+      selection?.anchorNode?.nodeType === 1
+        ? (selection.anchorNode as HTMLElement)
+        : selection?.anchorNode?.parentElement
+    const cell = node?.closest('td, th')
+    if (cell) {
+      cell.setAttribute('style', `${cell.getAttribute('style') || ''}; background-color: ${color};`)
+      htmlRef.current = target.innerHTML
+    }
+  }
+
+  const renderRibbon = (mode: 'create' | 'edit') => {
+    const applyCmd = mode === 'create' ? applyCommand : applyEditCommand
+    return (
+      <div className="mb-3 space-y-2 rounded-2xl border border-gray-100 bg-gray-50/80 p-2">
+        <div className="flex flex-wrap items-center gap-2">
+          <div className="flex items-center gap-2 rounded-xl bg-white px-3 py-2 shadow-sm">
+            <span className="text-[11px] font-semibold text-gray-500">글꼴</span>
+            <select
+              onChange={(event) => applyFontFamily(mode, event.target.value)}
+              className="rounded-md border border-gray-200 bg-white px-2 py-1 text-xs"
+              defaultValue="맑은 고딕"
+            >
+              <option value="맑은 고딕">맑은 고딕</option>
+              <option value="나눔고딕">나눔고딕</option>
+              <option value="굴림">굴림</option>
+              <option value="바탕">바탕</option>
+            </select>
+            <select
+              onChange={(event) => applyFontSize(mode, event.target.value)}
+              className="rounded-md border border-gray-200 bg-white px-2 py-1 text-xs"
+              defaultValue="16"
+            >
+              <option value="12">12</option>
+              <option value="14">14</option>
+              <option value="16">16</option>
+              <option value="18">18</option>
+              <option value="20">20</option>
+              <option value="24">24</option>
+              <option value="28">28</option>
+            </select>
+          </div>
+
+          <div className="flex items-center gap-2 rounded-xl bg-white px-3 py-2 shadow-sm">
+            <span className="text-[11px] font-semibold text-gray-500">서식</span>
+            <button
+              type="button"
+              onClick={() => applyCmd('bold')}
+              className="rounded-md border border-gray-200 px-2 py-1 text-xs font-semibold text-gray-700 hover:bg-gray-50 hover:cursor-pointer"
+            >
+              굵게
+            </button>
+            <button
+              type="button"
+              onClick={() => applyCmd('italic')}
+              className="rounded-md border border-gray-200 px-2 py-1 text-xs font-semibold text-gray-700 hover:bg-gray-50 hover:cursor-pointer"
+            >
+              기울임
+            </button>
+            <button
+              type="button"
+              onClick={() => applyCmd('underline')}
+              className="rounded-md border border-gray-200 px-2 py-1 text-xs font-semibold text-gray-700 hover:bg-gray-50 hover:cursor-pointer"
+            >
+              밑줄
+            </button>
+            <button
+              type="button"
+              onClick={() =>
+                insertBlock(
+                  mode === 'create' ? contentEditorRef : editingEditorRef,
+                  '<h2 data-block-id="__BLOCK_ID__" data-placeholder="제목"></h2><p><br></p>',
+                  mode === 'create' ? contentHtmlRef : editingHtmlRef,
+                )
+              }
+              className="rounded-md border border-gray-200 px-2 py-1 text-xs font-semibold text-gray-700 hover:bg-gray-50 hover:cursor-pointer"
+            >
+              제목
+            </button>
+            <button
+              type="button"
+              onClick={() =>
+                insertBlock(
+                  mode === 'create' ? contentEditorRef : editingEditorRef,
+                  '<h3 data-block-id="__BLOCK_ID__" data-placeholder="소제목"></h3><p><br></p>',
+                  mode === 'create' ? contentHtmlRef : editingHtmlRef,
+                )
+              }
+              className="rounded-md border border-gray-200 px-2 py-1 text-xs font-semibold text-gray-700 hover:bg-gray-50 hover:cursor-pointer"
+            >
+              소제목
+            </button>
+            <button
+              type="button"
+              onClick={() => toggleBlockquote(mode)}
+              className="rounded-md border border-gray-200 px-2 py-1 text-xs font-semibold text-gray-700 hover:bg-gray-50 hover:cursor-pointer"
+            >
+              인용문
+            </button>
+          </div>
+
+          <div className="flex items-center gap-2 rounded-xl bg-white px-3 py-2 shadow-sm">
+            <span className="text-[11px] font-semibold text-gray-500">색상</span>
+            <label className="flex items-center gap-1 text-xs text-gray-600">
+              글자
+              <input
+                type="color"
+                onChange={(event) => applyTextColor(mode, event.target.value)}
+                className="h-6 w-6 cursor-pointer rounded border border-gray-200"
+              />
+            </label>
+            <label className="flex items-center gap-1 text-xs text-gray-600">
+              배경
+              <input
+                type="color"
+                onChange={(event) => applyHighlight(mode, event.target.value)}
+                className="h-6 w-6 cursor-pointer rounded border border-gray-200"
+              />
+            </label>
+          </div>
+
+          <div className="flex items-center gap-2 rounded-xl bg-white px-3 py-2 shadow-sm">
+            <span className="text-[11px] font-semibold text-gray-500">정렬</span>
+            <button
+              type="button"
+              onClick={() => applyAlignment(mode, 'justifyLeft')}
+              className="rounded-md border border-gray-200 px-2 py-1 text-xs font-semibold text-gray-700 hover:bg-gray-50 hover:cursor-pointer"
+            >
+              좌
+            </button>
+            <button
+              type="button"
+              onClick={() => applyAlignment(mode, 'justifyCenter')}
+              className="rounded-md border border-gray-200 px-2 py-1 text-xs font-semibold text-gray-700 hover:bg-gray-50 hover:cursor-pointer"
+            >
+              가운데
+            </button>
+            <button
+              type="button"
+              onClick={() => applyAlignment(mode, 'justifyRight')}
+              className="rounded-md border border-gray-200 px-2 py-1 text-xs font-semibold text-gray-700 hover:bg-gray-50 hover:cursor-pointer"
+            >
+              우
+            </button>
+            <button
+              type="button"
+              onClick={() => applyAlignment(mode, 'justifyFull')}
+              className="rounded-md border border-gray-200 px-2 py-1 text-xs font-semibold text-gray-700 hover:bg-gray-50 hover:cursor-pointer"
+            >
+              양쪽
+            </button>
+          </div>
+
+          <div className="flex items-center gap-2 rounded-xl bg-white px-3 py-2 shadow-sm">
+            <span className="text-[11px] font-semibold text-gray-500">들여쓰기</span>
+            <button
+              type="button"
+              onClick={() => applyCmd('indent')}
+              className="rounded-md border border-gray-200 px-2 py-1 text-xs font-semibold text-gray-700 hover:bg-gray-50 hover:cursor-pointer"
+            >
+              들여쓰기
+            </button>
+            <button
+              type="button"
+              onClick={() => applyCmd('outdent')}
+              className="rounded-md border border-gray-200 px-2 py-1 text-xs font-semibold text-gray-700 hover:bg-gray-50 hover:cursor-pointer"
+            >
+              내어쓰기
+            </button>
+          </div>
+        </div>
+
+        <div className="flex flex-wrap items-center gap-2">
+          <div className="flex items-center gap-2 rounded-xl bg-white px-3 py-2 shadow-sm">
+            <span className="text-[11px] font-semibold text-gray-500">목록</span>
+            <button
+              type="button"
+              onClick={() =>
+                insertBlock(
+                  mode === 'create' ? contentEditorRef : editingEditorRef,
+                  '<ul><li data-block-id="__BLOCK_ID__" data-placeholder="목록 항목"></li></ul><p><br></p>',
+                  mode === 'create' ? contentHtmlRef : editingHtmlRef,
+                )
+              }
+              className="rounded-md border border-gray-200 px-2 py-1 text-xs font-semibold text-gray-700 hover:bg-gray-50 hover:cursor-pointer"
+            >
+              목록
+            </button>
+            <button
+              type="button"
+              onClick={() =>
+                insertBlock(
+                  mode === 'create' ? contentEditorRef : editingEditorRef,
+                  '<ol><li data-block-id="__BLOCK_ID__" data-placeholder="목록 항목"></li></ol><p><br></p>',
+                  mode === 'create' ? contentHtmlRef : editingHtmlRef,
+                )
+              }
+              className="rounded-md border border-gray-200 px-2 py-1 text-xs font-semibold text-gray-700 hover:bg-gray-50 hover:cursor-pointer"
+            >
+              번호 목록
+            </button>
+            <button
+              type="button"
+              onClick={() => insertChecklist(mode)}
+              className="rounded-md border border-gray-200 px-2 py-1 text-xs font-semibold text-gray-700 hover:bg-gray-50 hover:cursor-pointer"
+            >
+              체크리스트
+            </button>
+          </div>
+
+          <div className="flex items-center gap-2 rounded-xl bg-white px-3 py-2 shadow-sm">
+            <span className="text-[11px] font-semibold text-gray-500">삽입</span>
+            <button
+              type="button"
+              onClick={() => openLinkModal(mode)}
+              className="rounded-md border border-gray-200 px-2 py-1 text-xs font-semibold text-gray-700 hover:bg-gray-50 hover:cursor-pointer"
+            >
+              링크
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                if (mode === 'create') {
+                  contentImageInputRef.current?.click()
+                } else {
+                  editingImageInputRef.current?.click()
+                }
+              }}
+              className="rounded-md border border-gray-200 px-2 py-1 text-xs font-semibold text-gray-700 hover:bg-gray-50 hover:cursor-pointer"
+            >
+              이미지
+            </button>
+            <button
+              type="button"
+              onClick={() => openTableModal(mode)}
+              className="rounded-md border border-gray-200 px-2 py-1 text-xs font-semibold text-gray-700 hover:bg-gray-50 hover:cursor-pointer"
+            >
+              표
+            </button>
+            <label className="flex items-center gap-1 text-xs text-gray-600">
+              셀 배경
+              <input
+                type="color"
+                onChange={(event) => applyCellBackground(mode, event.target.value)}
+                className="h-6 w-6 cursor-pointer rounded border border-gray-200"
+              />
+            </label>
+            <button
+              type="button"
+              onClick={() => applyCmd('insertHorizontalRule')}
+              className="rounded-md border border-gray-200 px-2 py-1 text-xs font-semibold text-gray-700 hover:bg-gray-50 hover:cursor-pointer"
+            >
+              구분선
+            </button>
+            <button
+              type="button"
+              onClick={() => applyAutoFormat(mode)}
+              className="rounded-md border border-gray-200 px-2 py-1 text-xs font-semibold text-gray-700 hover:bg-gray-50 hover:cursor-pointer"
+            >
+              자동 정리
+            </button>
+          </div>
+        </div>
+      </div>
+    )
   }
 
   const insertBlock = (
@@ -1226,6 +1839,8 @@ function PostManagement() {
             <label className="mb-2 block text-sm font-bold text-gray-700">
               내용
             </label>
+            {renderRibbon('create')}
+            {/*
             <div className="mb-3 flex flex-wrap gap-2 rounded-2xl border border-gray-100 bg-gray-50/80 p-2">
               <button
                 type="button"
@@ -1319,21 +1934,28 @@ function PostManagement() {
               >
                 이미지
               </button>
-              <button
-                type="button"
-                onClick={() => openTableModal('create')}
-                className="rounded-lg border border-gray-200 px-3 py-1 text-xs font-semibold text-gray-700 hover:bg-gray-50 hover:cursor-pointer"
-              >
-                표
-              </button>
-              <button
-                type="button"
-                onClick={() => applyCommand('insertHorizontalRule')}
-                className="rounded-lg border border-gray-200 px-3 py-1 text-xs font-semibold text-gray-700 hover:bg-gray-50 hover:cursor-pointer"
-              >
+                <button
+                  type="button"
+                  onClick={() => openTableModal('create')}
+                  className="rounded-lg border border-gray-200 px-3 py-1 text-xs font-semibold text-gray-700 hover:bg-gray-50 hover:cursor-pointer"
+                >
+                  표
+                </button>
+                <button
+                  type="button"
+                  onClick={() => applyAutoFormat('create')}
+                  className="rounded-lg border border-gray-200 px-3 py-1 text-xs font-semibold text-gray-700 hover:bg-gray-50 hover:cursor-pointer"
+                >
+                  자동 정리
+                </button>
+                <button
+                  type="button"
+                  onClick={() => applyCommand('insertHorizontalRule')}
+                  className="rounded-lg border border-gray-200 px-3 py-1 text-xs font-semibold text-gray-700 hover:bg-gray-50 hover:cursor-pointer"
+                >
                 구분선
               </button>
-            </div>
+            */}
             <div
               ref={contentEditorRef}
               contentEditable
@@ -1482,6 +2104,8 @@ function PostManagement() {
                 <label className="mb-2 block text-sm font-bold text-gray-700">
                   내용
                 </label>
+                {renderRibbon('edit')}
+                {/*
                 <div className="mb-3 flex flex-wrap gap-2 rounded-2xl border border-gray-100 bg-gray-50/80 p-2">
                   <button
                     type="button"
@@ -1584,12 +2208,19 @@ function PostManagement() {
                   </button>
                   <button
                     type="button"
+                    onClick={() => applyAutoFormat('edit')}
+                    className="rounded-lg border border-gray-200 px-3 py-1 text-xs font-semibold text-gray-700 hover:bg-gray-50 hover:cursor-pointer"
+                  >
+                    자동 정리
+                  </button>
+                  <button
+                    type="button"
                     onClick={() => applyEditCommand('insertHorizontalRule')}
                     className="rounded-lg border border-gray-200 px-3 py-1 text-xs font-semibold text-gray-700 hover:bg-gray-50 hover:cursor-pointer"
                   >
                     구분선
                   </button>
-                </div>
+                */}
                 <div
                   ref={editingEditorRef}
                   contentEditable

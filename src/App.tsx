@@ -13,6 +13,7 @@ import UnderstandingPage from './pages/UnderstandingPage'
 import TestPage from './pages/TestPage'
 import CommunityPage from './pages/CommunityPage'
 import CommunityPostPage from './pages/CommunityPostPage'
+import SocionetNewsPage from './pages/SocionetNewsPage'
 import CounselingPage from './pages/CounselingPage'
 import ResourcesPage from './pages/ResourcesPage'
 import AdminPage from './pages/AdminPage'
@@ -175,14 +176,15 @@ export default function App() {
         <Route element={<DefaultLayout />}>
           <Route index element={<MainContent currentPage="" currentSubPage="" />} />
           <Route path="intro" element={<IntroductionPage subPage="인사말" />} />
+          <Route path="intro/overview" element={<IntroductionPage subPage="연구소 소개" />} />
           <Route path="intro/greeting" element={<IntroductionPage subPage="인사말" />} />
           <Route path="intro/history" element={<IntroductionPage subPage="연혁" />} />
           <Route path="intro/activities" element={<IntroductionPage subPage="주요활동" />} />
           <Route path="intro/location" element={<IntroductionPage subPage="오시는 길" />} />
           <Route path="understanding" element={<UnderstandingPage subPage="SOCIOMETRY" />} />
           <Route path="understanding/sociometry" element={<UnderstandingPage subPage="SOCIOMETRY" />} />
-          <Route path="understanding/about" element={<UnderstandingPage subPage="SOCIONET에 대하여" />} />
           <Route path="understanding/sna" element={<UnderstandingPage subPage="SOCIAL NETWORK ANALYSIS" />} />
+          <Route path="understanding/about" element={<UnderstandingPage subPage="SOCIONET에 대하여" />} />
           <Route path="understanding/korea" element={<UnderstandingPage subPage="한국과 SOCIONET" />} />
           <Route path="understanding/application" element={<UnderstandingPage subPage="SOCIONET 활용" />} />
           <Route path="test" element={<TestPage subPage="검사신청" />} />
@@ -194,15 +196,15 @@ export default function App() {
           <Route path="test/education/intermediate" element={<TestPage subPage="중급 SOCIONET" />} />
           <Route path="test/education/advanced" element={<TestPage subPage="고급 SOCIONET" />} />
           <Route path="test/education/instructor" element={<TestPage subPage="일반강사과정" />} />
-          <Route path="community" element={<CommunityPage subPage="공지사항" />} />
-          <Route path="community/notice" element={<CommunityPage subPage="공지사항" />} />
+          <Route path="community" element={<CommunityPage subPage="커뮤니티 활동" />} />
+          <Route path="community/notice" element={<SocionetNewsPage />} />
           <Route path="community/activity" element={<CommunityPage subPage="커뮤니티 활동" />} />
-          <Route path="community/open" element={<CommunityPage subPage="열린마당" />} />
-          <Route path="community/faq" element={<CommunityPage subPage="Q & A / FAQ" />} />
           <Route path="community/socionet-study" element={<CommunityPage subPage="SOCIONET 연구모임" />} />
           <Route path="community/counseling-study" element={<CommunityPage subPage="일반상담 연구모임" />} />
           <Route path="community/posts/:id" element={<CommunityPostPage />} />
-          <Route path="counseling" element={<CounselingPage subPage="아동청소년 상담" />} />
+          <Route path="counseling" element={<CounselingPage subPage="검사" />} />
+          <Route path="counseling/test" element={<CounselingPage subPage="검사" />} />
+          <Route path="counseling/counsel" element={<CounselingPage subPage="상담" />} />
           <Route path="counseling/test/child" element={<CounselingPage subPage="아동 심리검사" />} />
           <Route path="counseling/test/youth" element={<CounselingPage subPage="청소년 심리검사" />} />
           <Route path="counseling/test/adult" element={<CounselingPage subPage="성인심리검사" />} />
@@ -212,12 +214,16 @@ export default function App() {
           <Route path="counseling/career" element={<CounselingPage subPage="학습 진로상담" />} />
           <Route path="counseling/corporate" element={<CounselingPage subPage="기업상담" />} />
           <Route path="counseling/retiree" element={<CounselingPage subPage="은퇴자 상담" />} />
-          <Route path="counseling/tgroup" element={<CounselingPage subPage="감수성 훈련" />} />
+          <Route path="counseling/career-guidance" element={<CounselingPage subPage="진로상담" />} />
+          <Route path="counseling/tgroup" element={<CounselingPage subPage="감수성훈련" />} />
+          <Route path="counseling/group" element={<CounselingPage subPage="집단상담" />} />
+          <Route path="counseling/art" element={<CounselingPage subPage="미술상담" />} />
           <Route path="resources" element={<ResourcesPage subPage="논문" />} />
           <Route path="resources/papers" element={<ResourcesPage subPage="논문" />} />
           <Route path="resources/publications" element={<ResourcesPage subPage="출판물" />} />
           <Route path="resources/books" element={<ResourcesPage subPage="추천도서" />} />
           <Route path="admin" element={<AdminRoute />} />
+          <Route path="news/notice" element={<SocionetNewsPage />} />
         </Route>
         <Route path="online-education" element={<OnlineEducationRoute />} />
         <Route path="signup" element={<SignupRoute />} />

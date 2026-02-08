@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { fetchMe } from '../lib/api'
-import { ClipboardList, Mail, Phone, Video, X } from 'lucide-react'
+import { ClipboardList, Mail, Megaphone, Phone, Video, X } from 'lucide-react'
 import { createPortal } from 'react-dom'
 import { useNavigate } from 'react-router-dom'
 
@@ -10,6 +10,7 @@ interface SidebarProps {
 
 const menuItems = [
   {
+    key: 'application',
     icon: ClipboardList,
     title: 'SOCIONET \uac80\uc0ac \ubc0f \uad50\uc721 \uc2e0\uccad',
     color: 'bg-teal-600 hover:bg-teal-700',
@@ -17,23 +18,33 @@ const menuItems = [
       navigate('/test/application'),
   },
   {
+    key: 'mail',
     icon: Mail,
     title: '\uc5f0\uad6c\uc18c \uba54\uc77c',
     color: 'bg-orange-500 hover:bg-orange-600',
     action: () => {},
   },
   {
+    key: 'phone',
     icon: Phone,
     title: '\uc5f0\uad6c\uc18c \uc804\ud654',
     color: 'bg-teal-500 hover:bg-teal-600',
     action: () => {},
   },
   {
+    key: 'online',
     icon: Video,
     title: '\uc628\ub77c\uc778 \uad50\uc721',
     color: 'bg-orange-600 hover:bg-orange-700',
     action: (navigate: ReturnType<typeof useNavigate>) =>
       navigate('/online-education'),
+  },
+  {
+    key: 'society',
+    icon: Megaphone,
+    title: 'SOCIONET \ud559\ud68c \ub3d9\uc815',
+    color: 'bg-teal-700 hover:bg-teal-800',
+    action: () => {},
   },
 ]
 
@@ -60,6 +71,7 @@ export default function Sidebar({ logoSrc }: SidebarProps) {
   const [isContactModalOpen, setIsContactModalOpen] = useState(false)
   const [contactType, setContactType] = useState<'mail' | 'phone' | null>(null)
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false)
+  const [isSocietyModalOpen, setIsSocietyModalOpen] = useState(false)
 
   return (
     <aside className="w-full overflow-hidden rounded-xl border border-gray-200 bg-white shadow-lg">
@@ -72,7 +84,7 @@ export default function Sidebar({ logoSrc }: SidebarProps) {
           <div className="flex h-24 w-full items-center justify-center rounded-lg bg-white p-2">
             <LogoMark logoSrc={logoSrc} />
           </div>
-          <p className="mt-2 text-center text-xs font-bold text-teal-700">
+          <p className="mt-2 text-center text-sm font-bold text-teal-700">
             {'\uc8fc\uc694 \uba54\ub274 \ubc14\ub85c\uac00\uae30'}
           </p>
         </button>
@@ -81,16 +93,20 @@ export default function Sidebar({ logoSrc }: SidebarProps) {
       <div className="space-y-2 bg-gray-50 p-3">
         {menuItems.map((item) => {
           const Icon = item.icon
-          const isContactAction = item.icon === Mail || item.icon === Phone
-          const requiresLogin = item.icon === Video
+          const isContactAction = item.key === 'mail' || item.key === 'phone'
+          const requiresLogin = item.key === 'online'
 
           return (
             <button
               key={item.title}
               onClick={async () => {
                 if (isContactAction) {
-                  setContactType(item.icon === Mail ? 'mail' : 'phone')
+                  setContactType(item.key === 'mail' ? 'mail' : 'phone')
                   setIsContactModalOpen(true)
+                  return
+                }
+                if (item.key === 'society') {
+                  setIsSocietyModalOpen(true)
                   return
                 }
                 if (requiresLogin) {
@@ -146,21 +162,56 @@ export default function Sidebar({ logoSrc }: SidebarProps) {
                   <X size={18} />
                 </button>
               </div>
-              <div className="mt-5 space-y-4 text-sm text-gray-700">
+              <div className="mt-5 space-y-4 text-base text-gray-700">
                 {contactType === 'phone' && (
                   <div>
-                    <p className="font-semibold text-gray-900">M.</p>
-                    <p className="mt-1">010-6563-7308</p>
+                    <p className="text-lg font-semibold text-gray-900">M.</p>
+                    <p className="mt-1 text-lg">010-6563-7308</p>
                   </div>
                 )}
                 {contactType === 'mail' && (
                   <div>
-                    <p className="font-semibold text-gray-900">E.</p>
-                    <p className="mt-1 break-all">
-                      ksocionet@gmail.com / ksocionet@naver.com
-                    </p>
+                    <p className="text-lg font-semibold text-gray-900">E.</p>
+                    <p className="mt-1 break-all text-lg">ksocionet@gmail.com</p>
                   </div>
                 )}
+              </div>
+            </div>
+          </div>,
+          document.body,
+        )}
+
+      {isSocietyModalOpen &&
+        createPortal(
+          <div
+            className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 p-4"
+            onClick={(event) => {
+              if (event.target === event.currentTarget) {
+                setIsSocietyModalOpen(false)
+              }
+            }}
+          >
+            <div className="w-full max-w-md rounded-xl bg-white p-6 shadow-2xl">
+              <div className="flex items-start justify-between">
+                <div>
+                  <p className="text-xs font-semibold uppercase text-teal-600">
+                    안내
+                  </p>
+                  <h2 className="mt-1 text-xl font-bold text-gray-900">
+                    SOCIONET 학회 동정
+                  </h2>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setIsSocietyModalOpen(false)}
+                  className="rounded-full p-2 text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-700"
+                  aria-label="닫기"
+                >
+                  <X size={18} />
+                </button>
+              </div>
+              <div className="mt-5 text-base text-gray-700">
+                학회의 공식적인 창립 이후에 학회 소식을 전합니다.
               </div>
             </div>
           </div>,

@@ -1,7 +1,7 @@
-const API_BASE =
-  import.meta.env.VITE_API_URL || 'https://socionetback-production.up.railway.app'
+export const API_BASE =
+  import.meta.env.VITE_API_URL || 'http://localhost:4000'
 
-const getStoredToken = () => {
+export const getStoredToken = () => {
   if (typeof window === 'undefined') {
     return null
   }
@@ -196,6 +196,40 @@ export async function createUploadUrl(filePath: string, token?: string) {
   )
 }
 
+export async function createTusToken(token?: string) {
+  return apiRequest<{ token: string }>(
+    '/admin/videos/tus-token',
+    {
+      method: 'POST',
+      headers: {
+        ...authHeaders(token),
+      },
+    },
+  )
+}
+
+export async function encodeUploadedVideo(
+  payload: {
+    title: string
+    description?: string
+    requiredRole: string
+    isPublished?: boolean
+    storagePath: string
+  },
+  token?: string,
+) {
+  return apiRequest<{ video: { id: string } }>(
+    '/admin/videos/encode',
+    {
+      method: 'POST',
+      headers: {
+        ...authHeaders(token),
+      },
+      body: JSON.stringify(payload),
+    },
+  )
+}
+
 export async function uploadVideo(formData: FormData) {
   const response = await fetch(`${API_BASE}/admin/videos/upload`, {
     method: 'POST',
@@ -377,3 +411,5 @@ export async function createPostImageUploadUrl(filePath: string, token?: string)
     },
   )
 }
+
+

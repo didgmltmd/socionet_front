@@ -1,7 +1,11 @@
-import { AnimatePresence, motion } from 'motion/react'
-import { useEffect, useState } from 'react'
+﻿import { AnimatePresence, motion } from 'motion/react'
+import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Network } from 'lucide-react'
+import mainImage1 from '../assets/main_1.png'
+import mainImage2 from '../assets/main_2.png'
+import mainImage3 from '../assets/main_3.png'
+import mainImage4 from '../assets/main_4.png'
 import IntroductionPage from '../pages/IntroductionPage'
 import UnderstandingPage from '../pages/UnderstandingPage'
 import TestPage from '../pages/TestPage'
@@ -22,6 +26,16 @@ function HomePage() {
   const [notices, setNotices] = useState<Array<{ id: string; title: string; publishedAt: string }>>([])
   const [activities, setActivities] = useState<Array<{ id: string; title: string; publishedAt: string }>>([])
   const [isLoadingPosts, setIsLoadingPosts] = useState(false)
+  const [selectedMainImage, setSelectedMainImage] = useState<{
+    src: string
+    title: string
+  } | null>(null)
+  const zoomContainerRef = useRef<HTMLDivElement | null>(null)
+  const [zoomLens, setZoomLens] = useState({
+    x: 0,
+    y: 0,
+    visible: false,
+  })
 
   useEffect(() => {
     setIsLoadingPosts(true)
@@ -106,10 +120,10 @@ function HomePage() {
 
         <div className="relative z-10">
           <h2 className="mb-3 text-2xl font-bold sm:text-3xl lg:mb-4 lg:text-4xl">
-            한국 SOCIONET 연구소에 오신 것을 환영합니다
+            한국 SOCIONET 연구소에 오신 것을 환영합니다.
           </h2>
           <p className="mb-4 text-base text-white/90 sm:text-lg lg:mb-6 lg:text-xl">
-            사회관계망 분석을 통한 전문적인 심리검사 및 상담 서비스
+            심리검사 및 상담 서비스 전문기관
           </p>
           <button
             type="button"
@@ -129,541 +143,212 @@ function HomePage() {
             </h2>
           </div>
           <p className="text-gray-600 max-w-3xl mx-auto">
-            SOCIONET은 집단 내 개인의 사회적 관계와 역동을 시각화하여
-            분석하는 한국형 심리검사 도구입니다.
+            SOCIONET은 집단 내 각 개인들의 사회적 성격과 소집단의 역동을 시각화하여 분석하는 한국형 집단심리검사 도구입니다.
+            
           </p>
         </div>
 
-        <div className="grid grid-cols-1 gap-6 mb-8 lg:grid-cols-3">
-          <div className="overflow-hidden rounded-xl border-2 border-teal-200 bg-white shadow-lg transition-all hover:border-teal-400">
-            <div className="bg-gradient-to-r from-teal-600 to-teal-500 p-4 text-white">
-              <h3 className="text-lg font-bold">소시오그램 관계망</h3>
-              <p className="text-sm text-teal-50">개인 간 관계 구조 파악</p>
+        <div className="mb-10 grid grid-cols-1 items-stretch gap-6 lg:grid-cols-3">
+  <button
+    type="button"
+    onClick={() =>
+      setSelectedMainImage({ src: mainImage1, title: '개인의 사회적 특성 분석' })
+    }
+            className="group flex h-full flex-col overflow-hidden rounded-2xl border border-teal-100 bg-white text-left shadow-md transition hover:-translate-y-1 hover:shadow-lg hover:cursor-pointer"
+          >
+            <div className="border-b border-teal-100 bg-gradient-to-r from-teal-600 to-teal-500 px-5 py-4 text-center text-base font-semibold text-white">
+              개인의 사회적 특성 분석
             </div>
-            <div className="bg-gray-50 p-6">
-              <svg className="h-64 w-full" viewBox="0 0 300 250">
-                <defs>
-                  <marker
-                    id="arrowhead"
-                    markerWidth="10"
-                    markerHeight="10"
-                    refX="9"
-                    refY="3"
-                    orient="auto"
-                  >
-                    <polygon points="0 0, 10 3, 0 6" fill="#14b8a6" />
-                  </marker>
-                </defs>
+            <div className="flex flex-1 items-center bg-white p-2">
+              <motion.img
+                src={mainImage1}
+                alt="개인의 사회적 특성 분석"
+                className="h-80 w-full object-contain scale-[1.35] md:scale-[1.45]"
+        whileHover={{ scale: 1.03 }}
+        transition={{ duration: 0.2 }}
+      />
+    </div>
+  </button>
 
-                <line
-                  x1="150"
-                  y1="50"
-                  x2="80"
-                  y2="120"
-                  stroke="#14b8a6"
-                  strokeWidth="2"
-                  markerEnd="url(#arrowhead)"
-                />
-                <line
-                  x1="150"
-                  y1="50"
-                  x2="220"
-                  y2="120"
-                  stroke="#14b8a6"
-                  strokeWidth="2"
-                  markerEnd="url(#arrowhead)"
-                />
-                <line
-                  x1="80"
-                  y1="120"
-                  x2="50"
-                  y2="200"
-                  stroke="#14b8a6"
-                  strokeWidth="2"
-                  markerEnd="url(#arrowhead)"
-                />
-                <line
-                  x1="220"
-                  y1="120"
-                  x2="250"
-                  y2="200"
-                  stroke="#14b8a6"
-                  strokeWidth="2"
-                  markerEnd="url(#arrowhead)"
-                />
-                <line
-                  x1="80"
-                  y1="120"
-                  x2="150"
-                  y2="200"
-                  stroke="#14b8a6"
-                  strokeWidth="2"
-                  markerEnd="url(#arrowhead)"
-                />
-                <line
-                  x1="220"
-                  y1="120"
-                  x2="150"
-                  y2="200"
-                  stroke="#14b8a6"
-                  strokeWidth="2"
-                  markerEnd="url(#arrowhead)"
-                />
-
-                <circle
-                  cx="150"
-                  cy="50"
-                  r="20"
-                  fill="#0d9488"
-                  stroke="white"
-                  strokeWidth="3"
-                />
-                <text
-                  x="150"
-                  y="55"
-                  textAnchor="middle"
-                  fill="white"
-                  fontSize="14"
-                  fontWeight="bold"
-                >
-                  A
-                </text>
-
-                <circle
-                  cx="80"
-                  cy="120"
-                  r="18"
-                  fill="#14b8a6"
-                  stroke="white"
-                  strokeWidth="3"
-                />
-                <text
-                  x="80"
-                  y="125"
-                  textAnchor="middle"
-                  fill="white"
-                  fontSize="12"
-                  fontWeight="bold"
-                >
-                  B
-                </text>
-
-                <circle
-                  cx="220"
-                  cy="120"
-                  r="18"
-                  fill="#14b8a6"
-                  stroke="white"
-                  strokeWidth="3"
-                />
-                <text
-                  x="220"
-                  y="125"
-                  textAnchor="middle"
-                  fill="white"
-                  fontSize="12"
-                  fontWeight="bold"
-                >
-                  C
-                </text>
-
-                <circle
-                  cx="50"
-                  cy="200"
-                  r="16"
-                  fill="#5eead4"
-                  stroke="white"
-                  strokeWidth="3"
-                />
-                <text
-                  x="50"
-                  y="205"
-                  textAnchor="middle"
-                  fill="white"
-                  fontSize="11"
-                  fontWeight="bold"
-                >
-                  D
-                </text>
-
-                <circle
-                  cx="150"
-                  cy="200"
-                  r="16"
-                  fill="#5eead4"
-                  stroke="white"
-                  strokeWidth="3"
-                />
-                <text
-                  x="150"
-                  y="205"
-                  textAnchor="middle"
-                  fill="white"
-                  fontSize="11"
-                  fontWeight="bold"
-                >
-                  E
-                </text>
-
-                <circle
-                  cx="250"
-                  cy="200"
-                  r="16"
-                  fill="#5eead4"
-                  stroke="white"
-                  strokeWidth="3"
-                />
-                <text
-                  x="250"
-                  y="205"
-                  textAnchor="middle"
-                  fill="white"
-                  fontSize="11"
-                  fontWeight="bold"
-                >
-                  F
-                </text>
-              </svg>
-              <p className="mt-3 text-center text-sm text-gray-600">
-                집단 내 개인 간의 선호도와 관계를 화살표로 시각화
-              </p>
+          <div className="flex h-full flex-col overflow-hidden rounded-2xl border border-teal-100 bg-white shadow-md">
+            <div className="border-b border-teal-100 bg-gradient-to-r from-teal-600 to-teal-500 px-5 py-4 text-center text-base font-semibold text-white">
+              자기분석과 자기망
             </div>
-          </div>
-
-          <div className="overflow-hidden rounded-xl border-2 border-orange-200 bg-white shadow-lg transition-all hover:border-orange-400">
-            <div className="bg-gradient-to-r from-orange-500 to-orange-600 p-4 text-white">
-              <h3 className="text-lg font-bold">소집단 관계망</h3>
-              <p className="text-sm text-orange-50">하위 집단 형성 분석</p>
-            </div>
-            <div className="bg-gray-50 p-6">
-              <svg className="h-64 w-full" viewBox="0 0 300 250">
-                <circle cx="70" cy="70" r="50" fill="#d1fae5" opacity="0.5" />
-                <circle
-                  cx="50"
-                  cy="60"
-                  r="18"
-                  fill="#14b8a6"
-                  stroke="white"
-                  strokeWidth="3"
-                />
-                <circle
-                  cx="90"
-                  cy="60"
-                  r="18"
-                  fill="#14b8a6"
-                  stroke="white"
-                  strokeWidth="3"
-                />
-                <circle
-                  cx="70"
-                  cy="90"
-                  r="18"
-                  fill="#14b8a6"
-                  stroke="white"
-                  strokeWidth="3"
-                />
-                <line
-                  x1="50"
-                  y1="60"
-                  x2="90"
-                  y2="60"
-                  stroke="#14b8a6"
-                  strokeWidth="2"
-                />
-                <line
-                  x1="50"
-                  y1="60"
-                  x2="70"
-                  y2="90"
-                  stroke="#14b8a6"
-                  strokeWidth="2"
-                />
-                <line
-                  x1="90"
-                  y1="60"
-                  x2="70"
-                  y2="90"
-                  stroke="#14b8a6"
-                  strokeWidth="2"
-                />
-
-                <circle cx="230" cy="80" r="55" fill="#fed7aa" opacity="0.5" />
-                <circle
-                  cx="210"
-                  cy="70"
-                  r="18"
-                  fill="#f97316"
-                  stroke="white"
-                  strokeWidth="3"
-                />
-                <circle
-                  cx="250"
-                  cy="70"
-                  r="18"
-                  fill="#f97316"
-                  stroke="white"
-                  strokeWidth="3"
-                />
-                <circle
-                  cx="230"
-                  cy="105"
-                  r="18"
-                  fill="#f97316"
-                  stroke="white"
-                  strokeWidth="3"
-                />
-                <line
-                  x1="210"
-                  y1="70"
-                  x2="250"
-                  y2="70"
-                  stroke="#f97316"
-                  strokeWidth="2"
-                />
-                <line
-                  x1="210"
-                  y1="70"
-                  x2="230"
-                  y2="105"
-                  stroke="#f97316"
-                  strokeWidth="2"
-                />
-                <line
-                  x1="250"
-                  y1="70"
-                  x2="230"
-                  y2="105"
-                  stroke="#f97316"
-                  strokeWidth="2"
-                />
-
-                <circle cx="150" cy="190" r="45" fill="#e9d5ff" opacity="0.5" />
-                <circle
-                  cx="135"
-                  cy="180"
-                  r="18"
-                  fill="#a855f7"
-                  stroke="white"
-                  strokeWidth="3"
-                />
-                <circle
-                  cx="165"
-                  cy="180"
-                  r="18"
-                  fill="#a855f7"
-                  stroke="white"
-                  strokeWidth="3"
-                />
-                <circle
-                  cx="150"
-                  cy="210"
-                  r="18"
-                  fill="#a855f7"
-                  stroke="white"
-                  strokeWidth="3"
-                />
-                <line
-                  x1="135"
-                  y1="180"
-                  x2="165"
-                  y2="180"
-                  stroke="#a855f7"
-                  strokeWidth="2"
-                />
-                <line
-                  x1="135"
-                  y1="180"
-                  x2="150"
-                  y2="210"
-                  stroke="#a855f7"
-                  strokeWidth="2"
-                />
-                <line
-                  x1="165"
-                  y1="180"
-                  x2="150"
-                  y2="210"
-                  stroke="#a855f7"
-                  strokeWidth="2"
-                />
-              </svg>
-              <p className="mt-3 text-center text-sm text-gray-600">
-                색상별로 구분된 하위 집단의 관계 패턴 분석
-              </p>
-            </div>
-          </div>
-
-          <div className="overflow-hidden rounded-xl border-2 border-teal-200 bg-white shadow-lg transition-all hover:border-teal-400">
-            <div className="bg-gradient-to-r from-teal-500 to-cyan-600 p-4 text-white">
-              <h3 className="text-lg font-bold">개인별 관계망</h3>
-              <p className="text-sm text-teal-50">개인 중심 관계 분석</p>
-            </div>
-            <div className="bg-gray-50 p-6">
-              <svg className="h-64 w-full" viewBox="0 0 300 250">
-                <line
-                  x1="150"
-                  y1="125"
-                  x2="80"
-                  y2="60"
-                  stroke="#14b8a6"
-                  strokeWidth="3"
-                />
-                <line
-                  x1="150"
-                  y1="125"
-                  x2="220"
-                  y2="60"
-                  stroke="#14b8a6"
-                  strokeWidth="3"
-                />
-                <line
-                  x1="150"
-                  y1="125"
-                  x2="70"
-                  y2="140"
-                  stroke="#14b8a6"
-                  strokeWidth="2"
-                />
-                <line
-                  x1="150"
-                  y1="125"
-                  x2="230"
-                  y2="140"
-                  stroke="#14b8a6"
-                  strokeWidth="2"
-                />
-                <line
-                  x1="150"
-                  y1="125"
-                  x2="100"
-                  y2="200"
-                  stroke="#14b8a6"
-                  strokeWidth="2"
-                />
-                <line
-                  x1="150"
-                  y1="125"
-                  x2="200"
-                  y2="200"
-                  stroke="#14b8a6"
-                  strokeWidth="2"
-                />
-                <line
-                  x1="150"
-                  y1="125"
-                  x2="150"
-                  y2="50"
-                  stroke="#14b8a6"
-                  strokeWidth="1"
-                  opacity="0.5"
-                />
-
-                <circle
-                  cx="150"
-                  cy="125"
-                  r="25"
-                  fill="#0d9488"
-                  stroke="white"
-                  strokeWidth="4"
-                />
-                <text
-                  x="150"
-                  y="132"
-                  textAnchor="middle"
-                  fill="white"
-                  fontSize="16"
-                  fontWeight="bold"
-                >
-                  나
-                </text>
-
-                <circle
-                  cx="80"
-                  cy="60"
-                  r="20"
-                  fill="#14b8a6"
-                  stroke="white"
-                  strokeWidth="3"
-                />
-                <circle
-                  cx="220"
-                  cy="60"
-                  r="20"
-                  fill="#14b8a6"
-                  stroke="white"
-                  strokeWidth="3"
-                />
-
-                <circle
-                  cx="70"
-                  cy="140"
-                  r="16"
-                  fill="#5eead4"
-                  stroke="white"
-                  strokeWidth="3"
-                />
-                <circle
-                  cx="230"
-                  cy="140"
-                  r="16"
-                  fill="#5eead4"
-                  stroke="white"
-                  strokeWidth="3"
-                />
-                <circle
-                  cx="100"
-                  cy="200"
-                  r="16"
-                  fill="#5eead4"
-                  stroke="white"
-                  strokeWidth="3"
-                />
-                <circle
-                  cx="200"
-                  cy="200"
-                  r="16"
-                  fill="#5eead4"
-                  stroke="white"
-                  strokeWidth="3"
-                />
-
-                <circle
-                  cx="150"
-                  cy="50"
-                  r="12"
-                  fill="#99f6e4"
-                  stroke="white"
-                  strokeWidth="2"
-                />
-              </svg>
-              <p className="mt-3 text-center text-sm text-gray-600">
-                개인을 중심으로 관계의 강도와 거리를 시각화
-              </p>
-            </div>
-          </div>
+            <div className="grid flex-1 gap-4 p-3">
+      <button
+        type="button"
+        onClick={() => setSelectedMainImage({ src: mainImage2, title: '자기분석' })}
+                className="group overflow-hidden rounded-xl border border-teal-100 bg-white text-left shadow-sm transition hover:-translate-y-1 hover:shadow-md hover:cursor-pointer"
+              >
+                <div className="border-b border-teal-100 bg-teal-50 px-4 py-2.5 text-center text-sm font-semibold text-teal-700">
+                  자기분석
+                </div>
+                <div className="flex items-center bg-white p-2">
+                  <motion.img
+                    src={mainImage2}
+                    alt="자기분석"
+                    className="h-60 w-full object-contain scale-[1.3] md:scale-[1.4]"
+            whileHover={{ scale: 1.03 }}
+            transition={{ duration: 0.2 }}
+          />
         </div>
+      </button>
+      <button
+        type="button"
+        onClick={() => setSelectedMainImage({ src: mainImage3, title: '자기망' })}
+                className="group overflow-hidden rounded-xl border border-teal-100 bg-white text-left shadow-sm transition hover:-translate-y-1 hover:shadow-md hover:cursor-pointer"
+              >
+                <div className="border-b border-teal-100 bg-teal-50 px-4 py-2.5 text-center text-sm font-semibold text-teal-700">
+                  자기망
+                </div>
+                <div className="flex items-center bg-white p-2">
+                  <motion.img
+                    src={mainImage3}
+                    alt="자기망"
+                    className="h-60 w-full object-contain scale-[1.3] md:scale-[1.4]"
+            whileHover={{ scale: 1.03 }}
+            transition={{ duration: 0.2 }}
+          />
+        </div>
+      </button>
+    </div>
+  </div>
+
+  <button
+    type="button"
+    onClick={() =>
+      setSelectedMainImage({ src: mainImage4, title: '소집단 관계망 분석' })
+    }
+            className="group flex h-full flex-col overflow-hidden rounded-2xl border border-teal-100 bg-white text-left shadow-md transition hover:-translate-y-1 hover:shadow-lg hover:cursor-pointer"
+          >
+            <div className="border-b border-teal-100 bg-gradient-to-r from-teal-600 to-teal-500 px-5 py-4 text-center text-base font-semibold text-white">
+              소집단 관계망 분석
+            </div>
+            <div className="flex flex-1 items-center bg-white p-2">
+              <motion.img
+                src={mainImage4}
+                alt="소집단 관계망 분석"
+                className="h-80 w-full object-contain scale-[1.35] md:scale-[1.45]"
+        whileHover={{ scale: 1.03 }}
+        transition={{ duration: 0.2 }}
+      />
+    </div>
+  </button>
+</div>
+
+        <AnimatePresence>
+          {selectedMainImage && (
+            <motion.div
+              className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setSelectedMainImage(null)}
+            >
+              <motion.div
+                className="max-h-[90vh] w-full max-w-5xl overflow-hidden rounded-lg bg-white shadow-2xl"
+                initial={{ scale: 0.9, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0.95, opacity: 0 }}
+                transition={{ duration: 0.2 }}
+                onClick={(event) => event.stopPropagation()}
+              >
+                <div className="border-b border-gray-200 bg-gray-50 px-5 py-3 text-center text-sm font-semibold text-gray-700">
+                  {selectedMainImage.title}
+                </div>
+                <div className="bg-white p-4">
+                  <div
+                    ref={zoomContainerRef}
+                    className="relative mx-auto max-h-[75vh] w-full overflow-hidden cursor-zoom-in"
+                    onMouseMove={(event) => {
+                      const container = zoomContainerRef.current
+                      if (!container) {
+                        return
+                      }
+                      const rect = container.getBoundingClientRect()
+                      const lensSize = 240
+                      const lensWidth = 300
+                      const x = Math.min(
+                        Math.max(event.clientX - rect.left, 0),
+                        rect.width,
+                      )
+                      const y = Math.min(
+                        Math.max(event.clientY - rect.top, 0),
+                        rect.height,
+                      )
+                      const clampedX = Math.min(
+                        Math.max(x - lensWidth / 2, 0),
+                        rect.width - lensWidth,
+                      )
+                      const clampedY = Math.min(
+                        Math.max(y - lensSize / 2, 0),
+                        rect.height - lensSize,
+                      )
+                      setZoomLens({
+                        x: clampedX,
+                        y: clampedY,
+                        visible: true,
+                      })
+                    }}
+                    onMouseLeave={() =>
+                      setZoomLens((prev) => ({ ...prev, visible: false }))
+                    }
+                  >
+                    <img
+                      src={selectedMainImage.src}
+                      alt={selectedMainImage.title}
+                      className="max-h-[75vh] w-full object-contain"
+                    />
+                    {zoomLens.visible && (
+                      <div
+                        className="pointer-events-none absolute z-10 rounded-md border-2 border-teal-500 shadow-lg"
+                        style={{
+                          width: 300,
+                          height: 240,
+                          left: zoomLens.x,
+                          top: zoomLens.y,
+                          backgroundImage: `url(${selectedMainImage.src})`,
+                          backgroundRepeat: 'no-repeat',
+                          backgroundSize: '380% 380%',
+                          backgroundPosition: `${
+                            (zoomLens.x / (zoomContainerRef.current?.clientWidth || 1)) *
+                            100
+                          }% ${
+                            (zoomLens.y / (zoomContainerRef.current?.clientHeight || 1)) *
+                            100
+                          }%`,
+                          backgroundColor: '#ffffff',
+                        }}
+                      />
+                    )}
+                  </div>
+                </div>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         <div className="rounded-xl border-2 border-teal-300 bg-gradient-to-br from-teal-50 to-cyan-50 p-6 lg:p-8">
           <h3 className="mb-4 flex items-center gap-2 text-xl font-bold text-teal-700">
             <Network size={24} />
-            SOCIONET의 핵심 기능
+            SOCIONET 핵심 기능
           </h3>
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <div className="flex items-start gap-3">
               <div className="mt-2 h-2 w-2 rounded-full bg-teal-600"></div>
               <div>
-                <p className="font-bold text-gray-800">관계 시각화</p>
+                <p className="font-bold text-gray-800">개인분석</p>
                 <p className="text-sm text-gray-600">
-                  집단 내 모든 관계를 도표로 명확하게 표현
+                  개인의 사회적 성격 특성 분석
                 </p>
               </div>
             </div>
             <div className="flex items-start gap-3">
               <div className="mt-2 h-2 w-2 rounded-full bg-orange-600"></div>
               <div>
-                <p className="font-bold text-gray-800">객관적 분석</p>
+                <p className="font-bold text-gray-800">소집단 분석</p>
                 <p className="text-sm text-gray-600">
-                  개인의 주관이 배제된 과학적 데이터 기반 평가
+                  소집단의 네트워크 성질 분석
                 </p>
               </div>
             </div>
@@ -672,16 +357,16 @@ function HomePage() {
               <div>
                 <p className="font-bold text-gray-800">문제 해결</p>
                 <p className="text-sm text-gray-600">
-                  배척아동, 갱집단 등 집단 문제 조기 발견 및 개입
+                  배척아동, 또래 관계 문제, 갱집단 갈등의 조기 발견 및 개입, 팀빌딩 실시
                 </p>
               </div>
             </div>
             <div className="flex items-start gap-3">
               <div className="mt-2 h-2 w-2 rounded-full bg-orange-600"></div>
               <div>
-                <p className="font-bold text-gray-800">한국형 도구</p>
+                <p className="font-bold text-gray-800">한국형 집단검사 도구</p>
                 <p className="text-sm text-gray-600">
-                  20년 연구로 개발된 특허 취득 검사 도구
+                  특허 취득 집단 심리검사 도구
                 </p>
               </div>
             </div>
@@ -760,15 +445,22 @@ function HomePage() {
           </div>
 
           <div className="relative z-10">
-            <h3 className="mb-6 text-xl font-bold text-teal-700 lg:text-2xl">
-              공지사항
-            </h3>
+            <div className="mb-6 flex items-center justify-between">
+              <h3 className="text-xl font-bold text-teal-700 lg:text-2xl">공지사항</h3>
+              <button
+                type="button"
+                onClick={() => navigate('/news/notice')}
+                className="text-sm font-semibold text-teal-600 hover:text-teal-700 hover:cursor-pointer"
+              >
+                전체보기
+              </button>
+            </div>
             <div className="space-y-3">
               {isLoadingPosts ? (
                 <div className="text-sm text-gray-500">불러오는 중...</div>
               ) : notices.length === 0 ? (
                 <div className="text-sm text-gray-500">등록된 공지사항이 없습니다.</div>
-              ) : notices.map((notice) => (
+              ) : notices.slice(0, 5).map((notice) => (
                 <button
                   key={notice.id}
                   type="button"
@@ -903,7 +595,7 @@ export default function MainContent({
         return <TestPage subPage={currentSubPage} />
       case '커뮤니티':
         return <CommunityPage subPage={currentSubPage} />
-      case '일반-검사-및-상담':
+      case '일반-검사-상담':
         return <CounselingPage />
       case '자료실':
         return <ResourcesPage subPage={currentSubPage} />
@@ -928,3 +620,13 @@ export default function MainContent({
     </AnimatePresence>
   )
 }
+
+
+
+
+
+
+
+
+
+

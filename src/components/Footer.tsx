@@ -6,16 +6,18 @@ export default function Footer() {
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 lg:gap-8">
             <div>
               <h3 className="text-lg font-bold text-white lg:text-xl">
-                (주) SOCIONET / 한국 SOCIONET 연구소
+                ㈜ SOCIONET / 한국 SOCIONET 연구소
               </h3>
-              <p className="mt-3 text-sm text-gray-300">
-                안이환 CEO/소장
+              <p className="mt-3 text-sm text-gray-300">안이환 CEO / 소장</p>
+              <div className="h-3"></div>
+              <p className="text-sm text-gray-400">
+                (전) 부산교육대학교 상담대학원 교수
               </p>
               <p className="text-sm text-gray-400">
-                (전) 부산교육대학교 상담교육학과 교수
+                (현) ㈜ SOCIONET 부설 한국 SOCIONET 연구소
               </p>
-              <p className="mt-4 text-sm text-gray-400">
-                (현) (주) SOCIONET 부설 / 한국 SOCIONET 연구소
+              <p className="mt-3 text-sm text-gray-400">
+                SOCIONET 특허 (제10-2778706호)
               </p>
             </div>
 
@@ -26,7 +28,7 @@ export default function Footer() {
               </h3>
               <div className="space-y-2 text-sm text-gray-300">
                 <p>M. 010-6563-7308</p>
-                <p>E. ksocionet@gmail.com / ksocionet@naver.com</p>
+                <p>E. ksocionet@gmail.com</p>
                 <p>https://www.ksocionet.com</p>
               </div>
               <p className="mt-4 text-sm text-gray-400">
@@ -42,13 +44,17 @@ export default function Footer() {
               </h3>
               <div className="space-y-2 text-sm text-gray-400">
                 <p>
-                  심리검사: Socionet집단검사, 성격검사, 투사, 지능검사,
-                  진로검사
+                  심리검사: Socionet 집단검사, 성격검사, 학습·진로검사
                 </p>
                 <p>
-                  심리상담: 개인, 집단상담, 가족, 청소년상담, 미술상담,
-                  진로, 은퇴상담
+                  심리상담: 개인, 집단상담, 가족·청소년 상담, 미술상담, 진로,
+                  은퇴상담
                 </p>
+              </div>
+              <div className="mt-4 text-sm text-gray-300">
+                <p className="font-semibold text-gray-200">입금 계좌</p>
+                <p className="mt-1">KB국민은행 (예금주: 안이환)</p>
+                <p>계좌번호: 555301-01-381812</p>
               </div>
             </div>
           </div>

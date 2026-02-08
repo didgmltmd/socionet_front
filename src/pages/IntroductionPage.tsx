@@ -43,7 +43,7 @@ declare global {
 const KAKAO_APP_KEY = import.meta.env.VITE_KAKAO_APP_KEY as string | undefined
 const locationInfo = {
   name: '한국 SOCIONET 연구소',
-  address: '부산광역시 해운대구 반송순환로 142, M동 9층 903호 (반송동, 영산대학교 해운대캠퍼스)',
+  address: '부산광역시 해운대구 반송순환로 142, 영산대학교 해운대캠퍼스 M동',
 }
 const mapDefaults = {
   level: 3,
@@ -87,18 +87,22 @@ const loadKakaoMapScript = () => {
 }
 
 const menuItems = [
+  { label: '연구소 소개', value: '연구소 소개' },
   { label: '인사말', value: '인사말' },
   { label: '연혁', value: '연혁' },
   { label: '주요활동', value: '주요활동' },
   { label: '오시는 길', value: '오시는 길' },
 ]
 
+
 const subPageRoutes = {
+  '연구소 소개': '/intro/overview',
   '인사말': '/intro/greeting',
   '연혁': '/intro/history',
   '주요활동': '/intro/activities',
   '오시는 길': '/intro/location',
 }
+
 
 const contentMap: Record<string, { title: string; text: string }> = {
   '연구소 소개': {
@@ -107,17 +111,17 @@ const contentMap: Record<string, { title: string; text: string }> = {
   },
   '인사말': {
     title: '인사말',
-    text: `존경하는 교직자 • 기업체 관련자 • 사회단체 관련자, 그리고 군대의 관계자 여러분께 인사 드립니다. 연구소와 인사를 나눈 분들이 아마 한국SOCIONET연구소를 가장 많이 이용하실 것으로 생각합니다.
+    text: `존경하는 교직자 • 기업체 관련자 • 사회단체 관련자, 그리고 군대의 관계자 여러분께 인사 드립니다. 연구소와 인사를 나눈 분들이 아마 한국 SOCIONET 연구소를 가장 많이 이용하실 것으로 생각합니다.
 
-저는 부산교육대학교에서 상담 및 심리검사를 가르치던 교수로 2024년에 정년을 하고 (株)SOCIONET을 창업하였습니다. 소시오넷(SOCIONET)은 한국에서 만들어진 집단용 심리검사 도구로 설문지의 제작에서 자료처리의 자동화까지 1개의 심리검사를 완성하는데 거의 20년에 걸쳐 만들어진 한국형 검사도구입니다. 검사의 내용과 성질 및 평가기능에 대해서는 SOCIONET의 이해에서 간략하게 설명을 드리겠습니다.
+저는 부산교육대학교에서 상담 및 심리검사를 가르치던 교수로 2024년에 정년을 하고 (주)SOCIONET을 창업하였습니다. 소시오넷(SOCIONET)은 한국에서 만든 집단용 심리검사 도구로 설문지의 제작에서 자료처리의 자동화까지 1개의 심리검사를 완성하는데 거의 20년에 걸쳐 만든 한국형 검사도구입니다. 검사의 내용과 성질 및 평가기능에 대해서는 SOCIONET의 이해에서 간략하게 설명을 드리겠습니다.
 
-SOCIONET 집단용 심리검사는 현장에서 고민하는 교직자, 기업 및 사회단체 관련자, 군대의 간부들에게 현실적으로 많은 도움을 드릴 수 있다고 감히 말씀을 드립니다. 다양한 형태의 서양 심리검사가 국내에서 표준화 과정을 거쳐 많이 소개 되었습니다. 이러한 검사들은 거의 자기보고식 검사(self report)이므로 개인의 성격 특성을 주로 설명하고 있습니다. 현실적으로 많은 분들이 성격검사 및 진로검사를 통해서 큰 도움을 받지 못했다고 자주 말합니다. 심리검사를 통해서 설명하기에는 너무나 큰 인간의 세계가 따로 있음을 느낍니다. 그렇지만 SOCIONET 집단용 심리검사는 한 개인의 사회적 성격(social reality) 뿐만 아니라, 그가 속한 관계망(network)의 속성과 성질을 밝혀주고 설명하는 체계를 갖추었기에 기존의 여러 검사와는 달리 현실적으로 많은 도움이 될 것이라고 믿습니다.
+SOCIONET 집단용 심리검사는 현장에서 고민하는 교직자, 기업 및 사회단체 관련자, 군대의 간부들에게 현실적으로 많은 도움을 드릴 수 있다고 감히 말씀을 드립니다. 다양한 형태의 서양 심리검사가 국내에서 표준화 과정을 거쳐 많이 소개 되었습니다. 이러한 검사들은 거의 자기보고식 검사(self report)이므로 개인의 성격 특성을 주로 설명하고 있습니다. 현실적으로 많은 분들이 성격검사 및 진로검사를 통해서 큰 도움을 받지 못했다고 자주 말합니다. 심리검사를 통해서 설명하기에는 너무나 큰 인간의 세계가 따로 있음을 느낍니다. 그러나 SOCIONET 집단용 심리검사는 한 개인의 사회적 성격(social reality) 뿐만 아니라, 그가 속한 관계망(network)의 속성과 성질을 밝혀주고 설명하는 체계를 갖추었기에 기존의 여러 검사와는 달리 현실적으로 많은 도움이 될 것이라고 믿습니다.
 
-진성성을 가지고 의미를 만들고 가치를 창조하는 연구소가 될 수 있도록 여러분들의 많은 성원과 질책을 바랍니다. 감사합니다.
+진성성을 갖고 의미를 만들고 가치를 창조하는 연구소가 될 수 있도록 여러분들의 많은 성원과 질책을 바랍니다. 감사합니다.
 
 2026년 1월
 
-안 이 환 / 한국SOCIONET연구소 소장`,
+안 이 환 / 한국 SOCIONET 연구소 소장`,
   },
   '연혁': {
     title: '연혁',
@@ -184,8 +188,8 @@ const historyTables: HistoryTable[] = [
         no: '4',
         year: '2011',
         title: '아동의 또래지위에 따른 교우관계문제',
-        author: '정성철, 홍상황, 김종미(진주교대)',
-        paper: '',
+        author: '정성철, 홍상황, 김종미',
+        paper: '진주교대',
         journal: '■',
         type: '측정연구',
       },
@@ -253,6 +257,7 @@ const historyTables: HistoryTable[] = [
       { key: 'title', label: '제목' },
       { key: 'author', label: '저자' },
       { key: 'paper', label: '논문', align: 'center' },
+      { key: 'journal', label: '저널', align: 'center' },
       { key: 'type', label: '구분', align: 'center' },
     ],
     rows: [
@@ -262,8 +267,8 @@ const historyTables: HistoryTable[] = [
         title: '교사의 학급상담전략이 배척아동의 사회성에 미치는 효과',
         author: '박경나',
         paper: '■',
-        journal: '',
-        type: '상담전공 · 상담연구',
+        journal: '상담전공',
+        type: '상담연구',
       },
       {
         no: '2',
@@ -271,8 +276,8 @@ const historyTables: HistoryTable[] = [
         title: '또래상담자의 멘토 활동이 초등학교 배척아동의 또래관계에 미치는 효과',
         author: '정미혜',
         paper: '■',
-        journal: '',
-        type: '상담전공 · 상담연구',
+        journal: '상담전공',
+        type: '상담연구',
       },
       {
         no: '3',
@@ -280,8 +285,8 @@ const historyTables: HistoryTable[] = [
         title: '인기아동과 배척아동의 하위유형 분류 연구',
         author: '소정훈',
         paper: '■',
-        journal: '',
-        type: '상담전공 · 측정연구',
+        journal: '상담전공',
+        type: '측정연구',
       },
       {
         no: '4',
@@ -289,8 +294,8 @@ const historyTables: HistoryTable[] = [
         title: '초등학생의 사회성측정과 또래관계망에 나타난 또래관계 경향성연구',
         author: '김민주',
         paper: '■',
-        journal: '',
-        type: '상담전공 · 측정연구',
+        journal: '상담전공',
+        type: '측정연구',
       },
       {
         no: '5',
@@ -298,8 +303,8 @@ const historyTables: HistoryTable[] = [
         title: '초등학생의 사회적 지위 유형과 자기효능감 간의 관계',
         author: '이영주',
         paper: '■',
-        journal: '',
-        type: '상담전공 · 측정연구',
+        journal: '상담전공',
+        type: '측정연구',
       },
       {
         no: '6',
@@ -307,8 +312,8 @@ const historyTables: HistoryTable[] = [
         title: '공감훈련 프로그램이 초등학생의 사회적 지위 유형 변화에 미치는 영향',
         author: '이동현',
         paper: '■',
-        journal: '',
-        type: '상담전공 · 상담연구',
+        journal: '상담전공',
+        type: '상담연구',
       },
       {
         no: '7',
@@ -316,8 +321,8 @@ const historyTables: HistoryTable[] = [
         title: '초등학생의 사회적 지위 유형과 학업성취도간의 관계',
         author: '이창우',
         paper: '■',
-        journal: '',
-        type: '상담전공 · 측정연구',
+        journal: '상담전공',
+        type: '측정연구',
       },
       {
         no: '8',
@@ -325,8 +330,8 @@ const historyTables: HistoryTable[] = [
         title: '사회성측정 유형과 유아의 사회성발달 간의 관계',
         author: '이태순',
         paper: '■',
-        journal: '',
-        type: '유아과 대학원 · 측정연구',
+        journal: '유아과 대학원',
+        type: '측정연구',
       },
       {
         no: '9',
@@ -334,8 +339,8 @@ const historyTables: HistoryTable[] = [
         title: '배척아동의 교우관계 형성과 교우관계문제의 관계',
         author: '정서영',
         paper: '■',
-        journal: '',
-        type: '상담전공 · 측정연구',
+        journal: '상담전공',
+        type: '측정연구',
       },
     ],
   },
@@ -346,7 +351,7 @@ const historyTables: HistoryTable[] = [
       { key: 'year', label: '년도', align: 'center' },
       { key: 'title', label: '제목' },
       { key: 'author', label: '저자' },
-      { key: 'note', label: '출판/비고' },
+      { key: 'note', label: '비고/출판' },
     ],
     rows: [
       {
@@ -399,7 +404,7 @@ const historyTables: HistoryTable[] = [
       { key: 'no', label: '번', align: 'center' },
       { key: 'year', label: '년도', align: 'center' },
       { key: 'title', label: '제목' },
-      { key: 'presenter', label: '발표/장소' },
+      { key: 'presenter', label: '발표/소속' },
       { key: 'note', label: '비고' },
     ],
     rows: [
@@ -407,36 +412,36 @@ const historyTables: HistoryTable[] = [
         no: '1',
         year: '2006',
         title: '2006년 한국상담학회 연차대회(자료집) - 행렬매트릭스를 통한 학급집단의 심리 및 구조관찰',
-        presenter: '안이환',
-        note: 'pp100-107',
+        presenter: '발표자: 안이환',
+        note: 'O / pp100-107',
       },
       {
         no: '2',
         year: '2007',
         title: '2007년 한국초등상담교육학회 연차대회(자료집) - 또래집단상담을 통한 학급집단의 역동',
-        presenter: '안이환',
-        note: 'pp153-188',
+        presenter: '발표자: 안이환',
+        note: 'O / pp153-188',
       },
       {
         no: '3',
         year: '2018',
         title: '2017학년도 한국초등상담교육학회 연차학술대회(자료집) 주제발표: Socionet을 통한 학급운영과 아동지도',
-        presenter: '안이환',
-        note: 'pp75-94',
+        presenter: '발표자: 안이환',
+        note: 'O / pp75-94',
       },
       {
         no: '4',
         year: '2022',
         title: '2022년도 한국초등상담교육학회 연차학술대회(자료집) Socionet의 생활지도 활용 가능성에 대한 연구',
-        presenter: '안이환',
-        note: '광주교육대학교(on line)',
+        presenter: '발표자: 안이환',
+        note: 'O / 광주교육대학교(on line)',
       },
       {
         no: '5',
         year: '2023',
         title: '2023년도 한국초등상담교육학회 연차학술대회(자료집) 학생의 개인 특성과 학급집단역동을 통한 생활지도: Socionet을 중심으로',
-        presenter: '안이환',
-        note: '서울교육대학교(on line)',
+        presenter: '발표자: 안이환',
+        note: 'O / 서울교육대학교(on line)',
       },
     ],
   },
@@ -445,57 +450,57 @@ const historyTables: HistoryTable[] = [
     columns: [
       { key: 'no', label: '번', align: 'center' },
       { key: 'year', label: '년도', align: 'center' },
-      { key: 'title', label: '내용' },
+      { key: 'title', label: '제목' },
       { key: 'note', label: '비고' },
     ],
     rows: [
       {
         no: '1',
         year: '2009',
-        title: '부산 연서초등학교 인성시범학교 실시 / P/A/R/N/C 아동의 특성 검증',
+        title: '부산 연서초등학교 인성시범학교 실시 (P/A/R/N/C) 아동의 특성 검증, 교사 연수',
         note: '교사 연수',
       },
       {
         no: '2',
         year: '2011',
-        title: '아동의 또래지위에 따른 교우관계문제 <안이환의 사회성측정 검증> / 정성철, 홍상황, 김종미(진주교대)',
-        note: 'P/A/R/N/C 특성 검증 / 초등상담연구, 10(2), pp167-184 / 피험자: 부산및울산초등생 / 대상: 초2-6까지 / 인원: 855명',
+        title: '아동의 또래지위에 따른 교우관계문제 <안이환의 사회성측정 검증>',
+        note: '정성철, 홍상황, 김종미(진주교대) / P/A/R/N/C 특성 검증 / 초등상담연구 10(2) pp167-184 / 피험자: 부산 및 울산 초등생, 대상: 초2-6, 인원: 855명',
       },
       {
         no: '3',
         year: '2013',
-        title: '한국동서정신과학회 제27차 춘계학술대회, 주제발표 한국형 Socionet를 이용한 개인 및 집단지도',
+        title: '한국동서정신과학회 제27차 춘계학술대회 주제발표 - 한국형 Socionet를 이용한 개인 및 집단지도',
         note: '대구교육대학교 / pp3-21',
       },
       {
         no: '4',
         year: '2013',
-        title: '경기도 연천 중•고교 전교생 대상 (Socionet 분석)',
+        title: '경기도 연천 중•고교 전교생 대상 (Socionet 분석) 학생 분석 및 교사 연수',
         note: '학생 분석 및 교사 연수',
       },
       {
         no: '5',
         year: '2013',
         title: '2013년도 한국초등상담교육학회 연차학술대회(자료집) 학급집단 역동의 컴퓨터분석 시스템',
-        note: '제주대학교 교육대학 별지참조',
+        note: '제주대학교 교육대학 / 별지참조',
       },
       {
         no: '6',
         year: '2014',
-        title: '2014년도 한국초등상담교육학회 연차학술대회(자료집) 초등학급의 Socionet분석',
+        title: '2014년도 한국초등상담교육학회 연차학술대회(자료집) 초등학급의 Socionet 분석',
         note: '춘천교육대학교 / pp46-68',
       },
       {
         no: '7',
         year: '2014',
         title: '한국학교심리학회 추계 워크숍 집단역동의 새로운 분석 방법: SocioNet의 세계',
-        note: '부산대학교 성학관(422동) 102호 / 주최 한국학교심리학회·한국학교상담학회 / 주관 한국학교심리학회 / 후원 한국심리학회·부산대학교',
+        note: '부산대학교 성학관(422동) 102호 / 주최: 한국학교심리학회, 한국학교상담학회 / 주관: 한국학교심리학회 / 후원: 한국심리학회, 부산대학교',
       },
       {
         no: '8',
         year: '2014',
         title: '한국군상담학회 연차학술대회 군상담을 위한 Socionet의 활용',
-        note: '서울대학교, 8월 14일(목) / 발표자: 안이환(부산교대)',
+        note: '서울대학교 / 8월 14일(목) / 발표자: 안이환(부산교대)',
       },
       {
         no: '9',
@@ -507,7 +512,7 @@ const historyTables: HistoryTable[] = [
         no: '10',
         year: '2016',
         title: '명사초청 컨설팅 장학 울산 월봉초등학교 및 동평초등학교',
-        note: '2개의 초등학교 전교생 Socionet분석 및 교사 대상 분석법 강의',
+        note: '2개 초등학교 전교생에 대한 Socionet 분석과 교사 대상의 분석법 강의',
       },
       {
         no: '11',
@@ -527,27 +532,28 @@ const historyTables: HistoryTable[] = [
 
 const activityItems = [
   {
-    year: '2023',
-    description: '한국초등상담교육학회 22차 연차학술대회(23년 1월). Socionet 발표(광주교육대학교).',
-  },
-  {
-    year: '2024',
-    description: '한국초등상담교육학회 23차 연차학술대회(24년 1월). Socionet 발표(서울교육대학교).',
+    year: '2025',
+    description: '2025년 평택대학교 상담대학원 Socionet 특강 실시.',
   },
   {
     year: '2025',
-    description: '평택대학교 상담대학원 Socionet 특강 실시.',
-  },
-  {
-    year: '2025',
-    description: '진주교육대학교 상담대학원의 현장전문가 과정, Socionet 특강 실시.',
+    description: '2025년 진주교육대학교 상담대학원의 현장전문가 과정, Socionet 특강 실시',
   },
   {
     year: '2025',
     description:
-      '학급집단의 역동과 Socionet(제5장 서술). 학지사: 초등학교 생활지도 및 상담 (전국초등상담교수연합, 한국초등상담교육학회 편, 교재 집필).',
+      '2025년도 학급집단의 역동과 Socionet(제5장 서술). 학지사: 초등학교 생활지도 및 상담(전국초등상담교수연합, 한국초등상담교육학회 편, 교재 집필)',
+  },
+  {
+    year: '2024',
+    description: '한국초등상담교육학회, 23차 연차학술대회(24년 1월). Socionet 발표(서울교육대학교)',
+  },
+  {
+    year: '2023',
+    description: '한국초등상담교육학회, 22차 연차학술대회(23년 1월). Socionet 발표(광주교육대학교)',
   },
 ]
+
 
 export default function IntroductionPage({ subPage }: IntroductionPageProps) {
   const [currentSubPage, setCurrentSubPage] = useState(subPage || '인사말')
@@ -571,7 +577,7 @@ export default function IntroductionPage({ subPage }: IntroductionPageProps) {
   }
 
   useEffect(() => {
-    if (currentSubPage !== '오시는 길') {
+  if (currentSubPage !== '오시는 길') {
       return
     }
     if (!KAKAO_APP_KEY) {
@@ -608,7 +614,7 @@ export default function IntroductionPage({ subPage }: IntroductionPageProps) {
 
       const { maps } = window.kakao
       const map = new maps.Map(container, {
-        center: new maps.LatLng(35.194, 129.125),
+        center: new maps.LatLng(35.222954, 129.153528),
         level: mapDefaults.level,
       })
       mapRef.current = map
@@ -616,23 +622,18 @@ export default function IntroductionPage({ subPage }: IntroductionPageProps) {
       map.addControl(zoomControl, maps.ControlPosition.RIGHT)
       const geocoder = new maps.services.Geocoder()
 
-      geocoder.addressSearch(locationInfo.address, (result, status) => {
-        if (status !== maps.services.Status.OK || !result[0] || !isActive) {
-          return
-        }
-        const lat = Number(result[0].y)
-        const lng = Number(result[0].x)
-        const coords = new maps.LatLng(lat, lng)
-        const marker = new maps.Marker({ map, position: coords })
-        const infoWindow = new maps.InfoWindow({
-          content: `<div style="padding:6px 10px;font-size:12px;">${locationInfo.name}</div>`,
-        })
-
-        map.setCenter(coords)
-        map.relayout()
-        infoWindow.open(map, marker)
-        setMapCenter({ lat, lng })
+      const lat = 35.222954
+      const lng = 129.153528
+      const coords = new maps.LatLng(lat, lng)
+      const marker = new maps.Marker({ map, position: coords })
+      const infoWindow = new maps.InfoWindow({
+        content: `<div style="padding:6px 10px;font-size:12px;">${locationInfo.name}</div>`,
       })
+
+      map.setCenter(coords)
+      map.relayout()
+      infoWindow.open(map, marker)
+      setMapCenter({ lat, lng })
     }
 
     loadKakaoMapScript()
@@ -657,29 +658,30 @@ export default function IntroductionPage({ subPage }: IntroductionPageProps) {
   const content = contentMap[currentSubPage] || contentMap['연구소 소개']
 
   return (
-    <PageLayout
-      title="연구소 소개"
+      <PageLayout
+        title="연구소 소개"
       menuItems={menuItems}
       currentSubPage={currentSubPage}
       onSubPageChange={setCurrentSubPage}
       bannerImage="intro"
       subPageRoutes={subPageRoutes}
     >
-      {currentSubPage === '오시는 길' ? (
-        <LocationSection mapCenter={mapCenter} onResetMap={handleResetMap} />
-      ) : currentSubPage === '연혁' ? (
-        <HistorySection />
-      ) : currentSubPage === '주요활동' ? (
-        <ActivitySection />
-      ) : (
-        <TextSection title={content.title} text={content.text} />
-      )}
+        {currentSubPage === '오시는 길' ? (
+          <LocationSection mapCenter={mapCenter} onResetMap={handleResetMap} />
+        ) : currentSubPage === '연혁' ? (
+          <HistorySection />
+        ) : currentSubPage === '주요활동' ? (
+          <ActivitySection />
+        ) : (
+          <TextSection title={content.title} text={content.text} />
+        )}
     </PageLayout>
   )
 }
 
 function TextSection({ title, text }: { title: string; text: string }) {
   const paragraphs = text.split(/\n{2,}/).filter(Boolean)
+  const isGreeting = title === '인사말'
 
   return (
     <div className="max-w-5xl">
@@ -689,7 +691,16 @@ function TextSection({ title, text }: { title: string; text: string }) {
       {paragraphs.length > 0 && (
         <div className="space-y-4 text-sm leading-relaxed text-gray-700 sm:text-base">
           {paragraphs.map((paragraph, index) => (
-            <p key={`${title}-${index}`} className="whitespace-pre-wrap">
+            <p
+              key={`${title}-${index}`}
+              className={`whitespace-pre-wrap ${
+                isGreeting && index >= paragraphs.length - 2
+                  ? `text-center font-medium text-gray-800 ${
+                      index === paragraphs.length - 2 ? 'mt-10' : 'mt-4'
+                    }`
+                  : ''
+              }`}
+            >
               {paragraph}
             </p>
           ))}
@@ -703,10 +714,10 @@ function HistorySection() {
   return (
     <div className="max-w-6xl space-y-10">
       <div>
-        <h1 className="mb-4 border-b-2 border-gray-200 pb-4 text-3xl font-bold text-gray-900">
-          연혁
-        </h1>
-        <p className="text-sm text-gray-600">2007-2026년까지의 SOCIONET 논문과 저널</p>
+          <h1 className="mb-4 border-b-2 border-gray-200 pb-4 text-3xl font-bold text-gray-900">
+            연혁
+          </h1>
+          <p className="text-sm text-gray-600">2007-2026년까지의 SOCIONET 논문과 저널</p>
       </div>
 
       {historyTables.map((table) => {
@@ -780,41 +791,66 @@ function HistorySection() {
 }
 
 function ActivitySection() {
+  const groupedItems = activityItems.reduce<Record<string, string[]>>((acc, item) => {
+    if (!acc[item.year]) {
+      acc[item.year] = []
+    }
+    acc[item.year].push(item.description)
+    return acc
+  }, {})
+
+  const groupedEntries = Object.entries(groupedItems).sort(
+    ([yearA], [yearB]) => Number(yearB) - Number(yearA),
+  )
+
   return (
     <div className="max-w-5xl space-y-6">
       <div>
-        <h1 className="mb-4 border-b-2 border-gray-200 pb-4 text-3xl font-bold text-gray-900">
-          주요활동
-        </h1>
-        <p className="text-sm text-gray-600">2023-2025년까지 3년간</p>
+          <h1 className="mb-4 border-b-2 border-gray-200 pb-4 text-3xl font-bold text-gray-900">
+            주요활동
+          </h1>
+          <p className="text-sm text-gray-600">2023-2025년까지 3년간</p>
       </div>
 
       <div className="hidden overflow-hidden rounded-md border border-gray-200 bg-white sm:block">
         <table className="min-w-full divide-y divide-gray-200 text-[13px]">
           <thead className="bg-gray-50">
             <tr>
-              <th className="w-20 whitespace-nowrap px-4 py-3 text-left font-semibold text-gray-700">
-                연도
-              </th>
-              <th className="px-4 py-3 text-left font-semibold text-gray-700">내용</th>
+                <th className="w-20 whitespace-nowrap px-4 py-3 text-left font-semibold text-gray-700">
+                  연도
+                </th>
+                <th className="px-4 py-3 text-left font-semibold text-gray-700">내용</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-100">
-            {activityItems.map((item, index) => (
-              <tr key={`${item.year}-${index}`}>
-                <td className="px-4 py-3 align-top text-gray-700">{item.year}</td>
-                <td className="px-4 py-3 align-top text-gray-700">{item.description}</td>
-              </tr>
-            ))}
+            {groupedEntries.map(([year, descriptions]) =>
+              descriptions.map((description, index) => (
+                <tr key={`${year}-${index}`}>
+                  {index === 0 && (
+                    <td
+                      rowSpan={descriptions.length}
+                      className="px-4 py-3 align-top text-gray-700"
+                    >
+                      {year}
+                    </td>
+                  )}
+                  <td className="px-4 py-3 align-top text-gray-700">{description}</td>
+                </tr>
+              )),
+            )}
           </tbody>
         </table>
       </div>
 
       <div className="space-y-3 sm:hidden">
-        {activityItems.map((item, index) => (
-          <div key={`${item.year}-mobile-${index}`} className="rounded-md border border-gray-200 bg-white p-4">
-            <p className="text-xs font-semibold text-gray-500">{item.year}</p>
-            <p className="mt-2 text-sm text-gray-700">{item.description}</p>
+        {groupedEntries.map(([year, descriptions]) => (
+          <div key={`mobile-${year}`} className="rounded-md border border-gray-200 bg-white p-4">
+            <p className="text-xs font-semibold text-gray-500">{year}</p>
+            <ul className="mt-2 space-y-2 text-sm text-gray-700">
+              {descriptions.map((description, index) => (
+                <li key={`${year}-item-${index}`}>{description}</li>
+              ))}
+            </ul>
           </div>
         ))}
       </div>
@@ -831,89 +867,43 @@ function LocationSection({
 }) {
   const sections = useMemo(
     () => [
-      {
-        title: '자가이용',
-        icon: Car,
-        groups: [
-          {
-            label: '주요 경로',
-            items: [
-              '송정해수욕장 입구에서 기장 해안도로 용궁사 방향으로 좌회전 후 첫신호등 (CU편의점)에서 좌회전',
-              '송정해수욕장 입구에서 기장 해안도로 용궁사 방향으로 좌회전 후 첫번째 신호등에서 좌회전(스타벅스 길 건너편)',
-            ],
-          },
-          {
-            label: '소요 시간',
-            items: [
-              '송정해수욕장 입구에서 걸어서 5분, 해운대 해수욕장에서 승용차로 10분, 광안리 해수욕장에서 승용차로 20분',
-              '부산역에서 승용차로 40분, 남포동에서 승용차로 45분(광안대교 경유)',
-              '부산김해공항에서 승용차로 50분, 부산종합버스터미널(노포동)에서 승용차로 40분',
-            ],
-          },
-        ],
-      },
-      {
-        title: '버스이용',
-        icon: Bus,
-        groups: [
-          {
-            label: '버스만 이용',
-            items: [
-              '100번, 181번, 185번 버스, 해운대 9번 마을버스 - 공수마을 버스 정류소 하차(정류장에서 영산대학교 해운대캠퍼스 안내 확인 가능)',
-            ],
-          },
-          {
-            label: '버스와 도보 이용',
-            items: [
-              '38번, 39번, 40번, 63번, 100-1번, 139번, 140번, 141번, 180번, 182번, 183번, 200번, 직행 1001번, 1003번, 1011번 버스',
-              '송정1단지 혹은 송정해수욕장입구 정류소 하차 후 100번, 181번, 185번 환승 또는 10분 도보(택시 기본요금)',
-            ],
-          },
-          {
-            label: '해운대역 버스정류소에서 오시는 경우',
-            items: [
-              '택시 이용시 약 15분, 대략 6,000원',
-              '버스 이용시 해운대역 7번 출구로 나와서 버스정류소에서 100번, 181번, 해운대구 9번 마을버스 승차 후 공수마을 하차',
-            ],
-          },
-          {
-            label: '부산종합버스터미널(노포동)에서 오시는 경우',
-            items: [
-              '택시 이용시 41분 소요, 대략 19,500원',
-              '전철과 버스 이용시: 지하철 1호선(노포역) - 3호선(연산역) - 2호선(해운대역) 하차 - 해운대역 7번 출구',
-              '해운대역 버스정류소에서 버스(100번, 181번, 해운대구 9번 마을버스) 승차 후 공수마을 버스정류소 하차',
-            ],
-          },
-          {
-            label: '사상(서부)시외버스터미널에서 오시는 경우',
-            items: [
-              '택시 이용시 48분 소요, 대략 22,600원',
-              '전철과 버스 이용시: 지하철 2호선(사상역) - 2호선(해운대역) 하차 - 해운대역 7번 출구',
-              '해운대역 버스정류소에서 버스(100번, 181번, 해운대구 9번 마을버스) 승차 후 공수마을 버스정류소 하차',
-            ],
-          },
-        ],
-      },
-      {
-        title: '열차이용',
-        icon: Train,
-        groups: [
-          {
-            label: '부산역',
-            items: [
-              '택시 이용시 약 39분, 대략 17,600원',
-              '버스 이용시 40번, 141번, 1001번, 1003번 승차, 송정해수욕장입구 정류소 하차 후 (100번, 181번, 185번 버스) 환승, 공수마을 하차',
-            ],
-          },
-          {
-            label: '신해운대역',
-            items: [
-              '택시 이용시 약 5분, 대략 3,500원',
-              '버스 이용시 청강리행 139번 승차, 송정1단지 버스정류소 하차 후 (100번, 181번, 185번 버스) 환승, 공수마을 하차',
-            ],
-          },
-        ],
-      },
+        {
+          title: '자가 이용',
+          icon: Car,
+          groups: [
+            {
+              label: '',
+              items: [
+                '부산역에서 승용차로 40분, 남포동에서 승용차로 45분(광안대교 경유)',
+                '부산 김해공항에서 승용차로 50분, 부산종합버스터미널(노포동 소재)에서 승용차로 40분. 모든 자가 이용 주차는 학교내의 야외에 주차함.',
+              ],
+            },
+          ],
+        },
+        {
+          title: '버스 이용',
+          icon: Bus,
+          groups: [
+            {
+              label: '',
+              items: [
+                '반송 우체국(영산대역) 하차, 영산대 정문 입구 M동(연구소 앞)까지 도보로 10분',
+              ],
+            },
+          ],
+        },
+        {
+          title: '지하철 이용',
+          icon: Train,
+          groups: [
+            {
+              label: '',
+              items: [
+                '부산 지하철 4호선 이용, 영산대역 내림, 영산대 정문 입구 M동(연구소 앞)까지 도보로 15분 소요',
+              ],
+            },
+          ],
+        },
     ],
     [],
   )
@@ -928,9 +918,9 @@ function LocationSection({
   return (
     <div className="max-w-5xl space-y-8">
       <div>
-        <h1 className="mb-4 border-b-2 border-gray-200 pb-4 text-3xl font-bold text-gray-900">
-          오시는 길
-        </h1>
+          <h1 className="mb-4 border-b-2 border-gray-200 pb-4 text-3xl font-bold text-gray-900">
+            오시는 길
+          </h1>
         <div className="flex flex-col gap-1 text-sm text-gray-700">
           <div className="flex items-center gap-2 text-lg font-semibold text-gray-900">
             <MapPin className="h-5 w-5 text-gray-700" />
@@ -947,7 +937,7 @@ function LocationSection({
           onClick={onResetMap}
           className="absolute right-3 top-3 rounded-md border border-gray-200 bg-white px-3 py-1 text-xs font-semibold text-gray-700 shadow-sm hover:border-gray-300"
         >
-          초기화
+            초기화
         </button>
       </div>
       <div>
@@ -957,7 +947,7 @@ function LocationSection({
           rel="noreferrer"
           className="text-sm font-semibold text-blue-600 hover:text-blue-700"
         >
-          카카오맵에서 위치 보기
+            카카오맵에서 위치 보기
         </a>
       </div>
 
@@ -992,3 +982,7 @@ function LocationSection({
     </div>
   )
 }
+
+
+
+

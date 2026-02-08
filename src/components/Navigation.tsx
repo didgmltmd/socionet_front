@@ -1,4 +1,4 @@
-import { useEffect, useState, type FormEvent } from 'react'
+﻿import { useEffect, useState, type FormEvent } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { ChevronDown, ChevronRight } from 'lucide-react'
 import {
@@ -19,14 +19,20 @@ interface MenuItem {
 const menuData: MenuItem[] = [
   {
     title: '\uc5f0\uad6c\uc18c \uc18c\uac1c',
-    items: ['\uc778\uc0ac\ub9d0', '\uc5f0\ud601', '\uc8fc\uc694\ud65c\ub3d9', '\uc624\uc2dc\ub294 \uae38'],
+    items: [
+      '\uc5f0\uad6c\uc18c \uc18c\uac1c',
+      '\uc778\uc0ac\ub9d0',
+      '\uc5f0\ud601',
+      '\uc8fc\uc694\ud65c\ub3d9',
+      '\uc624\uc2dc\ub294 \uae38',
+    ],
   },
   {
     title: 'SOCIONET \uc774\ud574',
     items: [
-      'SOCIONET\uc5d0 \ub300\ud558\uc5ec',
       'SOCIOMETRY',
       'SOCIAL NETWORK ANALYSIS',
+      'SOCIONET\uc5d0 \ub300\ud558\uc5ec',
       '\ud55c\uad6d\uacfc SOCIONET',
       'SOCIONET \ud65c\uc6a9',
     ],
@@ -41,33 +47,41 @@ const menuData: MenuItem[] = [
   {
     title: '\ucee4\ubba4\ub2c8\ud2f0',
     items: [
-      '\uacf5\uc9c0\uc0ac\ud56d',
       '\ucee4\ubba4\ub2c8\ud2f0 \ud65c\ub3d9',
-      '\uc5f4\ub9b0\ub9c8\ub2f9',
-      'Q & A',
-      'FAQ',
       'SOCIONET \uc5f0\uad6c\ubaa8\uc784',
       '\uc77c\ubc18\uc0c1\ub2f4 \uc5f0\uad6c\ubaa8\uc784',
     ],
   },
   {
     title: '\uc77c\ubc18 \uac80\uc0ac \ubc0f \uc0c1\ub2f4',
-    items: [
-      '\uc544\ub3d9 \uc2ec\ub9ac\uac80\uc0ac',
-      '\uccad\uc18c\ub144 \uc2ec\ub9ac\uac80\uc0ac',
-      '\uc131\uc778\uc2ec\ub9ac\uac80\uc0ac',
-      '\uc885\ud569 \uc2ec\ub9ac\uac80\uc0ac',
-      '\uc544\ub3d9\uccad\uc18c\ub144 \uc0c1\ub2f4',
-      '\ubd80\ubd80 \ubc0f \uac00\uc871\uc0c1\ub2f4',
-      '\ud559\uc2b5 \uc9c4\ub85c\uc0c1\ub2f4',
-      '\uae30\uc5c5\uc0c1\ub2f4',
-      '\uc740\ud1f4\uc790 \uc0c1\ub2f4',
-      '\uac10\uc218\uc131 \ud6c8\ub828',
-    ],
+    items: ['\uac80\uc0ac', '\uc0c1\ub2f4'],
+    subItems: {
+      '\uac80\uc0ac': [
+        '\uc544\ub3d9 \uc2ec\ub9ac\uac80\uc0ac',
+        '\uccad\uc18c\ub144 \uc2ec\ub9ac\uac80\uc0ac',
+        '\uc131\uc778\uc2ec\ub9ac\uac80\uc0ac',
+        '\uc885\ud569 \uc2ec\ub9ac\uac80\uc0ac',
+      ],
+      '\uc0c1\ub2f4': [
+        '\uc544\ub3d9\uccad\uc18c\ub144 \uc0c1\ub2f4',
+        '\ubd80\ubd80 \ubc0f \uac00\uc871\uc0c1\ub2f4',
+        '\ud559\uc2b5 \uc9c4\ub85c\uc0c1\ub2f4',
+        '\uae30\uc5c5\uc0c1\ub2f4',
+        '\uc740\ud1f4\uc790 \uc0c1\ub2f4',
+        '\uc9c4\ub85c\uc0c1\ub2f4',
+        '\uac10\uc218\uc131\ud6c8\ub828',
+        '\uc9d1\ub2e8\uc0c1\ub2f4',
+        '\ubbf8\uc220\uc0c1\ub2f4',
+      ],
+    },
   },
   {
     title: '\uc790\ub8cc\uc2e4',
     items: ['\ub17c\ubb38', '\ucd9c\ud310\ubb3c', '\ucd94\ucc9c\ub3c4\uc11c'],
+  },
+  {
+    title: 'SOCIONET \uc18c\uc2dd',
+    items: ['\uacf5\uc9c0\uc0ac\ud56d'],
   },
 ]
 
@@ -77,19 +91,20 @@ interface NavigationProps {
 }
 
 const routeMap: Record<string, string> = {
-  '\uc5f0\uad6c\uc18c \uc18c\uac1c': '/intro',
+  '\uc5f0\uad6c\uc18c \uc18c\uac1c': '/intro/overview',
   'SOCIONET \uc774\ud574': '/understanding',
   'SOCIONET \uac80\uc0ac': '/test',
   '\ucee4\ubba4\ub2c8\ud2f0': '/community',
   '\uc77c\ubc18 \uac80\uc0ac \ubc0f \uc0c1\ub2f4': '/counseling',
   '\uc790\ub8cc\uc2e4': '/resources',
+  'SOCIONET \uc18c\uc2dd': '/news/notice',
   '\uc778\uc0ac\ub9d0': '/intro/greeting',
   '\uc5f0\ud601': '/intro/history',
   '\uc8fc\uc694\ud65c\ub3d9': '/intro/activities',
   '\uc624\uc2dc\ub294 \uae38': '/intro/location',
-  'SOCIONET\uc5d0 \ub300\ud558\uc5ec': '/understanding/about',
   'SOCIOMETRY': '/understanding/sociometry',
   'SOCIAL NETWORK ANALYSIS': '/understanding/sna',
+  'SOCIONET에 대하여': '/understanding/about',
   '\ud55c\uad6d\uacfc SOCIONET': '/understanding/korea',
   'SOCIONET \ud65c\uc6a9': '/understanding/application',
   '\uac80\uc0ac\uc2e0\uccad': '/test/application',
@@ -100,13 +115,12 @@ const routeMap: Record<string, string> = {
   '\uc911\uae09 SOCIONET': '/test/education/intermediate',
   '\uace0\uae09 SOCIONET': '/test/education/advanced',
   '\uc77c\ubc18\uac15\uc0ac\uacfc\uc815': '/test/education/instructor',
-  '\uacf5\uc9c0\uc0ac\ud56d': '/community/notice',
+  '\uacf5\uc9c0\uc0ac\ud56d': '/news/notice',
   '\ucee4\ubba4\ub2c8\ud2f0 \ud65c\ub3d9': '/community/activity',
-  '\uc5f4\ub9b0\ub9c8\ub2f9': '/community/open',
-  'Q & A': '/community/faq',
-  'FAQ': '/community/faq',
   'SOCIONET \uc5f0\uad6c\ubaa8\uc784': '/community/socionet-study',
   '\uc77c\ubc18\uc0c1\ub2f4 \uc5f0\uad6c\ubaa8\uc784': '/community/counseling-study',
+  '\uac80\uc0ac': '/counseling/test',
+  '\uc0c1\ub2f4': '/counseling/counsel',
   '\uc544\ub3d9 \uc2ec\ub9ac\uac80\uc0ac': '/counseling/test/child',
   '\uccad\uc18c\ub144 \uc2ec\ub9ac\uac80\uc0ac': '/counseling/test/youth',
   '\uc131\uc778\uc2ec\ub9ac\uac80\uc0ac': '/counseling/test/adult',
@@ -116,7 +130,10 @@ const routeMap: Record<string, string> = {
   '\ud559\uc2b5 \uc9c4\ub85c\uc0c1\ub2f4': '/counseling/career',
   '\uae30\uc5c5\uc0c1\ub2f4': '/counseling/corporate',
   '\uc740\ud1f4\uc790 \uc0c1\ub2f4': '/counseling/retiree',
-  '\uac10\uc218\uc131 \ud6c8\ub828': '/counseling/tgroup',
+  '\uc9c4\ub85c\uc0c1\ub2f4': '/counseling/career-guidance',
+  '\uac10\uc218\uc131\ud6c8\ub828': '/counseling/tgroup',
+  '\uc9d1\ub2e8\uc0c1\ub2f4': '/counseling/group',
+  '\ubbf8\uc220\uc0c1\ub2f4': '/counseling/art',
   '\ub17c\ubb38': '/resources/papers',
   '\ucd9c\ud310\ubb3c': '/resources/publications',
   '\ucd94\ucc9c\ub3c4\uc11c': '/resources/books',
@@ -634,3 +651,4 @@ export default function Navigation({ isMobileMenuOpen, onClose }: NavigationProp
     </>
   )
 }
+

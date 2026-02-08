@@ -195,12 +195,16 @@ html {
     margin: 1.25rem 0 0.5rem;
     font-size: 1.5rem;
     font-weight: 700;
+    text-align: center;
+    color: #0f766e;
   }
 
   .editor-surface h3 {
     margin: 1rem 0 0.5rem;
     font-size: 1.25rem;
     font-weight: 600;
+    text-align: center;
+    color: #0f766e;
   }
 
   .editor-surface p {
@@ -249,9 +253,30 @@ html {
     text-decoration: underline;
   }
 
-  .editor-surface [data-placeholder]:empty::before {
-    content: attr(data-placeholder);
-    color: #9ca3af;
-    display: inline-block;
+  .editor-surface blockquote {
+    margin: 1rem 0;
+    padding-left: 1rem;
+    border-left: 3px solid #e5e7eb;
+    color: #4b5563;
+    font-style: italic;
   }
+
+.editor-surface [data-placeholder]:empty::before {
+  content: attr(data-placeholder);
+  color: #9ca3af;
+  display: inline-block;
+}
+}
+
+@keyframes indeterminate {
+  0% {
+    transform: translateX(-120%);
+  }
+  100% {
+    transform: translateX(220%);
+  }
+}
+
+.animate-indeterminate {
+  animation: indeterminate 1.4s ease-in-out infinite;
 }

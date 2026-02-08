@@ -165,9 +165,14 @@ export default function Header({
             type="button"
           >
             <LogoMark logoSrc={logoSrc} />
-            <h1 className="text-base font-bold text-teal-700 sm:text-xl">
-              한국 SOCIONET 연구소
-            </h1>
+            <div className="flex flex-col items-start leading-tight">
+              <h1 className="text-base font-bold text-teal-700 sm:text-xl">
+                한국 SOCIONET 연구소
+              </h1>
+              <span className="text-[10px] font-medium text-teal-600/80 sm:text-xs">
+                Korean Socionet Institute
+              </span>
+            </div>
           </button>
 
           <div className="hidden items-center gap-2 md:flex lg:gap-4">
@@ -483,7 +488,7 @@ export default function Header({
               <div>
                 <p className="font-semibold text-gray-900">E.</p>
                 <p className="mt-1 break-all">
-                  ksocionet@gmail.com / ksocionet@naver.com
+                  ksocionet@gmail.com
                 </p>
               </div>
             </div>
