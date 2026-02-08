@@ -217,6 +217,7 @@ export async function encodeUploadedVideo(
     storagePath: string
   },
   token?: string,
+  signal?: AbortSignal,
 ) {
   return apiRequest<{ video: { id: string } }>(
     '/admin/videos/encode',
@@ -226,6 +227,7 @@ export async function encodeUploadedVideo(
         ...authHeaders(token),
       },
       body: JSON.stringify(payload),
+      signal,
     },
   )
 }

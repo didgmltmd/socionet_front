@@ -547,13 +547,26 @@ function EducationManagement() {
       setIsEncoding(true)
       setUploadMessage('인코딩 중...')
 
-      await encodeUploadedVideo({
-        title: title.trim(),
-        description: description.trim() || undefined,
-        requiredRole,
-        isPublished: true,
-        storagePath,
-      })
+      const encodeController = new AbortController()
+      const encodeTimeout = window.setTimeout(() => {
+        encodeController.abort()
+      }, 45 * 60 * 1000)
+
+      try {
+        await encodeUploadedVideo(
+          {
+            title: title.trim(),
+            description: description.trim() || undefined,
+            requiredRole,
+            isPublished: true,
+            storagePath,
+          },
+          undefined,
+          encodeController.signal,
+        )
+      } finally {
+        window.clearTimeout(encodeTimeout)
+      }
 
       setIsEncoding(false)
       setEncodingProgress(100)
@@ -573,7 +586,11 @@ function EducationManagement() {
       setIsEncoding(false)
       setEncodingProgress(0)
       const message =
-        error instanceof Error ? error.message : '영상 등록에 실패했습니다.'
+        error instanceof Error
+          ? error.name === 'AbortError'
+            ? '인코딩 시간이 초과되었습니다. 다시 시도해주세요.'
+            : error.message
+          : '영상 등록에 실패했습니다.'
       setUploadMessage(message)
       alert(message)
     } finally {
