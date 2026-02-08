@@ -1265,16 +1265,16 @@ const applyCommand = (command: string, value?: string) => {
       <div className="mb-3 space-y-2 rounded-2xl border border-gray-100 bg-gray-50/80 p-2">
         <div className="flex flex-wrap items-center gap-2">
           <div className="flex items-center gap-2 rounded-xl bg-white px-3 py-2 shadow-sm">
-            <span className="text-[11px] font-semibold text-gray-500">湲瑗?/span>
+            <span className="text-[11px] font-semibold text-gray-500">글꼴</span>
             <select
               onChange={(event) => applyFontFamily(mode, event.target.value)}
               className="rounded-md border border-gray-200 bg-white px-2 py-1 text-xs"
-              defaultValue="留묒? 怨좊뵓"
+              defaultValue="맑은 고딕"
             >
-              <option value="留묒? 怨좊뵓">留묒? 怨좊뵓</option>
-              <option value="?섎닎怨좊뵓">?섎닎怨좊뵓</option>
-              <option value="援대┝">援대┝</option>
-              <option value="諛뷀깢">諛뷀깢</option>
+              <option value="맑은 고딕">맑은 고딕</option>
+              <option value="나눔고딕">나눔고딕</option>
+              <option value="굴림">굴림</option>
+              <option value="바탕">바탕</option>
             </select>
             <select
               onChange={(event) => applyFontSize(mode, event.target.value)}
@@ -2204,7 +2204,7 @@ const applyCommand = (command: string, value?: string) => {
           <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl">
             <div className="mb-4 flex items-center justify-between">
               <h4 className="text-lg font-bold text-gray-800">
-                {activeModal.type === 'link' ? '留곹겕 異붽?' : '??留뚮뱾湲?}
+                {activeModal.type === 'link' ? '링크 추가' : '표 만들기'}
               </h4>
               <button
                 type="button"
