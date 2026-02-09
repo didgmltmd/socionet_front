@@ -9,6 +9,15 @@ interface CommunityPageProps {
 
 type CommunitySubPage = '커뮤니티 활동' | 'SOCIONET 연구모임' | '일반상담 연구모임'
 
+type CommunityPost = {
+  id: string
+  title: string
+  content?: string
+  publishedAt: string
+  views?: number
+  isPinned?: boolean
+}
+
 const menuItems = [
   { label: '커뮤니티 활동', value: '커뮤니티 활동' },
   { label: 'SOCIONET 연구모임', value: 'SOCIONET 연구모임' },
@@ -36,16 +45,7 @@ export default function CommunityPage({ subPage }: CommunityPageProps) {
   const [currentSubPage, setCurrentSubPage] = useState<CommunitySubPage>(
     (subPage as CommunitySubPage) || '커뮤니티 활동',
   )
-  const [posts, setPosts] = useState<
-    Array<{
-      id: string
-      title: string
-      content?: string
-      publishedAt: string
-      views?: number
-      isPinned?: boolean
-    }>
-  >([])
+  const [posts, setPosts] = useState<CommunityPost[]>([])
   const [isLoading, setIsLoading] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
   const [appliedQuery, setAppliedQuery] = useState('')
@@ -71,7 +71,7 @@ export default function CommunityPage({ subPage }: CommunityPageProps) {
     setIsLoading(true)
     fetchPosts('ACTIVITY')
       .then(({ posts: list }) => {
-        setPosts(list)
+        setPosts(list as CommunityPost[])
       })
       .finally(() => setIsLoading(false))
   }, [currentSubPage])
