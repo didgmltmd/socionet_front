@@ -480,18 +480,18 @@ export default function Header({
                 <X size={18} />
               </button>
             </div>
-            <div className="mt-5 space-y-4 text-sm text-gray-700">
-              <div>
-                <p className="font-semibold text-gray-900">M.</p>
-                <p className="mt-1">010-6563-7308</p>
+              <div className="mt-5 space-y-4 text-base text-gray-700 sm:text-sm">
+                <div>
+                  <p className="text-sm font-semibold text-gray-900 sm:text-xs">M.</p>
+                  <p className="mt-1 text-lg font-semibold sm:text-base">010-6563-7308</p>
+                </div>
+                <div>
+                  <p className="text-sm font-semibold text-gray-900 sm:text-xs">E.</p>
+                  <p className="mt-1 break-all text-base font-semibold sm:text-sm">
+                    ksocionet@gmail.com
+                  </p>
+                </div>
               </div>
-              <div>
-                <p className="font-semibold text-gray-900">E.</p>
-                <p className="mt-1 break-all">
-                  ksocionet@gmail.com
-                </p>
-              </div>
-            </div>
           </div>
         </div>
       )}

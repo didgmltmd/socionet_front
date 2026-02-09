@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+﻿import { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import PageLayout from '../components/PageLayout'
 import { fetchPosts } from '../lib/api'
@@ -6,6 +6,7 @@ import { fetchPosts } from '../lib/api'
 type NoticePost = {
   id: string
   title: string
+  content?: string
   publishedAt: string
   views?: number
   isPinned?: boolean
@@ -16,6 +17,8 @@ export default function SocionetNewsPage() {
   const [posts, setPosts] = useState<NoticePost[]>([])
   const [isLoading, setIsLoading] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
+  const [appliedQuery, setAppliedQuery] = useState('')
+  const [searchField, setSearchField] = useState<'title' | 'content' | 'title+content'>('title')
   const [currentPage, setCurrentPage] = useState(1)
   const pageSize = 10
 
@@ -29,12 +32,22 @@ export default function SocionetNewsPage() {
   }, [])
 
   const filteredPosts = useMemo(() => {
-    const query = searchQuery.trim().toLowerCase()
+    const query = appliedQuery.trim().toLowerCase()
     if (!query) {
       return posts
     }
-    return posts.filter((post) => post.title.toLowerCase().includes(query))
-  }, [posts, searchQuery])
+    return posts.filter((post) => {
+      const titleMatch = post.title.toLowerCase().includes(query)
+      const contentMatch = (post.content || '').toLowerCase().includes(query)
+      if (searchField === 'title') {
+        return titleMatch
+      }
+      if (searchField === 'content') {
+        return contentMatch
+      }
+      return titleMatch || contentMatch
+    })
+  }, [posts, appliedQuery, searchField])
 
   const oldestOrderedPosts = useMemo(
     () =>
@@ -111,7 +124,7 @@ export default function SocionetNewsPage() {
         </div>
 
         <div className="overflow-hidden rounded-none border-y border-gray-200">
-          <table className="w-full text-left text-sm">
+          <table className="hidden w-full text-left text-sm md:table">
             <thead className="bg-gray-50 text-gray-600">
               <tr>
                 <th className="w-20 px-4 py-3 font-semibold">번호</th>
@@ -165,6 +178,40 @@ export default function SocionetNewsPage() {
               )}
             </tbody>
           </table>
+          <div className="divide-y divide-gray-100 md:hidden">
+            {isLoading ? (
+              <div className="px-4 py-6 text-center text-sm text-gray-500">
+                불러오는 중...
+              </div>
+            ) : rows.length === 0 ? (
+              <div className="px-4 py-6 text-center text-sm text-gray-500">
+                검색 결과가 없습니다.
+              </div>
+            ) : (
+              rows.map((post) => (
+                <button
+                  key={`mobile-${post.id}`}
+                  type="button"
+                  onClick={() => navigate(`/community/posts/${post.id}`)}
+                  className="w-full px-4 py-4 text-left"
+                >
+                  <div className="flex items-center gap-2 text-xs text-gray-500">
+                    {post.isPinned ? (
+                      <span className="rounded-full bg-teal-50 px-2 py-1 text-[10px] font-semibold text-teal-700">
+                        공지
+                      </span>
+                    ) : (
+                      <span>번호 {post.number}</span>
+                    )}
+                    <span>{post.publishedAt.slice(0, 10)}</span>
+                    <span>조회 {post.views ?? 0}</span>
+                  </div>
+                  <div className="mt-2 font-semibold text-gray-900">{post.title}</div>
+                  <div className="mt-1 text-xs text-gray-500">안이환</div>
+                </button>
+              ))
+            )}
+          </div>
         </div>
 
         <div className="flex flex-col items-center gap-4">
@@ -189,8 +236,16 @@ export default function SocionetNewsPage() {
             })}
           </div>
           <div className="flex items-center gap-2">
-            <select className="h-8 rounded border border-gray-200 bg-white px-2 text-xs text-gray-700">
-              <option>제목</option>
+            <select
+              className="h-8 rounded border border-gray-200 bg-white px-2 text-xs text-gray-700"
+              value={searchField}
+              onChange={(event) =>
+                setSearchField(event.target.value as 'title' | 'content' | 'title+content')
+              }
+            >
+              <option value="title">제목</option>
+              <option value="content">내용</option>
+              <option value="title+content">제목 + 내용</option>
             </select>
             <input
               className="h-8 w-40 rounded border border-gray-200 px-2 text-xs"
@@ -198,13 +253,21 @@ export default function SocionetNewsPage() {
               value={searchQuery}
               onChange={(event) => {
                 setSearchQuery(event.target.value)
-                setCurrentPage(1)
+              }}
+              onKeyDown={(event) => {
+                if (event.key === 'Enter') {
+                  setAppliedQuery(searchQuery)
+                  setCurrentPage(1)
+                }
               }}
             />
             <button
               type="button"
-              onClick={() => setCurrentPage(1)}
-              className="h-8 rounded border border-gray-300 px-3 text-xs font-semibold text-gray-700 hover:bg-gray-100"
+              onClick={() => {
+                setAppliedQuery(searchQuery)
+                setCurrentPage(1)
+              }}
+              className="h-8 min-w-[3.5rem] rounded border border-gray-300 px-3 text-xs font-semibold text-gray-700 hover:bg-gray-100 whitespace-nowrap"
             >
               검색
             </button>
@@ -214,3 +277,4 @@ export default function SocionetNewsPage() {
     </PageLayout>
   )
 }
+

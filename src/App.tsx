@@ -1,5 +1,5 @@
 ﻿import { useEffect, useState } from 'react'
-import { BrowserRouter, Outlet, Route, Routes, useNavigate } from 'react-router-dom'
+import { BrowserRouter, Outlet, Route, Routes, useLocation, useNavigate } from 'react-router-dom'
 import Header from './components/Header'
 import Navigation from './components/Navigation'
 import Sidebar from './components/Sidebar'
@@ -119,6 +119,16 @@ function SignupRoute() {
   return <SignupPage onBack={() => navigate('/')} />
 }
 
+function ScrollToTopOnRouteChange() {
+  const location = useLocation()
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'auto' })
+  }, [location.pathname, location.search])
+
+  return null
+}
+
 function AdminRoute() {
   const navigate = useNavigate()
   const [status, setStatus] = useState<'checking' | 'allowed' | 'blocked'>('checking')
@@ -172,6 +182,7 @@ function AdminRoute() {
 export default function App() {
   return (
     <BrowserRouter>
+      <ScrollToTopOnRouteChange />
       <Routes>
         <Route element={<DefaultLayout />}>
           <Route index element={<MainContent currentPage="" currentSubPage="" />} />
