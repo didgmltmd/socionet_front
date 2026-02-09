@@ -37,7 +37,14 @@ export default function CommunityPage({ subPage }: CommunityPageProps) {
     (subPage as CommunitySubPage) || '커뮤니티 활동',
   )
   const [posts, setPosts] = useState<
-    Array<{ id: string; title: string; publishedAt: string; views?: number; isPinned?: boolean }>
+    Array<{
+      id: string
+      title: string
+      content?: string
+      publishedAt: string
+      views?: number
+      isPinned?: boolean
+    }>
   >([])
   const [isLoading, setIsLoading] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
