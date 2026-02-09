@@ -33,12 +33,19 @@ function HomePage() {
     src: string
     title: string
   } | null>(null)
-  const zoomContainerRef = useRef<HTMLDivElement | null>(null)
-  const [zoomLens, setZoomLens] = useState({
-    x: 0,
-    y: 0,
-    visible: false,
-  })
+    const zoomContainerRef = useRef<HTMLDivElement | null>(null)
+    const zoomImageRef = useRef<HTMLImageElement | null>(null)
+    const [zoomLens, setZoomLens] = useState({
+      x: 0,
+      y: 0,
+      pointerX: 0,
+      pointerY: 0,
+      imageWidth: 0,
+      imageHeight: 0,
+      visible: false,
+    })
+    const lensWidth = 300
+    const lensHeight = 240
 
   useEffect(() => {
     if (cachedNotices && cachedActivities) {
@@ -279,27 +286,62 @@ function HomePage() {
                         return
                       }
                       const rect = container.getBoundingClientRect()
-                      const lensSize = 240
-                      const lensWidth = 300
-                      const x = Math.min(
-                        Math.max(event.clientX - rect.left, 0),
-                        rect.width,
+                      const image = zoomImageRef.current
+                      const x = event.clientX - rect.left
+                      const y = event.clientY - rect.top
+
+                      if (!image || !image.naturalWidth || !image.naturalHeight) {
+                        return
+                      }
+
+                      const containerWidth = rect.width
+                      const containerHeight = rect.height
+                      const imageAspect = image.naturalWidth / image.naturalHeight
+                      const containerAspect = containerWidth / containerHeight
+                      let imageWidth = containerWidth
+                      let imageHeight = containerHeight
+                      let imageLeft = 0
+                      let imageTop = 0
+
+                      if (containerAspect > imageAspect) {
+                        imageHeight = containerHeight
+                        imageWidth = imageHeight * imageAspect
+                        imageLeft = (containerWidth - imageWidth) / 2
+                      } else {
+                        imageWidth = containerWidth
+                        imageHeight = imageWidth / imageAspect
+                        imageTop = (containerHeight - imageHeight) / 2
+                      }
+
+                      const pointerX = x - imageLeft
+                      const pointerY = y - imageTop
+
+                      if (
+                        pointerX < 0 ||
+                        pointerY < 0 ||
+                        pointerX > imageWidth ||
+                        pointerY > imageHeight
+                      ) {
+                        setZoomLens((prev) => ({ ...prev, visible: false }))
+                        return
+                      }
+                      const centerX = Math.min(
+                        Math.max(x, imageLeft + lensWidth / 2),
+                        imageLeft + imageWidth - lensWidth / 2,
                       )
-                      const y = Math.min(
-                        Math.max(event.clientY - rect.top, 0),
-                        rect.height,
+                      const centerY = Math.min(
+                        Math.max(y, imageTop + lensHeight / 2),
+                        imageTop + imageHeight - lensHeight / 2,
                       )
-                      const clampedX = Math.min(
-                        Math.max(x - lensWidth / 2, 0),
-                        rect.width - lensWidth,
-                      )
-                      const clampedY = Math.min(
-                        Math.max(y - lensSize / 2, 0),
-                        rect.height - lensSize,
-                      )
+                      const clampedX = centerX - lensWidth / 2
+                      const clampedY = centerY - lensHeight / 2
                       setZoomLens({
                         x: clampedX,
                         y: clampedY,
+                        pointerX,
+                        pointerY,
+                        imageWidth,
+                        imageHeight,
                         visible: true,
                       })
                     }}
@@ -307,28 +349,29 @@ function HomePage() {
                       setZoomLens((prev) => ({ ...prev, visible: false }))
                     }
                   >
-                    <img
-                      src={selectedMainImage.src}
-                      alt={selectedMainImage.title}
-                      className="max-h-[75vh] w-full object-contain"
-                    />
+                      <img
+                        src={selectedMainImage.src}
+                        alt={selectedMainImage.title}
+                        ref={zoomImageRef}
+                        className="max-h-[75vh] w-full object-contain"
+                      />
                     {zoomLens.visible && (
                       <div
                         className="pointer-events-none absolute z-10 rounded-md border-2 border-teal-500 shadow-lg"
                         style={{
                           width: 300,
-                          height: 240,
+                          height: lensHeight,
                           left: zoomLens.x,
                           top: zoomLens.y,
                           backgroundImage: `url(${selectedMainImage.src})`,
                           backgroundRepeat: 'no-repeat',
                           backgroundSize: '380% 380%',
                           backgroundPosition: `${
-                            (zoomLens.x / (zoomContainerRef.current?.clientWidth || 1)) *
-                            100
+                            (zoomLens.pointerX / (zoomLens.imageWidth || 1)) *
+                              100
                           }% ${
-                            (zoomLens.y / (zoomContainerRef.current?.clientHeight || 1)) *
-                            100
+                            (zoomLens.pointerY / (zoomLens.imageHeight || 1)) *
+                              100
                           }%`,
                           backgroundColor: '#ffffff',
                         }}
