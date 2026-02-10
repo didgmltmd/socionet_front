@@ -42,7 +42,7 @@ const menuItems = [
   {
     key: 'society',
     icon: Megaphone,
-    title: 'SOCIONET \ud559\ud68c \ub3d9\uc815',
+    title: 'SOCIONET 학회 동정',
     color: 'bg-teal-700 hover:bg-teal-800',
     action: () => {},
   },
@@ -202,23 +202,23 @@ export default function Sidebar({ logoSrc }: SidebarProps) {
               <div className="flex items-start justify-between">
                 <div>
                   <p className="text-xs font-semibold uppercase text-teal-600">
-                    ?덈궡
+                    안내
                   </p>
                   <h2 className="mt-1 text-xl font-bold text-gray-900">
-                    SOCIONET \ud559\ud68c \ub3d9\uc815
+                    SOCIONET 학회 동정
                   </h2>
                 </div>
                 <button
                   type="button"
                   onClick={() => setIsSocietyModalOpen(false)}
                   className="rounded-full p-2 text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-700"
-                  aria-label="?リ린"
+                  aria-label="닫기"
                 >
                   <X size={18} />
                 </button>
               </div>
               <div className="mt-5 text-base text-gray-700">
-                ?숉쉶??怨듭떇?곸씤 李쎈┰ ?댄썑???숉쉶 ?뚯떇???꾪빀?덈떎.
+                학회의 공식적인 창립 이후에 학회 소식을 전합니다.
               </div>
             </div>
           </div>,
