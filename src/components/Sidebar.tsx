@@ -1,4 +1,4 @@
-import { useState } from 'react'
+﻿import { useState } from 'react'
 import { fetchMe } from '../lib/api'
 import { ClipboardList, Mail, Megaphone, Phone, Video, X } from 'lucide-react'
 import { createPortal } from 'react-dom'
@@ -12,7 +12,7 @@ const menuItems = [
   {
     key: 'application',
     icon: ClipboardList,
-    title: 'SOCIONET \uac80\uc0ac \ubc0f \uad50\uc721 \uc2e0\uccad',
+    title: 'SOCIONET 검사 및 교육\n신청',
     color: 'bg-teal-600 hover:bg-teal-700',
     action: (navigate: ReturnType<typeof useNavigate>) =>
       navigate('/test/application'),
@@ -74,7 +74,7 @@ export default function Sidebar({ logoSrc }: SidebarProps) {
   const [isSocietyModalOpen, setIsSocietyModalOpen] = useState(false)
 
   return (
-    <aside className="w-full overflow-hidden rounded-xl border border-gray-200 bg-white shadow-lg">
+    <aside className="w-full max-w-[190px] overflow-hidden rounded-xl border border-gray-200 bg-white shadow-lg lg:w-[190px] lg:min-w-[190px]">
       <div className="border-b-2 border-teal-600 bg-gradient-to-br from-teal-50 to-white p-3">
         <button
           onClick={() => navigate('/')}
@@ -123,8 +123,15 @@ export default function Sidebar({ logoSrc }: SidebarProps) {
               type="button"
             >
               <Icon size={24} />
-              <span className="whitespace-pre-line text-center text-xs font-medium leading-tight">
-                {item.title}
+              <span className="text-center text-xs font-medium leading-tight text-white">
+                {item.title.split('\n').map((line, index) => (
+                  <span
+                    key={`${item.key}-line-${index}`}
+                    className={index === 1 ? 'block pl-4.5' : 'block'}
+                  >
+                    {line}
+                  </span>
+                ))}
               </span>
             </button>
           )
@@ -195,23 +202,23 @@ export default function Sidebar({ logoSrc }: SidebarProps) {
               <div className="flex items-start justify-between">
                 <div>
                   <p className="text-xs font-semibold uppercase text-teal-600">
-                    안내
+                    ?덈궡
                   </p>
                   <h2 className="mt-1 text-xl font-bold text-gray-900">
-                    SOCIONET 학회 동정
+                    SOCIONET \ud559\ud68c \ub3d9\uc815
                   </h2>
                 </div>
                 <button
                   type="button"
                   onClick={() => setIsSocietyModalOpen(false)}
                   className="rounded-full p-2 text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-700"
-                  aria-label="닫기"
+                  aria-label="?リ린"
                 >
                   <X size={18} />
                 </button>
               </div>
               <div className="mt-5 text-base text-gray-700">
-                학회의 공식적인 창립 이후에 학회 소식을 전합니다.
+                ?숉쉶??怨듭떇?곸씤 李쎈┰ ?댄썑???숉쉶 ?뚯떇???꾪빀?덈떎.
               </div>
             </div>
           </div>,
@@ -257,3 +264,8 @@ export default function Sidebar({ logoSrc }: SidebarProps) {
     </aside>
   )
 }
+
+
+
+
+

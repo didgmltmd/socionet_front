@@ -39,9 +39,9 @@ const menuData: MenuItem[] = [
   },
   {
     title: 'SOCIONET \uac80\uc0ac',
-    items: ['\uac80\uc0ac\uc2e0\uccad', '\uac80\uc0ac\ub300\uc0c1', '\uc720\uc758\uc0ac\ud56d', '\uc218\ub828\uad50\uc721\uacfc\uc815'],
+    items: ['\uac80\uc0ac\uc2e0\uccad', '\uac80\uc0ac\ub300\uc0c1', '\uc720\uc758\uc0ac\ud56d', '\uad50\uc721 \uc774\uc218\uacfc\uc815'],
     subItems: {
-      '\uc218\ub828\uad50\uc721\uacfc\uc815': ['\ucd08\uae09 SOCIONET', '\uc911\uae09 SOCIONET', '\uace0\uae09 SOCIONET', '\uc77c\ubc18\uac15\uc0ac\uacfc\uc815'],
+      '\uad50\uc721 \uc774\uc218\uacfc\uc815': ['\ucd08\uae09 SOCIONET', '\uc911\uae09 SOCIONET', '\uace0\uae09 SOCIONET', '\uc77c\ubc18\uac15\uc0ac\uacfc\uc815'],
     },
   },
   {
@@ -110,7 +110,7 @@ const routeMap: Record<string, string> = {
   '\uac80\uc0ac\uc2e0\uccad': '/test/application',
   '\uac80\uc0ac\ub300\uc0c1': '/test/target',
   '\uc720\uc758\uc0ac\ud56d': '/test/notice',
-  '\uc218\ub828\uad50\uc721\uacfc\uc815': '/test/education',
+  '\uad50\uc721 \uc774\uc218\uacfc\uc815': '/test/education',
   '\ucd08\uae09 SOCIONET': '/test/education/beginner',
   '\uc911\uae09 SOCIONET': '/test/education/intermediate',
   '\uace0\uae09 SOCIONET': '/test/education/advanced',

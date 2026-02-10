@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react'
+﻿import type { ReactNode } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { AnimatePresence, motion } from 'motion/react'
 
@@ -9,6 +9,8 @@ interface PageLayoutProps {
   onSubPageChange: (subPage: string) => void
   children: ReactNode
   bannerImage?: string
+  sidebarTitle?: string
+  sidebarTitleLines?: string[]
   subPageRoutes?: Record<string, string>
 }
 
@@ -19,9 +21,17 @@ export default function PageLayout({
   onSubPageChange,
   children,
   bannerImage,
+  sidebarTitle,
+  sidebarTitleLines,
   subPageRoutes,
 }: PageLayoutProps) {
   const navigate = useNavigate()
+  const normalizedTitle = title.replace(/\\n/g, '\n')
+  const sidebarTitleText = (sidebarTitle ?? normalizedTitle).replace(/\\n/g, '\n')
+  const resolvedSidebarLines =
+    sidebarTitleLines && sidebarTitleLines.length > 0
+      ? sidebarTitleLines
+      : sidebarTitleText.split('\n')
   return (
     <div className="bg-gray-50">
       {bannerImage && (
@@ -63,7 +73,9 @@ export default function PageLayout({
           </div>
           <div className="relative z-10 text-center text-white">
             <p className="mb-2 text-xs sm:text-sm">한국 SOCIONET 연구소</p>
-            <h1 className="text-2xl font-bold sm:text-3xl">{title}</h1>
+            <h1 className="whitespace-pre-line text-2xl font-bold sm:text-3xl">
+              {normalizedTitle}
+            </h1>
           </div>
         </div>
       )}
@@ -74,7 +86,14 @@ export default function PageLayout({
             <div className="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-lg">
               <div className="border-b-2 border-teal-600 bg-gradient-to-br from-teal-50 to-white p-4 sm:p-6">
                 <h2 className="text-lg font-bold text-teal-700 sm:text-xl">
-                  {title}
+                  {resolvedSidebarLines.map((line, index) => (
+                    <span
+                      key={`sidebar-title-${index}`}
+                      className={index === 1 ? 'block pl-[6.75rem]' : 'block'}
+                    >
+                      {line}
+                    </span>
+                  ))}
                 </h2>
               </div>
               <nav className="p-3 sm:p-4">
@@ -125,3 +144,4 @@ export default function PageLayout({
     </div>
   )
 }
+

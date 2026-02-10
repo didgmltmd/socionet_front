@@ -169,7 +169,7 @@ export default function Header({
               <h1 className="text-base font-bold text-teal-700 sm:text-xl">
                 한국 SOCIONET 연구소
               </h1>
-              <span className="text-[10px] font-medium text-teal-600/80 sm:text-xs">
+              <span className="ml-7 text-[10px] font-medium text-teal-600/80 sm:text-xs">
                 Korean Socionet Institute
               </span>
             </div>

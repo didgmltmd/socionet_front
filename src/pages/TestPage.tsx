@@ -9,7 +9,7 @@ const menuItems = [
   { label: '검사신청', value: '검사신청' },
   { label: '검사대상', value: '검사대상' },
   { label: '유의사항', value: '유의사항' },
-  { label: '수련교육과정', value: '수련교육과정' },
+  { label: '교육 이수과정', value: '교육 이수과정' },
   { label: '초급 SOCIONET', value: '초급 SOCIONET', indent: true },
   { label: '중급 SOCIONET', value: '중급 SOCIONET', indent: true },
   { label: '고급 SOCIONET', value: '고급 SOCIONET', indent: true },
@@ -20,7 +20,7 @@ const subPageRoutes = {
   '검사신청': '/test/application',
   '검사대상': '/test/target',
   '유의사항': '/test/notice',
-  '수련교육과정': '/test/education',
+  '교육 이수과정': '/test/education',
   '초급 SOCIONET': '/test/education/beginner',
   '중급 SOCIONET': '/test/education/intermediate',
   '고급 SOCIONET': '/test/education/advanced',
@@ -34,7 +34,7 @@ const contentMap: Record<string, { title: string; text: string }> = {
   },
   '검사대상': {
     title: '검사대상',
-    text: `SOCIONET검사는 유치원, 초⋅중⋅고교, 회사, 군대 등과 같은 조직을 대상으로 실시한다. 문해력이 없는 유치원 아동을 대상으로 검사가 가능한 것이 SOCIONET검사의 큰 특징이다. 만일의 경우, 조직원의 인원수가 7명 이하인 경우 및 조직원의 인원수가 40명 이상일 경우에는 검사의 대상이 되지 못할 수도 있다.`,
+    text: `SOCIONET검사는 유치원, 초?중?고교, 회사, 군대 등과 같은 조직을 대상으로 실시한다. 문해력이 없는 유치원 아동을 대상으로 검사가 가능한 것이 SOCIONET검사의 큰 특징이다. 만일의 경우, 조직원의 인원수가 7명 이하인 경우 및 조직원의 인원수가 40명 이상일 경우에는 검사의 대상이 되지 못할 수도 있다.`,
   },
   '유의사항': {
     title: '유의사항',
@@ -42,7 +42,7 @@ const contentMap: Record<string, { title: string; text: string }> = {
 2. 검사의 결과는 원칙적으로 PDF 파일로 전송된다. 실비로 프린트 아웃해서 제공할 때에는 칼라로 인쇄하여 제공한다.
 3. 검사의 실시, 채점, 해석, 보관에 있어서 검사의 판매자와 구입자는 반드시 윤리규정을 준수하여야 한다.`,
   },
-  '수련교육과정': {
+  '교육 이수과정': {
     title: 'SOCIONET교육',
     text: `SOCIONET 교육의 대상자는 교육기관의 상담교사 및 현장교사, 각 조직 및 기관의 책임자, 상담관련 석사학위 이상인자, 연구소가 인정하는 자를 대상으로 교육을 실시한다. 교육의 시기는 봄 방학기간, 여름 방학기간, 겨울 방학기간, 수시공고를 통해서 실시된다. 교육장소는 서비스를 받는 기관이 지정하는 곳, 한국SOCIONET연구소가 지정하는 장소가 원칙이며, 교육의 시기 및 장소는 피교육자와 한국SOCIONET연구소와의 협의에 의한다. 필요할 경우, 온라인 교육으로 대체할 수도 있다. 교육의 과정은 3단계로 초급교육, 중급교육, 일반강사 교육과정으로 한다. 3단계의 교육과정은 off-line을 통해서도 가능하다. 한국SOCIONET연구소의 공지사항에 교육의 장소, 시간, 날짜, 비용 등을 확인할 수 있다.
 
@@ -50,7 +50,7 @@ const contentMap: Record<string, { title: string; text: string }> = {
   },
   '초급 SOCIONET': {
     title: '초급 SOCIONET',
-    text: `초급과정은 총 8시간으로 SOCIONET의 이론을 익히는 시간이다. 각급학교의 상담업무 종사자 및 상담교사, 그리고 초⋅중⋅고교 현직교사, 군대의 소대장 이상, 직장의 책임자급 이상자, 상담관련 석사학위 이상자에게는 4시간의 교육으로 교육과정(Ⅰ)을 인정할 수 있다. 초급교육을 이수한 사람부터 심리검사의 서비스를 제공하는 것을 원칙으로 한다.`,
+    text: `초급과정은 총 8시간으로 SOCIONET의 이론을 익히는 시간이다. 각급학교의 상담업무 종사자 및 상담교사, 그리고 초?중?고교 현직교사, 군대의 소대장 이상, 직장의 책임자급 이상자, 상담관련 석사학위 이상자에게는 4시간의 교육으로 교육과정(Ⅰ)을 인정할 수 있다. 초급교육을 이수한 사람부터 심리검사의 서비스를 제공하는 것을 원칙으로 한다.`,
   },
   '중급 SOCIONET': {
     title: '중급 SOCIONET',
@@ -80,6 +80,7 @@ export default function TestPage({ subPage }: TestPageProps) {
   return (
     <PageLayout
       title="SOCIONET 검사 및 교육"
+      sidebarTitle="SOCIONET 검사 및\n교육"
       menuItems={menuItems}
       currentSubPage={currentSubPage}
       onSubPageChange={setCurrentSubPage}
@@ -148,3 +149,7 @@ function TextSection({ title, text }: { title: string; text: string }) {
     </div>
   )
 }
+
+
+
+

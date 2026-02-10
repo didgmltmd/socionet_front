@@ -202,7 +202,7 @@ export default function App() {
           <Route path="test/application" element={<TestPage subPage="검사신청" />} />
           <Route path="test/target" element={<TestPage subPage="검사대상" />} />
           <Route path="test/notice" element={<TestPage subPage="유의사항" />} />
-          <Route path="test/education" element={<TestPage subPage="수련교육과정" />} />
+          <Route path="test/education" element={<TestPage subPage="교육 이수과정" />} />
           <Route path="test/education/beginner" element={<TestPage subPage="초급 SOCIONET" />} />
           <Route path="test/education/intermediate" element={<TestPage subPage="중급 SOCIONET" />} />
           <Route path="test/education/advanced" element={<TestPage subPage="고급 SOCIONET" />} />
