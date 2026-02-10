@@ -413,7 +413,7 @@ function HomePage() {
               <div>
                 <p className="font-bold text-gray-800">문제 해결</p>
                 <p className="text-sm text-gray-600">
-                  배척아동, 또래 관계 문제, 갱집단 갈등의 조기 발견 및 개입, 팀빌딩 실시
+                  문제아동, 외톨이, 관심사병, 갱집단 등등의 조기 발견 및 처치 개입, 팀빌딩 제시
                 </p>
               </div>
             </div>
