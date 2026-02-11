@@ -30,7 +30,16 @@ const subPageRoutes = {
 const contentMap: Record<string, { title: string; text: string }> = {
   '검사신청': {
     title: '검사신청',
-    text: `검사를 신청하기 위해서는 먼저 선행 조건이 충족되어야 한다. 첫째, 검사의 신청에 필요한 소정의 초급교육을 수료한(선교육) 이후에 검사신청을 하거나 또는 둘째, 선검사 신청 이후 후교육의 조건으로 검사신청이 가능하다. 위의 첫째와 둘째 조건에 해당되지 않을 경우에도 검사의 신청은 가능하다. 이때에는 SOCIONET연구소와 전화통화나 이메일 등을 통하여 충분한 사전 협의를 거친 이후에 검사신청이 가능하다.`,
+    text: `① 검사의 신청에 필요한 소정의 초급 교육을 수료한(선이수) 이후에 신청이 가능합니다.
+② 선검사 신청 이후 이수교육 조건으로 검사신청이 가능합니다.
+      ※ 위의 조건 ①또는 ②에 해당되는 검사신청자는 전화 또는 메일로 신청하시면
+         연구소에서 받으실 수 있습니다.
+
+③ 위의 조건 ①과 ②를 충족시키지 못한 경우에도 검사신청이 가능합니다. 이때에는
+    한국SOCIONET연구소와 ㉠전화통화를 하거나, ㉡이메일 등을 통하여 사전의 협의를
+    거친 이후에 검사신청이 가능합니다. 연구소와 협의해 주십시오.
+      ※ ㉠연구소 전화 번호 : 010-6563-7308
+      ※ ㉡연구소 메일 주소 : ksocionet@gmail.com`,
   },
   '검사대상': {
     title: '검사대상',
@@ -139,7 +148,7 @@ function TextSection({ title, text }: { title: string; text: string }) {
           return (
             <p
               key={paragraph}
-              className="text-base leading-7 sm:text-lg sm:leading-8"
+              className="whitespace-pre-wrap text-base leading-7 sm:text-lg sm:leading-8"
             >
               {paragraph}
             </p>
@@ -149,7 +158,3 @@ function TextSection({ title, text }: { title: string; text: string }) {
     </div>
   )
 }
-
-
-
-
